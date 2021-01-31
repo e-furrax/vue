@@ -1,17 +1,15 @@
 <template>
-  <Header />
+  <router-view name="header" />
   <router-view />
+  <router-view name="footer" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Header from '@/components/layouts/Header.vue';
 
 export default defineComponent({
   name: 'App',
-  components: {
-    Header
-  }
+  components: {}
 });
 </script>
 
