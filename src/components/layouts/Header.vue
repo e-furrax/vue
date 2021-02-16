@@ -11,6 +11,15 @@
               E-Furrax
             </li>
           </ul>
+          <ul class="ml-14">
+            <li
+              class="mx-2 hover:text-orange-300 border-b border-transparent hover:border-orange-300 transition"
+            >
+              <router-link to="/search?param=any" class="py-1 rounded"
+                >Find your teammate</router-link
+              >
+            </li>
+          </ul>
         </div>
         <div class="flex text-sm items-center">
           <SearchBar
@@ -23,8 +32,8 @@
           />
           <button class="px-3 py-1 mx-2 border rounded">SIGN UP</button>
           <router-link to="/sign-in" class="px-3 py-1 mx-2 bg-amber-600 rounded"
-            >LOG IN</router-link
-          >
+            >LOG IN
+          </router-link>
         </div>
       </div>
     </nav>
