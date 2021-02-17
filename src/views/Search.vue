@@ -42,25 +42,106 @@
         </select>
       </div>
     </div>
-    <div id="search-result"></div>
+    <div id="search-result" class="grid grid-cols-5 gap-3">
+      <SearchCard v-for="user in users" :key="user.id" :user="user"></SearchCard>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import SearchCard from '../components/SearchCard.vue';
+//import UserModel from '../models/User.model';
 
 export default defineComponent({
-  name: 'Search'
+  name: 'Search',
+  components: {
+    SearchCard
+  },
+  /*watch: {
+    async $route() {
+      this.users = this.getUsers();
+    }
+  },*/
+  data: function() {
+    return {
+      users: [
+        {
+          id: 1,
+          image: '/mock-pp.jpg',
+          name: 'Tom',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        },
+        {
+          id: 2,
+          image: '/mock-pp.jpg',
+          name: 'Pierre',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        },
+        {
+          id: 3,
+          image: '/mock-pp.jpg',
+          name: 'Basile',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        },
+        {
+          id: 4,
+          image: '/mock-pp.jpg',
+          name: 'Thomas',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        },
+        {
+          id: 5,
+          image: '/mock-pp.jpg',
+          name: 'Tom',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        },
+        {
+          id: 6,
+          image: '/mock-pp.jpg',
+          name: 'Pierre',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        },
+        {
+          id: 7,
+          image: '/mock-pp.jpg',
+          name: 'Basile',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        },
+        {
+          id: 8,
+          image: '/mock-pp.jpg',
+          name: 'Thomas',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
+        }
+      ]
+    };
+  },
+  methods: {
+    /*getUsers(): Promise<UserModel[] | []> {
+      //TODO getting users from back
+    },*/
+  }
 });
 </script>
 <style lang="scss">
 .search-criteria {
 }
+
 #search-zone {
   margin-left: 5rem;
 }
 
 #search-result {
   margin-left: 2.5rem;
+  margin-right: 2.5rem;
 }
 </style>

@@ -15,7 +15,7 @@
             <li
               class="mx-2 hover:text-orange-300 border-b border-transparent hover:border-orange-300 transition"
             >
-              <router-link to="/search?param=any" class="py-1 rounded"
+              <router-link to="/search" class="py-1 rounded"
                 >Find your teammate</router-link
               >
             </li>
