@@ -5,11 +5,16 @@
     flex product-card border border-gray-400 p-4 rounded-sm my-4
     transition duration-300 cursor-pointer bg-white grid grid-cols-1"
   >
-    <img src="/mock-pp.jpg" alt="profile picture" />
-    <audio controls>
-      <source src="/audio/audio-sample.mp3"/>
-      Your browser does not support the audio element.
-    </audio>
+    <div>
+      <img src="/mock-pp.jpg" alt="profile picture" />
+      <div id="user-plus">
+        <div v-on:click="playOrPause(user.id)" class="playButton">
+          <audio :id="'audio-' + user.id" name="audio" src="/audio/audio-sample.mp3" />
+          <img src="/play.png" class="play" v-if="!play" alt="play" />
+          <img src="/pause.png" class="play" v-if="play" alt="pause" />
+        </div>
+      </div>
+    </div>
     <div class="flex flex-col text-left pl-2 w-full">
       <h3 class="font-bold mb-1">{{ user.name }}</h3>
       <hr class="border-gray-400 my-2 w-full" />
@@ -38,7 +43,8 @@ export default defineComponent({
   },
   data: function() {
     return {
-      expanded: false
+      expanded: false,
+      play: false
     };
   },
   methods: {
@@ -57,6 +63,19 @@ export default defineComponent({
       this.expanded = false;
       readMoreElement.style.webkitLineClamp = '3';
       target.textContent = 'Read more';
+    },
+    playOrPause(id: string): void {
+      const audio = document.getElementById('audio-' + id) as HTMLAudioElement;
+      if (audio.paused) {
+        audio.play();
+        this.play = true;
+      } else {
+        audio.pause();
+        this.play = false;
+      }
+      audio.onended = () => {
+        this.play = false;
+      };
     }
   }
 });
@@ -64,16 +83,25 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 audio {
-  width: 100%;
-}
-audio:not([controls]) {
-  display: none !important;
+  display: none;
 }
 img {
   max-width: 200px;
   max-height: 200px;
 }
-
+.play {
+  padding-top: 2.5px;
+  margin-left: 15px;
+  width: 20px;
+  height: 17.5px;
+}
+.playButton {
+  width: 50px;
+  height: 20px;
+  border-radius: 60px;
+  background: #8d65ea;
+  opacity: 0.8;
+}
 .product-card:hover {
   box-shadow: 0 0.6rem 0.6rem rgba(0, 0, 0, 0.1);
 }
