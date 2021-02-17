@@ -1,7 +1,22 @@
 <template>
-  <footer class="flex flex-col justify-center items-center bg-gray-900 text-white font-xs">
-    <span>E-Furrax, 2021</span>
-    <span>Copyright, all rights reserved.</span>
+  <footer
+    class="flex flex-col text-xs text-purple-200 justify-center items-center bg-purple-950 text-white h-24"
+  >
+    <div class="mb-2 text-sm">
+      <router-link class="mx-4 hover:text-white transition duration-300" to="/"
+        >Terms of Service</router-link
+      >
+      <router-link class="mx-4 hover:text-white transition duration-300" to="/"
+        >Privacy Policy</router-link
+      >
+      <router-link class="mx-4 hover:text-white transition duration-300" to="/"
+        >Cookie Policy</router-link
+      >
+    </div>
+    <div>
+      <span class="mx-4">E-Furrax</span>
+      <span class="mx-4">Copyright © 2021 All rights reserved.</span>
+    </div>
   </footer>
 </template>
 
@@ -15,9 +30,6 @@ export default defineComponent({
 
 <style>
 footer {
-  position: absolute;
-  bottom: 0;
   width: 100%;
-  height: 4rem;
 }
 </style>
