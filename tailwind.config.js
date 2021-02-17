@@ -1,4 +1,5 @@
 /* eslint-disable */
+const { orange } = require('tailwindcss/colors');
 const colors = require('tailwindcss/colors');
 module.exports = {
   purge: [],
@@ -11,8 +12,10 @@ module.exports = {
       ...colors,
       purple: {
         ...colors.purple,
-        1000: '#160D33',
-        1050: '#1F143F'
+        1200: '#160D33',
+        1100: '#1B123D',
+        1000: '#1F143F',
+         950: '#251b4d',
       }
     }
   },
