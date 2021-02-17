@@ -52,7 +52,6 @@
 import { defineComponent } from 'vue';
 import SearchCard from '../components/SearchCard.vue';
 import UserModel from '../models/User.model';
-import * as axiosService from '../services/axiosMethods';
 
 export default defineComponent({
   name: 'Search',
@@ -126,17 +125,6 @@ export default defineComponent({
         }
       ]
     };
-  },
-  methods: {
-    async getUsers(): Promise<UserModel[] | []> {
-      const path = name && name !== '' ? '/users' : '/users?param=';
-      const res = await axiosService.get<{ 'hydra:member': UserModel[] }>(path);
-      if (res) {
-        return res.data['hydra:member'];
-      }
-
-      return [];
-    }
   }
 });
 </script>
