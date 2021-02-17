@@ -8,7 +8,8 @@ import SignIn from '../views/SignIn.vue';
 import SignUp from '../views/SignUp.vue';
 
 import BackOffice from '../views/BackOffice.vue';
-import BackOfficeHeader from '../components/layouts/back-office/Header.vue';
+import BackOfficeProfiles from '../views/Profiles.vue';
+import BackOfficeMeet from '../views/Meet.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -33,15 +34,23 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/back-office',
     name: 'BackOffice',
-    components: {
-      // header: BackOfficeHeader,
-      default: BackOffice
-    }
+    components :{
+      header: Header,
+      default: BackOffice,
+      footer: Footer
+    },
+    children: [{
+      path: '/profiles',
+      component: BackOfficeProfiles 
+    }, {
+      path: '/furries-meet',
+      component: BackOfficeMeet 
+    }]
   }
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
 });
 

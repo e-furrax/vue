@@ -1,5 +1,5 @@
 <template>
-  <BackOfficeSidebar class="w-1/3" v-if="sidebarIsOpen" />
+  <BackOfficeSidebar class="sidebar mt-10 bg-white w-1/5" />
 </template>
 
 <script lang="ts">
@@ -11,13 +11,18 @@ export default defineComponent({
   components: { BackOfficeSidebar },
   data() {
     return {
-      sidebarIsOpen: false
+      sidebarIsOpen: true
     };
   },
   methods: {
-    toggleSidebar(value) {
+    toggleSidebar(value: boolean) {
       this.sidebarIsOpen = value;
     }
   }
 });
 </script>
+<style class="postcss">
+.sidebar {
+  height: 90vh;
+}
+</style>
