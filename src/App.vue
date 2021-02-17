@@ -13,4 +13,10 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+</style>

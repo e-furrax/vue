@@ -25,7 +25,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .search-icon {
   display: flex;
   width: 1.2rem;

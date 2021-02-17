@@ -1,6 +1,6 @@
 <template>
   <section class="h-screen w-screen background">
-    <span class="absolute m-6 text-white font-bold">LOGO E-FURRAX</span>
+    <router-link to="/" class="absolute m-6 text-white font-bold">LOGO</router-link>
     <div class="h-full w-full flex justify-center items-center">
       <div class="w-96 flex flex-col items-center">
         <h1 class="text-3xl font-semibold mb-6 text-white">Register</h1>
@@ -84,7 +84,7 @@
           </div>
           <button
             type="submit"
-            class="border-none outline-none font-bold text-white uppercase rounded bg-orange-500 text-sm leading-8 py-1 hover:bg-orange-600 transition-all ease-in duration-200"
+            class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
           >
             Sign up
           </button>
@@ -92,7 +92,9 @@
         <div class="absolute bottom-12 flex flex-col items-center">
           <p class="text-white leading-8">
             Already have an account?
-            <router-link class="text-orange-200 cursor-pointer" to="/sign-in">Sign In</router-link>
+            <router-link class="text-purple-300 hover:underline cursor-pointer" to="/sign-in"
+              >Sign In</router-link
+            >
           </p>
         </div>
       </div>

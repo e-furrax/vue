@@ -1,5 +1,7 @@
 <template>
-  <div class="home"></div>
+  <div class="home">
+    <div class="w-full h-96 bg-purple-900 z-10"></div>
+  </div>
 </template>
 
 <script lang="ts">
