@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <div class="search" v-if="loaded">
     <div>
       <div class="navTittle text-6xl m-20">🔎 Players List</div>
     </div>
@@ -8,19 +8,19 @@
       <div class="search-criteria text-sm content-center">
         <select name="game w-auto">
           <option value="">game</option>
-          <option value="game1">game1</option>
-          <option value="game2">game2</option>
-          <option value="game3">game3</option>
-          <option value="game4">game4</option>
+          <option value="game1">League of Legends</option>
+          <option value="game2">valorant</option>
+          <option value="game3">rocket league</option>
+          <option value="game4">cs:go</option>
         </select>
       </div>
       <div class="search-criteria text-sm content-center">
         <select name="Notation" class="w-auto">
           <option value="">Notation</option>
-          <option value="Notation1">Notation1</option>
-          <option value="Notation2">Notation2</option>
-          <option value="Notation3">Notation3</option>
-          <option value="Notation4">Notation4</option>
+          <option value="Notation1">>=1</option>
+          <option value="Notation2">>=2</option>
+          <option value="Notation3">>=3</option>
+          <option value="Notation4">>=4</option>
         </select>
       </div>
       <div class="search-criteria text-sm content-center">
@@ -51,20 +51,22 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SearchCard from '../components/SearchCard.vue';
-//import UserModel from '../models/User.model';
+import UserModel from '../models/User.model';
+import * as axiosService from '../services/axiosMethods';
 
 export default defineComponent({
   name: 'Search',
   components: {
     SearchCard
   },
-  /*watch: {
-    async $route() {
-      this.users = this.getUsers();
-    }
-  },*/
+  async created() {
+    //this.users = await this.getUsers();
+    this.loaded = true;
+  },
   data: function() {
     return {
+      //users: [] as UserModel[],
+      loaded: false,
       users: [
         {
           id: 1,
@@ -126,9 +128,15 @@ export default defineComponent({
     };
   },
   methods: {
-    /*getUsers(): Promise<UserModel[] | []> {
-      //TODO getting users from back
-    },*/
+    async getUsers(): Promise<UserModel[] | []> {
+      const path = name && name !== '' ? '/users' : '/users?param=';
+      const res = await axiosService.get<{ 'hydra:member': UserModel[] }>(path);
+      if (res) {
+        return res.data['hydra:member'];
+      }
+
+      return [];
+    }
   }
 });
 </script>
