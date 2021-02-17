@@ -64,6 +64,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 audio {
+  width: 100%;
 }
 audio:not([controls]) {
   display: none !important;
