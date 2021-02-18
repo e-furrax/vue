@@ -15,10 +15,10 @@
             ></div>
             <h1 class="text-4xl font-bold pt-8 lg:pt-0 w-1/3">{{ user.name }}</h1>
             <h3 class="font-bold pt-8 lg:pt-0 w-1/3">3.5★</h3>
-            <div class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"></div>
+            <div class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-purple-1100 opacity-25"></div>
             <p class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
               <svg
-                class="h-4 fill-current text-green-700 pr-4"
+                class="h-4 fill-current text-purple-1100 pr-4"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
               >
@@ -32,7 +32,7 @@
               class="pt-2 text-gray-600 text-xs lg:text-sm flex items-center justify-center lg:justify-start"
             >
               <svg
-                class="h-4 fill-current text-green-700 pr-4"
+                class="h-4 fill-current text-purple-1100 pr-4"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
               >
@@ -51,7 +51,7 @@
             </div>
             <div class="pt-12 pb-8">
               <button
-                class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-full"
+                class="bg-purple-1100 hover:bg-text-purple-1100 text-white font-bold py-2 px-4 rounded-full"
               >
                 Get In Touch
               </button>
@@ -73,19 +73,15 @@
     >
       <div class="max-w-4xl flex items-center h-auto lg:h-full flex-wrap mx-auto my-32 lg:my-0">
         <div
-          id="profile"
+          id="commentary"
           class="w-full rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
         >
           <div class="p-4 md:p-6 text-center lg:text-left">
-            <div
-              class="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
-              style="background-image: url('/user_icon.jpg')"
-            ></div>
-            <h1 class="text-3xl font-bold pt-8 lg:pt-0">Commentary</h1>
+            <h1 class="text-5xl font-bold pt-8 lg:pt-0 underline pb-2">Commentary</h1>
+            <Commentary v-for="com in commentaries" :key="com.id" :commentary="com"></Commentary>
           </div>
         </div>
       </div>
-      >
     </section>
   </div>
   ></template
@@ -93,9 +89,11 @@
 
 <script>
 import { defineComponent } from 'vue';
+import Commentary from '@/components/Commentary';
 
 export default defineComponent({
   name: 'UserProfile',
+  components: { Commentary },
   data: function() {
     return {
       //users: [] as UserModel[],
@@ -106,7 +104,27 @@ export default defineComponent({
         name: 'Tom',
         description:
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
-      }
+      },
+      commentaries: [
+        {
+          id: 1,
+          author: 'Thomas',
+          message:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
+        },
+        {
+          id: 2,
+          author: 'Pierre',
+          message:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
+        },
+        {
+          id: 3,
+          author: 'Basile',
+          message:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
+        }
+      ]
     };
   }
 });

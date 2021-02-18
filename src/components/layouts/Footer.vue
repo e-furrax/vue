@@ -32,8 +32,5 @@ export default defineComponent({
 <style>
 footer {
   width: 100%;
-  position: absolute;
-  bottom: 0;
-  height: 2.5rem;
 }
 </style>
