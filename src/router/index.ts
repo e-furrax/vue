@@ -7,9 +7,11 @@ import UserProfile from '../views/UserProfile.vue';
 import SignIn from '../views/SignIn.vue';
 import SignUp from '../views/SignUp.vue';
 
-import BackOffice from '../views/BackOffice.vue';
-import BackOfficeProfiles from '../views/Profiles.vue';
-import BackOfficeMeet from '../views/Meet.vue';
+import BackOffice from '../views/back-office/index.vue';
+import BackOfficeProfiles from '../views/back-office/Profiles.vue';
+import BackOfficeProfile from '../views/back-office/Profile.vue';
+import BackOfficeMeet from '../views/back-office/Meet.vue';
+import BackOfficeTransaction from '../views/back-office/Transaction.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -33,19 +35,27 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/back-office',
-    name: 'BackOffice',
+    name:"BackOffice",
     components :{
       header: Header,
       default: BackOffice,
       footer: Footer
     },
     children: [{
-      path: '/profiles',
-      component: BackOfficeProfiles 
+      path: 'profiles',
+      name: "Profiles",
+      component: BackOfficeProfiles,
     }, {
-      path: '/furries-meet',
+      path: 'furries-meet',
+      name: "Meet",
       component: BackOfficeMeet 
-    }]
+    },
+    {
+      path: 'transactions',
+      name: "Transactions",
+      component: BackOfficeTransaction
+    },
+  ]
   }
 ];
 
