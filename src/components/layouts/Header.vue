@@ -16,6 +16,15 @@
               <span>About</span>
             </li>
           </ul>
+          <ul class="ml-14">
+            <li
+              class="mx-2 hover:text-orange-300 border-b border-transparent hover:border-orange-300 transition"
+            >
+              <router-link to="/search" class="py-1 rounded"
+                >Find your teammate</router-link
+              >
+            </li>
+          </ul>
         </div>
         <div class="flex items-center">
           <SearchBar
