@@ -5,7 +5,6 @@
         <th class="w-1/7">ID</th>
         <th class="w-1/3">NAME</th>
         <th class="w-1/3">EMAIL</th>
-        <th class="w-1/3">ROLES</th>
       </tr>
     </thead>
     <tbody>
@@ -17,7 +16,6 @@
         <td>{{ format(profile.id) }}</td>
         <td>{{ format(profile.username) }}</td>
         <td>{{ profile.email }}</td>
-        <td>{{ format(profile.roles.join(', ')) }}</td>
         <td>
           <img src="/images/trash.svg" alt="delete icon" />
         </td>
@@ -28,13 +26,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { UserModel } from '@/models/user.model.ts';
 
 export default defineComponent({
   name: 'ProfileList',
   props: {
     profiles: {
-      type: Array as UserModel[],
+      type: Array,
       required: true
     }
   },
