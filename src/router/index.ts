@@ -32,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Test
   },
   {
-    path: '/user_show',
+    path: '/user_show/:id',
     name: 'UserShow',
     components: {
       default: UserProfile,

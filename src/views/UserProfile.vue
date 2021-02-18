@@ -1,5 +1,7 @@
 <template>
-  <div class="pt-16">
+  <div v-if="loading">Loading...</div>
+  <div v-else-if="error">Error: {{ error.message }}</div>
+  <div class="pt-16" v-if="user">
     <section
       class="relative font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover"
     >
@@ -13,7 +15,7 @@
               class="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
               style="background-image: url('/user_icon.jpg')"
             ></div>
-            <h1 class="text-4xl font-bold pt-8 lg:pt-0 w-1/3">{{ user.name }}</h1>
+            <h1 class="text-4xl font-bold pt-8 lg:pt-0 w-1/3">{{ user.username }}</h1>
             <h3 class="font-bold pt-8 lg:pt-0 w-1/3">3.5★</h3>
             <div class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-purple-1100 opacity-25"></div>
             <p class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
@@ -88,23 +90,44 @@
 >
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import Commentary from '@/components/Commentary';
+import { useQuery, useResult } from '@vue/apollo-composable';
+import { gql } from '@apollo/client/core';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
+  setup() {
+    const id = parseInt(useRoute().path.split('/')[2]);
+    const { result, loading, error } = useQuery(
+      gql`
+        query getUser($data: UserInput!) {
+          getUser(data: $data) {
+            id
+            email
+            username
+            description
+          }
+        }
+      `,
+      {
+        data: {
+          id
+        }
+      }
+    );
+    const user = useResult(result, null, data => data.getUser);
+    return {
+      user,
+      loading,
+      error
+    };
+  },
   name: 'UserProfile',
   components: { Commentary },
   data: function() {
     return {
-      //users: [] as UserModel[],
       loaded: false,
-      user: {
-        id: 1,
-        image: '/mock-pp.jpg',
-        name: 'Tom',
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
-      },
       commentaries: [
         {
           id: 1,
