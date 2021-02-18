@@ -5,7 +5,7 @@ import store from './store';
 import './index.css';
 import './assets/css/main.css';
 import clickOutside from './library/click-outside';
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 
 // Create the apollo client
@@ -13,13 +13,6 @@ const apolloClient = new ApolloClient({
   uri: 'http://localhost:3000/graphql',
   cache: new InMemoryCache()
 });
-
-// createApp(App)
-//   .provide(DefaultApolloClient, apolloClient)
-//   .directive('click-outside', clickOutside)
-//   .use(store)
-//   .use(router)
-//   .mount('#app');
 
 createApp({
   setup() {
