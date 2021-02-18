@@ -14,7 +14,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+
 #body {
   padding-top: 60px;
+}
+html,body {
+  height: 100%;
+  width: 100%;
 }
 </style>
