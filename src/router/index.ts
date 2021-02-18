@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '../views/Home.vue';
-import Test from '../views/Test.vue';
+import UserProfile from '../views/UserProfile.vue';
 import SignIn from '../views/SignIn.vue';
 import SignUp from '../views/SignUp.vue';
 import Header from '../components/layouts/Header.vue';
@@ -25,6 +25,15 @@ const routes: Array<RouteRecordRaw> = [
     path: '/sign-up',
     name: 'SignUp',
     component: SignUp
+  },
+  {
+    path: '/user_show',
+    name: 'UserShow',
+    components: {
+      default: UserProfile,
+      header: Header,
+      footer: Footer
+    }
   }
 ];
 
