@@ -31,11 +31,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import GamePreview from '../components/GamePreview.vue';
+import { useAuth } from '../modules/auth';
 
 export default defineComponent({
   name: 'Home',
   components: {
     GamePreview
+  },
+  setup() {
+    const { user } = useAuth();
+    console.log('allo', user?.value);
+
+    return {
+      user
+    };
   }
 });
 </script>
