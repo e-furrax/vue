@@ -1,6 +1,6 @@
 <template>
   <router-link
-    to="/search"
+    to=":to="'/user_show/' + user.id""
     class="flex flex-col rounded border bg-purple-925 profile-card rounded-sm transition duration-300 cursor-pointer bg-white grid grid-cols-1"
   >
     <div class="profile-top flex relative flex-col items-center overflow-hidden">
