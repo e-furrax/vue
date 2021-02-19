@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '../views/Home.vue';
+import UserProfile from '../views/UserProfile.vue';
 import SignIn from '../views/SignIn.vue';
 import SignUp from '../views/SignUp.vue';
 import Search from '../views/Search.vue';
@@ -31,6 +32,15 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Search',
     components: {
       default: Search,
+      header: Header,
+      footer: Footer
+    }
+  },
+  {
+    path: '/user_show/:id',
+    name: 'UserShow',
+    components: {
+      default: UserProfile,
       header: Header,
       footer: Footer
     }
