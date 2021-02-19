@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-2" v-if="loaded">
+  <div class="container mx-auto px-2 pb-14" v-if="loaded">
     <div class="py-10 text-5xl text-white">Players List</div>
     <div class="flex text-white text-xs mb-5 items-center">
       <div class="mr-2">Filter</div>

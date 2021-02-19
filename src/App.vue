@@ -19,7 +19,7 @@ export default defineComponent({
 
 <style lang="scss">
 #body {
-  padding-top: 60px;
+  padding-top: 3.5rem;
 }
 html,
 body {
