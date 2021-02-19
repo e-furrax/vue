@@ -1,6 +1,6 @@
 <template>
   <header>
-    <nav class="fixed w-full bg-purple-1200 h-14 border-b z-50">
+    <nav class="w-full bg-purple-1200 h-14 border-b z-50">
       <div class="flex text-white text-sm mx-4 h-full items-center justify-between">
         <div class="flex h-full items-center">
           <a class="cursor-pointer text-lg">
