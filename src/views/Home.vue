@@ -1,19 +1,20 @@
 <template>
   <div class="home">
-    <section class="relative full-vh flex flex-col justify-center items-center">
-      <div id="particles-js" class="absolute full-h w-full"></div>
-      <div class="w-full z-20 text-white flex flex-col items-center justify-center">
-        <h1 class="uppercase text-4xl font-bold">Find your perfect teammate</h1>
-        <p class="text-xl">
-          E-furrax helps you find the teammate that matches your requirements. Surrend at 20 is
-          over.
-        </p>
-      </div>
-      <div class="flex justify-center text-white games-preview z-20 pt-10">
-        <GamePreview name="Rocket League" src="/images/rl.jpg" />
-        <GamePreview name="League of Legends" src="/images/lol.jpg" />
-        <GamePreview name="Valorant" src="/images/valorant.jpg" />
-        <GamePreview name="CS:GO" src="/images/csgo.png" />
+    <section class="relative main-section flex flex-col justify-center items-center">
+      <div class="flex flex-col">
+        <div class="w-full z-20 text-white flex flex-col items-center justify-center">
+          <h1 class="uppercase text-4xl font-bold">Find your perfect teammate</h1>
+          <p class="text-xl">
+            E-furrax helps you find the teammate that matches your requirements. Surrend at 20 is
+            over.
+          </p>
+        </div>
+        <div class="flex justify-center text-white games-preview z-20 pt-10">
+          <GamePreview name="Rocket League" src="/images/rl.jpg" />
+          <GamePreview name="League of Legends" src="/images/lol.jpg" />
+          <GamePreview name="Valorant" src="/images/valorant.jpg" />
+          <GamePreview name="CS:GO" src="/images/csgo.png" />
+        </div>
       </div>
     </section>
     <section class="text-white py-20 bg-purple-1000 flex flex-col items-center">
@@ -41,7 +42,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.full-vh {
-  height: 100vh;
+.main-section {
+  height: calc(100vh - 3.5rem);
 }
 </style>

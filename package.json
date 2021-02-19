@@ -13,6 +13,7 @@
     "@vue/apollo-composable": "^4.0.0-alpha.12",
     "autoprefixer": "^9.8.6",
     "core-js": "^3.6.5",
+    "debounce": "^1.2.0",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
     "postcss": "^7.0.35",
@@ -22,6 +23,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/debounce": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
