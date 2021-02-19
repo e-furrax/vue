@@ -9,3 +9,8 @@ export const getUsers = gql`
   }
 }
 `;
+export const deleteUser = gql`
+mutation deleteUser($id: String!) {
+    deleteUser(id: $id)
+}
+`;
