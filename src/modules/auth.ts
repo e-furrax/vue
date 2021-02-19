@@ -55,7 +55,6 @@ export const useAuth = () => {
   const setUser = (payload: User) => {
     window.localStorage.setItem(AUTH_KEY, payload[AUTH_TOKEN]);
     state.user = payload;
-    console.log(state.user);
   };
 
   const logout = (): Promise<void> => {
