@@ -3,24 +3,14 @@
     <nav class="fixed w-full bg-purple-1200 h-14 border-b z-50">
       <div class="flex text-white text-sm mx-4 h-full items-center justify-between">
         <div class="flex h-full items-center">
-          <a class="cursor-pointer text-lg"><span>LOGO</span></a>
+          <a class="cursor-pointer text-lg">
+            <router-link to="/">LOGO</router-link>
+          </a>
           <ul class="h-full ml-14 flex items-center">
             <li
               class="h-full mr-10 flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
             >
-              <span>E-Furrax</span>
-            </li>
-            <li
-              class="h-full flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
-            >
-              <span>About</span>
-            </li>
-          </ul>
-          <ul class="ml-14">
-            <li
-              class="mx-2 hover:text-orange-300 border-b border-transparent hover:border-orange-300 transition"
-            >
-              <router-link to="/search" class="py-1 rounded">Find your teammate</router-link>
+              <router-link to="/search">Find your teammate</router-link>
             </li>
           </ul>
         </div>

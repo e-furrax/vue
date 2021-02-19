@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="flex flex-col text-xs text-purple-200 justify-center items-center bg-purple-950 text-white h-24"
+    class="flex flex-col text-xs mt-20 text-purple-200 justify-center items-center bg-purple-950 text-white h-24"
   >
     <div class="mb-2 text-sm">
       <router-link class="mx-4 hover:text-white transition duration-300" to="/"
