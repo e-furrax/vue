@@ -4,7 +4,7 @@
     <div class="h-full w-full flex justify-center items-center">
       <div class="w-96 flex flex-col items-center">
         <h1 class="text-3xl font-semibold mb-6 text-white">Sign In</h1>
-        <form class="form-grid">
+        <form class="form-grid" @submit.prevent="submit">
           <div class="input-grid">
             <div class="icons">
               <svg width="16px" height="16px" viewBox="0 0 511.626 511.626" fill="currentColor">
@@ -22,6 +22,7 @@
               type="email"
               placeholder="Email address"
               autocomplete="current-email"
+              v-model="email"
             />
           </div>
           <div class="input-grid">
@@ -43,6 +44,7 @@
               type="password"
               placeholder="Password"
               autocomplete="current-password"
+              v-model="password"
             />
           </div>
           <button
@@ -58,7 +60,9 @@
           </p>
           <p class="text-white leading-8">
             Don't have an E-Furrax account?
-            <router-link class="text-purple-300 cursor-pointer hover:underline" to="/sign-up">Sign Up</router-link>
+            <router-link class="text-purple-300 cursor-pointer hover:underline" to="/sign-up"
+              >Sign Up</router-link
+            >
           </p>
         </div>
       </div>
@@ -67,9 +71,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { gql } from '@apollo/client/core';
+import { useMutation } from '@vue/apollo-composable';
+import { defineComponent, reactive, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth } from '../modules/auth';
 
-export default defineComponent({});
+interface LoginPayload {
+  email: string | undefined;
+  password: string | undefined;
+}
+
+export default defineComponent({
+  setup() {
+    const { setUser } = useAuth();
+    const router = useRouter();
+    const { mutate: login } = useMutation(gql`
+      mutation login($password: String!, $email: String!) {
+        login(password: $password, email: $email) {
+          accessToken
+        }
+      }
+    `);
+
+    const payload = reactive<LoginPayload>({
+      email: undefined,
+      password: undefined
+    });
+
+    const submit = () => {
+      login(payload).then(({ data }) => {
+        setUser(data.login);
+        router.push({ name: 'Home' });
+      });
+    };
+
+    return {
+      submit,
+      ...toRefs(payload)
+    };
+  }
+});
 </script>
 
 <style lang="postcss">

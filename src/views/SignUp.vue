@@ -4,7 +4,7 @@
     <div class="h-full w-full flex justify-center items-center">
       <div class="w-96 flex flex-col items-center">
         <h1 class="text-3xl font-semibold mb-6 text-white">Register</h1>
-        <form class="form-grid">
+        <form class="form-grid" @submit.prevent="submit">
           <div class="input-grid">
             <div class="icons">
               <svg width="16px" height="16px" viewBox="0 0 511.626 511.626" fill="currentColor">
@@ -22,6 +22,7 @@
               type="email"
               placeholder="Email address"
               autocomplete="current-email"
+              v-model="email"
             />
           </div>
           <div class="input-grid">
@@ -40,7 +41,7 @@
               aria-label="Username"
               type="text"
               placeholder="Username"
-              autocomplete="current-email"
+              v-model="username"
             />
           </div>
           <div class="input-grid">
@@ -62,6 +63,7 @@
               type="password"
               placeholder="Password"
               autocomplete="current-password"
+              v-model="password"
             />
           </div>
           <div class="input-grid">
@@ -103,10 +105,49 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { gql } from '@apollo/client/core';
+import { useMutation } from '@vue/apollo-composable';
+import { defineComponent, reactive, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
+
+interface RegisterPayload {
+  email: string | undefined;
+  username: string | undefined;
+  password: string | undefined;
+}
 
 export default defineComponent({
-  name: 'SignUp'
+  name: 'SignUp',
+  setup() {
+    const router = useRouter();
+    const { mutate: register } = useMutation(gql`
+      mutation register($data: RegisterInput!) {
+        register(data: $data) {
+          username
+          email
+        }
+      }
+    `);
+
+    const payload = reactive<RegisterPayload>({
+      email: undefined,
+      password: undefined,
+      username: undefined
+    });
+
+    const submit = () => {
+      console.log(payload);
+      register({ data: payload }).then(() => {
+        router.push({ name: 'Home' });
+      });
+    };
+
+    return {
+      ...toRefs(payload),
+      register,
+      submit
+    };
+  }
 });
 </script>
 

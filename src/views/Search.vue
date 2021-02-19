@@ -3,10 +3,10 @@
     <div>
       <div class="navTittle text-6xl m-20">🔎 Players List</div>
     </div>
-    <div id="search-zone" class="grid grid-cols-5 gap-3 max-w-2xl">
-      <div class="filterName text-sm">Filter:</div>
+    <div id="search-zone" class="grid grid-cols-4 w-96 ">
+      <div class="filterName text-sm text-white">Filter:</div>
       <div class="search-criteria text-sm content-center">
-        <select name="game w-auto">
+        <select name="game" ref="game" class="w-auto">
           <option value="">game</option>
           <option value="game1">League of Legends</option>
           <option value="game2">valorant</option>
@@ -15,7 +15,7 @@
         </select>
       </div>
       <div class="search-criteria text-sm content-center">
-        <select name="Notation" class="w-auto">
+        <select name="notation" ref="notation" class="w-auto">
           <option value="">Notation</option>
           <option value="Notation1">>=1</option>
           <option value="Notation2">>=2</option>
@@ -24,18 +24,8 @@
         </select>
       </div>
       <div class="search-criteria text-sm content-center">
-        <select name="sex" class="w-auto">
-          <option value="">sex</option>
-          <option value="male">male</option>
-          <option value="female">female</option>
-          <option value="mtf">trans-mtf</option>
-          <option value="ftm">trans-ftm</option>
-        </select>
-      </div>
-      <div class="search-criteria text-sm content-center">
-        <select name="language" class="w-auto">
+        <select name="language" ref="language" class="w-auto">
           <option value="">language</option>
-          <option value="Notation1">language</option>
           <option value="fr">french</option>
           <option value="en">english</option>
           <option value="du">dutch</option>
@@ -51,9 +41,37 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SearchCard from '../components/SearchCard.vue';
-import UserModel from '../models/User.model';
+import { useQuery, useResult } from '@vue/apollo-composable';
+import { gql } from '@apollo/client/core';
 
 export default defineComponent({
+  setup() {
+    const { result, loading, error, variables } = useQuery(
+      gql`
+        query filterUsers($data: UserFilterInput!) {
+          filterUsers(data: $data) {
+            id
+            username
+            description
+          }
+        }
+      `,
+      {
+        data: {
+          gameId: 1,
+          languageCode: 'fr',
+          notation: 0
+        }
+      }
+    );
+    const users1 = useResult(result, null, data => data.filterUsers);
+    return {
+      users1,
+      loading,
+      error,
+      variables
+    };
+  },
   name: 'Search',
   components: {
     SearchCard
@@ -64,7 +82,6 @@ export default defineComponent({
   },
   data: function() {
     return {
-      //users: [] as UserModel[],
       loaded: false,
       users: [
         {
@@ -125,11 +142,27 @@ export default defineComponent({
         }
       ]
     };
+  },
+  methods: {
+    update() {
+      const game: number = (this.$refs.game as any).valueAsNumber;
+      const notation: number = (this.$refs.notation as any).valueAsNumber;
+      const language: string = (this.$refs.language as any).valueAsString;
+      this.variables = {
+        data: {
+          gameId: game,
+          languageCode: language,
+          notation: notation
+        }
+      };
+    }
   }
 });
 </script>
 <style lang="scss">
 .search-criteria {
+  width: 5rem;
+  overflow: hidden;
 }
 
 #search-zone {
