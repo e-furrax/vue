@@ -8,8 +8,8 @@ import SignIn from '../views/SignIn.vue';
 import SignUp from '../views/SignUp.vue';
 
 import BackOffice from '../views/back-office/index.vue';
-import BackOfficeProfiles from '../views/back-office/Profiles.vue';
-import BackOfficeProfile from '../views/back-office/Profile.vue';
+import BackOfficeProfiles from '../views/back-office/profile/index.vue';
+import BackOfficeProfileView from '../views/back-office/profile/View.vue';
 import BackOfficeMeet from '../views/back-office/Meet.vue';
 import BackOfficeTransaction from '../views/back-office/Transaction.vue';
 
@@ -45,6 +45,11 @@ const routes: Array<RouteRecordRaw> = [
       path: 'profiles',
       name: "Profiles",
       component: BackOfficeProfiles,
+    },{
+      path: 'profile/:id',
+      name: "Profile",
+      props: true,
+      component: BackOfficeProfileView 
     }, {
       path: 'furries-meet',
       name: "Meet",
@@ -55,6 +60,11 @@ const routes: Array<RouteRecordRaw> = [
       name: "Transactions",
       component: BackOfficeTransaction
     },
+    // {
+    //   path: 'transaction/:id',
+    //   name: "Transaction",
+    //   component: BackOfficeTransactionView 
+    // },
   ]
   }
 ];

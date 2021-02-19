@@ -6,6 +6,7 @@
   >
     <div class="grid grid-cols-4 grid-flow-rows gap-4 m-10">
       <TransactionItem
+        @click="$router.push()"
         v-for="transaction in transactionToRender"
         :key="`transaction-${transaction.id}`"
         :transaction="transaction"

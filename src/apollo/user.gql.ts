@@ -9,8 +9,18 @@ export const getUsers = gql`
   }
 }
 `;
-export const deleteUser = gql`
+
+export const getUser = gql`
+    query getUser($data: UserInput!) {
+        getUser(id: $data) {
+            id
+            username
+            email
+        }
+    }
+`;
+export const deleteMut  = gql`
 mutation deleteUser($id: String!) {
-    deleteUser(id: $id)
+    deleteUser(id: $id) { id }
 }
 `;
