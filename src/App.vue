@@ -5,20 +5,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
+import { useAuth } from './modules/auth';
 
 export default defineComponent({
   name: 'App',
-  components: {}
+  components: {},
+  setup() {
+    onMounted(() => useAuth());
+  }
 });
 </script>
 
 <style lang="scss">
-
 #body {
   padding-top: 60px;
 }
-html,body {
+html,
+body {
   height: 100%;
   width: 100%;
 }

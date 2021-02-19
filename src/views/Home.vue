@@ -37,14 +37,6 @@ export default defineComponent({
   name: 'Home',
   components: {
     GamePreview
-  },
-  setup() {
-    const { user } = useAuth();
-    console.log('allo', user?.value);
-
-    return {
-      user
-    };
   }
 });
 </script>

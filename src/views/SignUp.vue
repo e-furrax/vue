@@ -136,7 +136,6 @@ export default defineComponent({
     });
 
     const submit = () => {
-      console.log(payload);
       register({ data: payload }).then(() => {
         router.push({ name: 'Home' });
       });
