@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <SearchBar placeholder="Search" class="bg-black m-4 w-2/5" />
+    <SearchBar placeholder="Search" class="m-4 w-2/5" />
     <Loader v-if="loading" />
     <div v-else-if="error">Oops, an error occured: {{ error }}</div>
     <Pagination

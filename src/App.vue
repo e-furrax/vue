@@ -1,7 +1,9 @@
 <template>
-  <router-view name="header" id="navbar" />
-  <router-view id="body" />
-  <router-view name="footer" id="footer" />
+  <router-view name="header" class="navbar" />
+  <div class="body">
+    <router-view />
+  </div>
+  <router-view name="footer" class="footer" />
 </template>
 
 <script lang="ts">
@@ -18,7 +20,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-#body {
+.body {
   padding-top: 3.5rem;
 }
 html,

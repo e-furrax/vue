@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading">Loading...</div>
+  <Loader v-if="loading" />
   <div v-else-if="error">Error: {{ error.message }}</div>
   <div class="pt-16" v-if="user">
     <section
@@ -86,36 +86,25 @@
       </div>
     </section>
   </div>
-  ></template
->
+</template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-import Commentary from '@/components/Commentary';
+import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
-import { gql } from '@apollo/client/core';
-import { useRoute } from 'vue-router';
+import { getUser } from '@/apollo/user.gql.ts';
+
+import Commentary from '@/components/Commentary';
+import Loader from '@/components/Loader';
 
 export default defineComponent({
-  setup() {
-    const id = parseInt(useRoute().path.split('/')[2]);
-    const { result, loading, error } = useQuery(
-      gql`
-        query getUser($data: UserInput!) {
-          getUser(data: $data) {
-            id
-            email
-            username
-            description
-          }
-        }
-      `,
-      {
-        data: {
-          id
-        }
-      }
-    );
+  props: {
+    userId: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props) {
+    const { result, loading, error } = useQuery(getUser, { data: { id: parseInt(props.userId) } });
     const user = useResult(result, null, data => data.getUser);
     return {
       user,
@@ -124,7 +113,7 @@ export default defineComponent({
     };
   },
   name: 'UserProfile',
-  components: { Commentary },
+  components: { Commentary, Loader },
   data: function() {
     return {
       loaded: false,

@@ -13,21 +13,19 @@
 import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
 import { getUser } from '@/apollo/user.gql.ts';
+import Loader from '@/components/Loader.vue';
 
 export default defineComponent({
-  name: 'BackOfficeProfile',
+  name: 'BackOfficeProfileView',
+  components: { Loader },
   props: {
-    profile: {
-      type: Object,
-      required: true
-    },
-    id: {
+    userId: {
       type: String,
       required: true
     }
   },
   setup(props) {
-    const { result, loading, error } = useQuery(getUser, { data: { id: parseInt(props.id) } });
+    const { result, loading, error } = useQuery(getUser, { data: { id: parseInt(props.userId) } });
     const user = useResult(result, null, data => data.getUser);
     return { user, loading, error };
   }
