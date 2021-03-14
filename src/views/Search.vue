@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-2 pb-14" v-if="loaded">
+  <div class="container mx-auto px-2 pb-14">
     <div class="py-10 text-5xl text-white">Players List</div>
     <div class="flex text-white text-xs mb-5 items-center">
       <div class="mr-2">Filter</div>
@@ -38,96 +38,31 @@
       </div>
     </div>
     <div class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
-      <SearchCard v-for="user in users" :key="user.id" :user="user"></SearchCard>
+      <Loader v-if="loading" />
+      <SearchCard v-else-if="users" v-for="user in users" :key="user.id" :user="user"></SearchCard>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import SearchCard from '../components/SearchCard.vue';
+import { getUsers } from '@/apollo/user.gql.ts';
+import { useQuery, useResult } from '@vue/apollo-composable';
+
+import SearchCard from '@/components/SearchCard.vue';
+import Loader from '@/components/Loader.vue';
 
 export default defineComponent({
   name: 'Search',
   components: {
-    SearchCard
+    SearchCard, Loader
   },
-  async created() {
-    //this.users = await this.getUsers();
-    this.loaded = true;
+  setup() {
+    const { result, loading, error  } = useQuery(getUsers);
+    const users = useResult(result, null, data => data.getUsers);
+
+    return  { users, loading, error }
   },
-  data() {
-    return {
-      //users: [] as UserModel[],
-      loaded: false,
-      users: [
-        {
-          id: 1,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Tom',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        },
-        {
-          id: 2,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Pierre',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        },
-        {
-          id: 3,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Basile',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        },
-        {
-          id: 4,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Thomas',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        },
-        {
-          id: 5,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Tom',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        },
-        {
-          id: 6,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Pierre',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        },
-        {
-          id: 7,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Basile',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        },
-        {
-          id: 8,
-          avatar: '/images/avatar1.png',
-          cover: '/images/aurelion-sol.jpg',
-          name: 'Thomas',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis tincidunt libero, non mollis eros. Donec eget accumsan diam. Vestibulum varius quis ipsum eu blandit. Morbi sodales tempus gravida. Vivamus suscipit maximus feugiat. Quisque quis dapibus lacus. Duis egestas vitae arcu at aliquam. Nam eget augue ante. Curabitur iaculis nunc eu metus volutpat, at blandit ligula blandit. Donec sit amet enim sed mauris congue vestibulum.'
-        }
-      ]
-    };
-  }
 });
 </script>
 

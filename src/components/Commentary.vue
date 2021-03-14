@@ -12,7 +12,9 @@
       </p>
       <hr class="border-gray-400 my-2 w-full" />
       <div class="">
-        <router-link to="/report" class="underline float-left">Report comment to moderation</router-link>
+        <router-link to="/report" class="underline float-left"
+          >Report comment to moderation</router-link
+        >
         <p class="float-right font-bold">5★</p>
       </div>
     </div>

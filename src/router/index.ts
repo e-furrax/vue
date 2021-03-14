@@ -7,11 +7,11 @@ import SignIn from '../views/SignIn.vue';
 import SignUp from '../views/SignUp.vue';
 
 import Search from '../views/Search.vue';
-import UserProfile from '../views/UserProfile.vue';
+import UserProfile from '../views/user/index.vue';
 
 import BackOffice from '../views/back-office/index.vue';
 import BackOfficeProfiles from '../views/back-office/profile/index.vue';
-import BackOfficeProfileView from '../views/back-office/profile/View.vue';
+import BackOfficeProfileId from '../views/back-office/profile/id.vue';
 import BackOfficeAppointement from '../views/back-office/appointement/index.vue';
 import BackOfficeTransaction from '../views/back-office/transaction/index.vue';
 
@@ -45,8 +45,8 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/user-show/:userId',
-    name: 'UserShow',
+    path: '/user/:userId',
+    name: 'UserProfile',
     props: true,
     components: {
       default: UserProfile,
@@ -70,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
       path: 'profile/:userId',
       name: "Profile",
       props: true,
-      component: BackOfficeProfileView 
+      component: BackOfficeProfileId 
     }, {
       path: 'appointements',
       name: "Appointement",
