@@ -29,7 +29,7 @@
           : 'hidden'
       ]"
     >
-      <div v-if="loading">Loading...</div>
+      <Loader v-if="loading" />
       <ul class="mt-3" v-if="results && results.games">
         <li v-for="game of results.games" :key="game.id">
           <div class="mt-1 mx-3 text-sm text-violet-300">Games</div>
@@ -66,7 +66,11 @@ import { computed, defineComponent, ref } from 'vue';
 import { debounce } from 'debounce';
 import { useQuery, useResult } from '@vue/apollo-composable';
 import { gql } from '@apollo/client/core';
+
 import clickOutside from '../library/click-outside';
+
+import Loader from './Loader.vue';
+import { searchByUsernameOrGamename } from '@/apollo/search.gql'
 
 interface SearchApiResponse {
   SearchByUsernameOrGamename: SearchApiData;
@@ -85,27 +89,14 @@ interface SearchApiData {
 
 export default defineComponent({
   name: 'SearchBar',
+  components: { Loader },
   setup() {
     const isActive = ref(false);
     const inputRef = ref({
       input: ''
     });
     const enabled = ref(false);
-    const { result, loading, error } = useQuery<SearchApiResponse>(
-      gql`
-        query SearchByUsernameOrGamename($input: String!) {
-          SearchByUsernameOrGamename(input: $input) {
-            users {
-              id
-              username
-            }
-            games {
-              id
-              name
-            }
-          }
-        }
-      `,
+    const { result, loading, error } = useQuery<SearchApiResponse>(searchByUsernameOrGamename,
       inputRef,
       () => ({
         enabled: enabled.value

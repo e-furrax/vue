@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import SearchBar from '../SearchBar.vue';
+import SearchBar from '../../SearchBar.vue';
 
 export default defineComponent({
   components: { SearchBar },

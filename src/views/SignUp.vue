@@ -105,10 +105,10 @@
 </template>
 
 <script lang="ts">
-import { gql } from '@apollo/client/core';
 import { useMutation } from '@vue/apollo-composable';
 import { defineComponent, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { registerMutation } from '@/apollo/user.gql.ts';
 
 interface RegisterPayload {
   email: string | undefined;
@@ -120,14 +120,7 @@ export default defineComponent({
   name: 'SignUp',
   setup() {
     const router = useRouter();
-    const { mutate: register } = useMutation(gql`
-      mutation register($data: RegisterInput!) {
-        register(data: $data) {
-          username
-          email
-        }
-      }
-    `);
+    const { mutate: register } = useMutation(registerMutation);
 
     const payload = reactive<RegisterPayload>({
       email: undefined,

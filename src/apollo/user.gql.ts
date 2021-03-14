@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client/core';
 
+export const me = gql`
+query me {
+  me
+}
+`
+
 export const getUsers = gql`
 {
   getUsers {
@@ -11,16 +17,33 @@ export const getUsers = gql`
 `;
 
 export const getUser = gql`
-    query getUser($data: UserInput!) {
-        getUser(id: $data) {
-            id
-            username
-            email
-        }
+  query getUser($data: UserInput!) {
+    getUser(data: $data) {
+      id
+      username
+      email
     }
+  }
 `;
-export const deleteMut  = gql`
+export const deleteMutation  = gql`
 mutation deleteUser($id: String!) {
-    deleteUser(id: $id) { id }
+  deleteUser(id: $id) { id }
+}
+`;
+
+export const loginMutation = gql`
+mutation login($password: String!, $email: String!) {
+  login(password: $password, email: $email) {
+    accessToken
+  }
+}
+`;
+
+export const registerMutation = gql`
+mutation register($data: RegisterInput!) {
+  register(data: $data) {
+    username
+    email
+  }
 }
 `;

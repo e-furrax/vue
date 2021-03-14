@@ -71,11 +71,11 @@
 </template>
 
 <script lang="ts">
-import { gql } from '@apollo/client/core';
 import { useMutation } from '@vue/apollo-composable';
 import { defineComponent, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '../modules/auth';
+import { loginMutation } from '@/apollo/user.gql.ts';
 
 interface LoginPayload {
   email: string | undefined;
@@ -86,13 +86,7 @@ export default defineComponent({
   setup() {
     const { setUser } = useAuth();
     const router = useRouter();
-    const { mutate: login } = useMutation(gql`
-      mutation login($password: String!, $email: String!) {
-        login(password: $password, email: $email) {
-          accessToken
-        }
-      }
-    `);
+    const { mutate: login } = useMutation(loginMutation);
 
     const payload = reactive<LoginPayload>({
       email: undefined,

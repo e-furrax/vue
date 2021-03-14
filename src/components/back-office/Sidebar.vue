@@ -17,7 +17,7 @@
 import { defineComponent } from 'vue';
 const resources = [
   { route: 'profiles', name: 'Profiles' },
-  { route: 'furries-meet', name: 'Meet' },
+  { route: 'appointements', name: 'Appointements' },
   { route: 'transactions', name: 'Transactions' }
 ];
 export default defineComponent({

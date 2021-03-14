@@ -1,15 +1,15 @@
 <template>
   <router-link
-    :to="'/user_show/' + user.id"
+    :to="'/user/' + user.id"
     class="flex flex-col rounded border bg-purple-925 profile-card rounded-sm transition duration-300 cursor-pointer bg-white grid grid-cols-1"
   >
     <div class="profile-top flex relative flex-col items-center overflow-hidden">
       <div
         class="profile-cover absolute w-full h-full top-0 left-0 bg-cover opacity-50 transition duration-300"
-        :style="`background-image: url('${user.cover}')`"
+        :style="`background-image: url('/images/aurelion-sol.jpg')`"
       ></div>
       <img
-        :src="user.avatar"
+        src="/images/avatar1.png"
         class="rounded-full border-2 border-yellow-800 z-20 mt-2"
         alt="profile picture"
         style="width: 150px"
@@ -34,7 +34,7 @@
           v-on:click="playOrPause(user.id)"
           class="flex items-center justify-between playButton bg-purple-1100 rounded-full px-2 hover:bg-purple-1200 transition duration-300"
         >
-          <audio :id="'audio-' + user.id" name="audio" src="/audio/audio-sample.mp3" />
+          <audio :ref="`audio-${user.id}`" name="audio" src="/audio/audio-sample.mp3" />
           <img src="/images/sound.svg" class="h-5" alt="wave" />
           <img src="/images/play.svg" class="h-5" v-if="!play" alt="play" />
           <img src="/images/pause.svg" class="h-5" v-if="play" alt="pause" />

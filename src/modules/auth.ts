@@ -1,20 +1,12 @@
-import { ApolloClient, gql, InMemoryCache } from '@apollo/client/core';
 import { provideApolloClient, useQuery } from '@vue/apollo-composable';
 import { reactive, toRefs, watch } from 'vue';
+import { apolloClient } from '../apollo/client';
+import { me } from '../apollo/user.gql';
 
 const AUTH_KEY = 'furrax_token';
 export const AUTH_TOKEN = 'accessToken';
 
-const apolloClient = new ApolloClient({
-  uri: 'http://localhost:3000/graphql',
-  cache: new InMemoryCache(),
-  headers: {
-    authorization: `Bearer ${localStorage.getItem('furrax_token')}` as string
-  }
-});
-
 provideApolloClient(apolloClient);
-
 interface User {
   [AUTH_TOKEN]: string;
 }
@@ -30,15 +22,12 @@ const state = reactive<UserState>({
 });
 
 const token = window.localStorage.getItem(AUTH_KEY);
+console.log('token', token)
 
 if (token) {
   state.authenticating = true;
 
-  const { result, loading, error } = useQuery(gql`
-    query me {
-      me
-    }
-  `);
+  const { result, loading, error } = useQuery(me);
 
   watch([loading], () => {
     if (error.value) {
