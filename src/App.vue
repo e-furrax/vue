@@ -20,9 +20,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.body {
-  padding-top: 3.5rem;
-}
+// .body {
+//   padding-top: 3.5rem;
+// }
 html,
 body {
   height: 100%;

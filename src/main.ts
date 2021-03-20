@@ -8,7 +8,6 @@ import clickOutside from './library/click-outside';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { apolloClient } from './apollo/client';
 
-
 createApp({
   setup() {
     provide(DefaultApolloClient, apolloClient);

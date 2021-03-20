@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getUsers } from '@/apollo/user.gql.ts';
+import { getUsers } from '@/apollo/user.gql';
 import { useQuery, useResult } from '@vue/apollo-composable';
 
 import SearchCard from '@/components/SearchCard.vue';
@@ -55,14 +55,15 @@ import Loader from '@/components/Loader.vue';
 export default defineComponent({
   name: 'Search',
   components: {
-    SearchCard, Loader
+    SearchCard,
+    Loader
   },
   setup() {
-    const { result, loading, error  } = useQuery(getUsers);
+    const { result, loading, error } = useQuery(getUsers);
     const users = useResult(result, null, data => data.getUsers);
 
-    return  { users, loading, error }
-  },
+    return { users, loading, error };
+  }
 });
 </script>
 

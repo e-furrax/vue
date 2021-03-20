@@ -1,19 +1,19 @@
 import { gql } from '@apollo/client/core';
 
 export const me = gql`
-query me {
-  me
-}
-`
+  query me {
+    me
+  }
+`;
 
 export const getUsers = gql`
-{
-  getUsers {
-    id
-    username
-    email
+  {
+    getUsers {
+      id
+      username
+      email
+    }
   }
-}
 `;
 
 export const getUser = gql`
@@ -25,25 +25,27 @@ export const getUser = gql`
     }
   }
 `;
-export const deleteMutation  = gql`
-mutation deleteUser($id: String!) {
-  deleteUser(id: $id) { id }
-}
+export const deleteMutation = gql`
+  mutation deleteUser($id: String!) {
+    deleteUser(id: $id) {
+      id
+    }
+  }
 `;
 
 export const loginMutation = gql`
-mutation login($password: String!, $email: String!) {
-  login(password: $password, email: $email) {
-    accessToken
+  mutation login($password: String!, $email: String!) {
+    login(password: $password, email: $email) {
+      accessToken
+    }
   }
-}
 `;
 
 export const registerMutation = gql`
-mutation register($data: RegisterInput!) {
-  register(data: $data) {
-    username
-    email
+  mutation register($data: RegisterInput!) {
+    register(data: $data) {
+      username
+      email
+    }
   }
-}
 `;
