@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="flex flex-col text-xs text-purple-200 justify-center items-center bg-purple-950 text-white h-24"
+    class="flex flex-col text-xs text-purple-200 justify-center items-center bg-purple-1200 h-24"
     style="bottom: 0; left: 0"
   >
     <div class="mb-2 text-sm">

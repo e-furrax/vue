@@ -25,6 +25,16 @@ export const getUser = gql`
     }
   }
 `;
+export const getProfile = gql`
+  query getProfile {
+    getProfile {
+      email
+      username
+      description
+    }
+  }
+`;
+
 export const deleteMutation = gql`
   mutation deleteUser($id: String!) {
     deleteUser(id: $id) {

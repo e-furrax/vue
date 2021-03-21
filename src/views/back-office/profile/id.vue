@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
-import { getUser } from '@/apollo/user.gql.ts';
+import { getUser } from '@/apollo/user.gql';
 import Loader from '@/components/Loader.vue';
 
 export default defineComponent({

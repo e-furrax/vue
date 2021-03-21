@@ -7,17 +7,30 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
-import Sidebar from '@/components/layouts/profile/Sidebar';
+import Sidebar from '@/components/layouts/profile/Sidebar.vue';
+import { useQuery, useResult } from '@vue/apollo-composable';
+import { getProfile } from '@/apollo/user.gql';
 
 export default defineComponent({
   name: 'MyProfile',
-  components: { Sidebar }
+  components: { Sidebar },
+  setup() {
+    const { result, loading, error } = useQuery(getProfile);
+    const myProfile = useResult(result, null, data => data.getProfile);
+    console.log(myProfile.value);
+
+    return {
+      myProfile,
+      loading,
+      error
+    };
+  }
 });
 </script>
 
-<style>
+<style lang="scss" scoped>
 .min-h-screen-minus-header {
   min-height: calc(100vh - 3.5rem);
 }
