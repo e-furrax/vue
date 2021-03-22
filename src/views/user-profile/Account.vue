@@ -3,7 +3,7 @@
     <h1 class="font-bold text-2xl">Account Settings</h1>
     <hr class="border-white opacity-20" />
     <h2 class="font-semibold text-xl">Personal Informations</h2>
-    <form class="space-y-16">
+    <form class="space-y-16" @submit.prevent="saveChanges">
       <div class="space-y-5">
         <div class="flex flex-col space-y-1 max-w-lg">
           <label for="name" class="text-sm font-semibold">Name</label>
@@ -31,6 +31,7 @@
       <div class="max-w-lg flex justify-between">
         <button>Discard Changes</button>
         <button
+          type="submit"
           class="bg-purple-700 rounded-full py-2 px-12 hover:bg-purple-600 transition-all duration-200"
         >
           Save Changes
@@ -48,13 +49,21 @@ import { useField, useForm } from 'vee-validate';
 import Alert from '@/components/Alert.vue';
 import * as yup from 'yup';
 
+export interface Profile {
+  getProfile: {
+    username: string;
+    email: string;
+    description: string;
+  };
+}
+
 export default defineComponent({
   name: 'Account',
   components: {
     Alert
   },
   setup() {
-    const { result, loading, error } = useQuery(getProfile);
+    const { result, loading, error } = useQuery<Profile>(getProfile);
     const myProfile = useResult(result, null, data => data.getProfile);
     console.log(myProfile.value);
 
@@ -70,13 +79,22 @@ export default defineComponent({
       bio: yup.string().max(200)
     });
 
-    useForm({
-      validationSchema: schema
+    const { handleSubmit } = useForm({
+      validationSchema: schema,
+      initialValues: {
+        email: myProfile.value?.email,
+        username: myProfile.value?.username,
+        bio: myProfile.value?.description
+      }
     });
 
-    const { value: username, errorMessage: usernameError } = useField('username');
-    const { value: email, errorMessage: emailError } = useField('email');
-    const { value: bio, errorMessage: bioError } = useField('bio');
+    const { value: username, errorMessage: usernameError } = useField<string>('username');
+    const { value: email, errorMessage: emailError } = useField<string>('email');
+    const { value: bio, errorMessage: bioError } = useField<string>('bio');
+
+    const saveChanges = handleSubmit(values => {
+      alert(JSON.stringify(values, null, 2));
+    });
 
     return {
       myProfile,
@@ -87,7 +105,8 @@ export default defineComponent({
       email,
       emailError,
       bio,
-      bioError
+      bioError,
+      saveChanges
     };
   }
 });
