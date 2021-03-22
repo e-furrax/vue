@@ -17,15 +17,14 @@ export default defineComponent({
   name: 'MyProfile',
   components: { Sidebar },
   setup() {
-    const { result, loading, error } = useQuery(getProfile);
-    const myProfile = useResult(result, null, data => data.getProfile);
-    console.log(myProfile.value);
-
-    return {
-      myProfile,
-      loading,
-      error
-    };
+    // const { result, loading, error } = useQuery(getProfile);
+    // const myProfile = useResult(result, null, data => data.getProfile);
+    // console.log(myProfile.value);
+    // return {
+    //   myProfile,
+    //   loading,
+    //   error
+    // };
   }
 });
 </script>

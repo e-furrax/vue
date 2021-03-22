@@ -7,11 +7,13 @@
       <div class="space-y-5">
         <div class="flex flex-col space-y-1 max-w-lg">
           <label for="name" class="text-sm font-semibold">Name</label>
-          <input type="text" id="name" class="h-10 p-4" />
+          <input type="text" id="name" class="h-10 p-4" v-model="username" />
+          <Alert :message="usernameError" alert-type="danger" v-if="usernameError" />
         </div>
         <div class="flex flex-col space-y-1 max-w-lg">
           <label for="email" class="text-sm font-semibold">Email Address</label>
-          <input type="text" id="email" class="h-10 p-4" />
+          <input type="text" id="email" class="h-10 p-4" v-model="email" />
+          <Alert :message="emailError" alert-type="danger" v-if="emailError" />
         </div>
         <div class="flex flex-col space-y-1 max-w-lg">
           <label for="bio" class="text-sm font-semibold" maxlength="200">Bio</label>
@@ -20,7 +22,9 @@
             rows="2"
             class="p-4 placeholder-gray-500 placeholder-opacity-70"
             placeholder="Write a short bio to introduce yourself"
+            v-model="bio"
           ></textarea>
+          <Alert :message="bioError" alert-type="danger" v-if="bioError" />
         </div>
       </div>
       <hr class="border-white opacity-20" />
@@ -37,10 +41,55 @@
 </template>
 
 <script lang="ts">
+import { getProfile } from '@/apollo/user.gql';
+import { useQuery, useResult } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
+import { useField, useForm } from 'vee-validate';
+import Alert from '@/components/Alert.vue';
+import * as yup from 'yup';
 
 export default defineComponent({
-  name: 'Account'
+  name: 'Account',
+  components: {
+    Alert
+  },
+  setup() {
+    const { result, loading, error } = useQuery(getProfile);
+    const myProfile = useResult(result, null, data => data.getProfile);
+    console.log(myProfile.value);
+
+    const schema = yup.object({
+      username: yup
+        .string()
+        .required()
+        .min(8),
+      email: yup
+        .string()
+        .required()
+        .email(),
+      bio: yup.string().max(200)
+    });
+
+    useForm({
+      validationSchema: schema
+    });
+
+    const { value: username, errorMessage: usernameError } = useField('username');
+    const { value: email, errorMessage: emailError } = useField('email');
+    const { value: bio, errorMessage: bioError } = useField('bio');
+
+    return {
+      myProfile,
+      loading,
+      error,
+      username,
+      usernameError,
+      email,
+      emailError,
+      bio,
+      bioError
+    };
+  }
 });
 </script>
 
