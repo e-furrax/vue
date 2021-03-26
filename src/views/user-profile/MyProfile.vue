@@ -10,22 +10,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Sidebar from '@/components/layouts/profile/Sidebar.vue';
-import { useQuery, useResult } from '@vue/apollo-composable';
-import { getProfile } from '@/apollo/user.gql';
 
 export default defineComponent({
   name: 'MyProfile',
-  components: { Sidebar },
-  setup() {
-    // const { result, loading, error } = useQuery(getProfile);
-    // const myProfile = useResult(result, null, data => data.getProfile);
-    // console.log(myProfile.value);
-    // return {
-    //   myProfile,
-    //   loading,
-    //   error
-    // };
-  }
+  components: { Sidebar }
 });
 </script>
 

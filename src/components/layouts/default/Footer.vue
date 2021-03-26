@@ -29,7 +29,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss" scoped>
 footer {
   width: 100%;
 }

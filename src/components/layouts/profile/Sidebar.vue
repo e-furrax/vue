@@ -48,7 +48,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .router-link-active {
   @apply border-l-2 border-purple-400 bg-purple-950;
 }

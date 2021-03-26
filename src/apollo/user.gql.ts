@@ -59,3 +59,19 @@ export const registerMutation = gql`
     }
   }
 `;
+
+export const updateProfileMutation = gql`
+  mutation updateProfile($data: UpdateProfileInput!) {
+    updateProfile(data: $data) {
+      username
+      email
+      description
+    }
+  }
+`;
+
+export const updatePasswordMutation = gql`
+  mutation updatePassword($initialPassword: String!, $newPassword: String!) {
+    updatePassword(initialPassword: $initialPassword, newPassword: $newPassword)
+  }
+`;

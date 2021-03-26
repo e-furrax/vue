@@ -3,7 +3,7 @@
     <h1 class="font-bold text-2xl">Account Settings</h1>
     <hr class="border-white opacity-20" />
     <h2 class="font-semibold text-xl">Personal Informations</h2>
-    <form class="space-y-16" @submit.prevent="saveChanges">
+    <form class="space-y-16" @submit.prevent="saveChanges" v-if="myProfile">
       <div class="space-y-5">
         <div class="flex flex-col space-y-1 max-w-lg">
           <label for="name" class="text-sm font-semibold">Name</label>
@@ -42,18 +42,34 @@
 </template>
 
 <script lang="ts">
-import { getProfile } from '@/apollo/user.gql';
-import { useQuery, useResult } from '@vue/apollo-composable';
+import { getProfile, updateProfileMutation } from '@/apollo/user.gql';
+import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
 import { useField, useForm } from 'vee-validate';
 import Alert from '@/components/Alert.vue';
 import * as yup from 'yup';
+import UserModel from '@/models/user.model';
+import { useToast } from 'vue-toastification';
 
 export interface Profile {
   getProfile: {
     username: string;
     email: string;
     description: string;
+  };
+}
+
+interface ProfileForm {
+  email?: string;
+  username?: string;
+  bio?: string;
+}
+
+interface UpdateProfileVariables {
+  data: {
+    username: string;
+    email: string;
+    description?: string;
   };
 }
 
@@ -64,8 +80,11 @@ export default defineComponent({
   },
   setup() {
     const { result, loading, error } = useQuery<Profile>(getProfile);
-    const myProfile = useResult(result, null, data => data.getProfile);
-    console.log(myProfile.value);
+    const { value: myProfile } = useResult(result);
+
+    const { mutate: updateProfile } = useMutation<Partial<UserModel>, UpdateProfileVariables>(
+      updateProfileMutation
+    );
 
     const schema = yup.object({
       username: yup
@@ -79,21 +98,33 @@ export default defineComponent({
       bio: yup.string().max(200)
     });
 
-    const { handleSubmit } = useForm({
+    const { handleSubmit } = useForm<ProfileForm>({
       validationSchema: schema,
       initialValues: {
-        email: myProfile.value?.email,
-        username: myProfile.value?.username,
-        bio: myProfile.value?.description
+        email: myProfile?.email,
+        username: myProfile?.username,
+        bio: myProfile?.description
       }
     });
+
+    const toast = useToast();
 
     const { value: username, errorMessage: usernameError } = useField<string>('username');
     const { value: email, errorMessage: emailError } = useField<string>('email');
     const { value: bio, errorMessage: bioError } = useField<string>('bio');
 
     const saveChanges = handleSubmit(values => {
-      alert(JSON.stringify(values, null, 2));
+      if (values.username && values.email) {
+        updateProfile({
+          data: {
+            username: values.username,
+            email: values.email,
+            description: values.bio
+          }
+        }).then(() => {
+          toast.success('Account informations updated');
+        });
+      }
     });
 
     return {
@@ -106,7 +137,8 @@ export default defineComponent({
       emailError,
       bio,
       bioError,
-      saveChanges
+      saveChanges,
+      result
     };
   }
 });
