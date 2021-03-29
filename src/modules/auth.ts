@@ -22,7 +22,7 @@ const state = reactive<UserState>({
 });
 
 const token = window.localStorage.getItem(AUTH_KEY);
-console.log('token', token)
+console.log('token', token);
 
 if (token) {
   state.authenticating = true;

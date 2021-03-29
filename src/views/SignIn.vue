@@ -75,7 +75,7 @@ import { useMutation } from '@vue/apollo-composable';
 import { defineComponent, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '../modules/auth';
-import { loginMutation } from '@/apollo/user.gql.ts';
+import { loginMutation } from '@/apollo/user.gql';
 
 interface LoginPayload {
   email: string | undefined;
@@ -108,7 +108,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .background {
   background-color: rgba(20, 14, 49, 0.92);
 }

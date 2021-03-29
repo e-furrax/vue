@@ -7,7 +7,8 @@ import SignIn from '../views/SignIn.vue';
 import SignUp from '../views/SignUp.vue';
 
 import Search from '../views/Search.vue';
-import UserProfile from '../views/user/index.vue';
+import UserProfile from '../views/UserProfile.vue';
+import { myProfileRoutes } from './myProfile';
 
 import BackOffice from '../views/back-office/index.vue';
 import BackOfficeProfiles from '../views/back-office/profile/index.vue';
@@ -41,8 +42,8 @@ const routes: Array<RouteRecordRaw> = [
     components: {
       default: Search,
       header: Header,
-      footer: Footer,
-    },
+      footer: Footer
+    }
   },
   {
     path: '/user/:userId',
@@ -54,39 +55,43 @@ const routes: Array<RouteRecordRaw> = [
       footer: Footer
     }
   },
+  myProfileRoutes,
   {
     path: '/back-office',
-    name:"BackOffice",
-    components :{
+    name: 'BackOffice',
+    components: {
       header: Header,
       default: BackOffice,
       footer: Footer
     },
-    children: [{
-      path: 'profiles',
-      name: "Profiles",
-      component: BackOfficeProfiles,
-    },{
-      path: 'profile/:userId',
-      name: "Profile",
-      props: true,
-      component: BackOfficeProfileId 
-    }, {
-      path: 'appointements',
-      name: "Appointement",
-      component: BackOfficeAppointement
-    },
-    {
-      path: 'transactions',
-      name: "Transactions",
-      component: BackOfficeTransaction
-    },
-    // {
-    //   path: 'transaction/:id',
-    //   name: "Transaction",
-    //   component: BackOfficeTransactionView 
-    // },
-  ]
+    children: [
+      {
+        path: 'profiles',
+        name: 'Profiles',
+        component: BackOfficeProfiles
+      },
+      {
+        path: 'profile/:userId',
+        name: 'Profile',
+        props: true,
+        component: BackOfficeProfileId
+      },
+      {
+        path: 'appointements',
+        name: 'Appointement',
+        component: BackOfficeAppointement
+      },
+      {
+        path: 'transactions',
+        name: 'Transactions',
+        component: BackOfficeTransaction
+      }
+      // {
+      //   path: 'transaction/:id',
+      //   name: "Transaction",
+      //   component: BackOfficeTransactionView
+      // },
+    ]
   }
 ];
 

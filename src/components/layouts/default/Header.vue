@@ -12,6 +12,11 @@
             >
               <router-link to="/search">Find your teammate</router-link>
             </li>
+            <li
+              class="h-full mr-10 flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
+            >
+              <router-link to="/profile">Profile</router-link>
+            </li>
           </ul>
         </div>
         <div class="flex items-center">
@@ -43,7 +48,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style land="scss" scoped>
 nav {
   border-color: #251e47;
   box-shadow: 2px 0 10px 1px #120b32;

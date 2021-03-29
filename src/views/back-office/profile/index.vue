@@ -16,7 +16,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
-import { getUsers } from '@/apollo/user.gql.ts';
+import { getUsers } from '@/apollo/user.gql';
 import SearchBar from '@/components/SearchBar.vue';
 import Loader from '@/components/Loader.vue';
 import ProfileList from '@/components/back-office/ProfileList.vue';

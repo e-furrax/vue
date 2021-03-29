@@ -7,7 +7,8 @@ import './assets/css/main.css';
 import clickOutside from './library/click-outside';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { apolloClient } from './apollo/client';
-
+import Toast from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
 
 createApp({
   setup() {
@@ -20,4 +21,5 @@ createApp({
   .directive('click-outside', clickOutside)
   .use(store)
   .use(router)
+  .use(Toast)
   .mount('#app');

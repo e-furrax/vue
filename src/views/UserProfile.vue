@@ -91,7 +91,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
-import { getUser } from '@/apollo/user.gql.ts';
+import { getUser } from '@/apollo/user.gql';
 
 import Commentary from '@/components/Commentary';
 import Loader from '@/components/Loader';
@@ -114,7 +114,7 @@ export default defineComponent({
   },
   name: 'UserProfile',
   components: { Commentary, Loader },
-  data: function() {
+  data() {
     return {
       loaded: false,
       commentaries: [
@@ -142,7 +142,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .full-vh {
   height: 100vh;
 }
