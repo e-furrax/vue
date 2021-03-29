@@ -1,7 +1,20 @@
 <template>
   <div class="flex flex-col lg:w-80 sm:w-24 bg-purple-1100">
     <div class="flex flex-row items-center my-8 ml-6">
-      <div class="inline-flex rounded-full h-14 w-14 bg-red-500"></div>
+      <img
+        :src="currentProfilePic.profileImage"
+        alt="profile image"
+        class="object-cover inline-flex rounded-full h-16 w-16 cursor-pointer hover:opacity-80 transition duration-100"
+        @click="openInputFile"
+      />
+      <input
+        type="file"
+        id="uploadFile"
+        class="hidden"
+        ref="fileInput"
+        accept="image/*"
+        @change="onUploadFile"
+      />
       <span class="text-white mx-4 hidden lg:block">Jean Paul</span>
     </div>
     <span class="text-blueGray-custom ml-6 text-sm font-semibold">Menu</span>
@@ -35,14 +48,58 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { myProfileRoutes } from '@/router/myProfile';
+import { getProfilePicture, updateProfilePicMutation } from '@/apollo/user.gql';
+import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
+import { useToast } from 'vue-toastification';
+
+interface ProfilePicResponse {
+  getProfile: {
+    id: string;
+    profileImage: string;
+  };
+}
+
+interface UpdateProfilePicVariables {
+  picture: File;
+}
 
 export default defineComponent({
   name: 'Sidebar',
   data() {
     return {
       myProfileRoutes
+    };
+  },
+  setup() {
+    const fileInput = ref<HTMLInputElement>();
+    const { mutate: updateProfilePic } = useMutation<boolean, UpdateProfilePicVariables>(
+      updateProfilePicMutation
+    );
+    const { result } = useQuery(getProfilePicture);
+    const { value: currentProfilePic } = useResult<ProfilePicResponse>(result);
+    const toast = useToast();
+
+    const openInputFile = () => {
+      fileInput.value?.click();
+    };
+
+    const onUploadFile = (e: Event) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (!files) {
+        return;
+      }
+      updateProfilePic({ picture: files[0] })
+        .then(() => toast.success('Image updated !'))
+        .catch(() => toast.error('There was an error while uploading your image'));
+    };
+
+    return {
+      fileInput,
+      openInputFile,
+      onUploadFile,
+      currentProfilePic
     };
   }
 });

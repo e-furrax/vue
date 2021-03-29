@@ -5,7 +5,6 @@ export const me = gql`
     me
   }
 `;
-
 export const getUsers = gql`
   {
     getUsers {
@@ -15,7 +14,6 @@ export const getUsers = gql`
     }
   }
 `;
-
 export const getUser = gql`
   query getUser($data: UserInput!) {
     getUser(data: $data) {
@@ -28,13 +26,21 @@ export const getUser = gql`
 export const getProfile = gql`
   query getProfile {
     getProfile {
+      id
       email
       username
       description
     }
   }
 `;
-
+export const getProfilePicture = gql`
+  query getProfilePicture {
+    getProfile {
+      id
+      profileImage
+    }
+  }
+`;
 export const deleteMutation = gql`
   mutation deleteUser($id: String!) {
     deleteUser(id: $id) {
@@ -42,7 +48,6 @@ export const deleteMutation = gql`
     }
   }
 `;
-
 export const loginMutation = gql`
   mutation login($password: String!, $email: String!) {
     login(password: $password, email: $email) {
@@ -50,7 +55,6 @@ export const loginMutation = gql`
     }
   }
 `;
-
 export const registerMutation = gql`
   mutation register($data: RegisterInput!) {
     register(data: $data) {
@@ -59,7 +63,6 @@ export const registerMutation = gql`
     }
   }
 `;
-
 export const updateProfileMutation = gql`
   mutation updateProfile($data: UpdateProfileInput!) {
     updateProfile(data: $data) {
@@ -69,9 +72,13 @@ export const updateProfileMutation = gql`
     }
   }
 `;
-
 export const updatePasswordMutation = gql`
   mutation updatePassword($initialPassword: String!, $newPassword: String!) {
     updatePassword(initialPassword: $initialPassword, newPassword: $newPassword)
+  }
+`;
+export const updateProfilePicMutation = gql`
+  mutation updateProfilePic($picture: Upload!) {
+    updateProfilePic(picture: $picture)
   }
 `;

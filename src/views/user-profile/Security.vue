@@ -50,7 +50,7 @@ export default defineComponent({
   name: 'Security',
   components: { Alert },
   setup() {
-    const { mutate: updatePassword, error } = useMutation<boolean, ChangePasswordVariables>(
+    const { mutate: updatePassword } = useMutation<boolean, ChangePasswordVariables>(
       updatePasswordMutation
     );
 

@@ -1,10 +1,10 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { createUploadLink } from 'apollo-upload-client';
 
-export const AUTH_KEY = 'furrax_to';
 export const apolloClient = new ApolloClient({
-  uri: 'http://localhost:3000/graphql',
   cache: new InMemoryCache(),
-  headers: {
-    authorization: `Bearer ${localStorage.getItem('furrax_token')}` as string
-  }
+  link: createUploadLink({
+    uri: 'http://localhost:3000/graphql',
+    headers: { authorization: `Bearer ${localStorage.getItem('furrax_token')}` as string }
+  })
 });

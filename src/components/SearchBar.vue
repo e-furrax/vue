@@ -65,12 +65,9 @@
 import { computed, defineComponent, ref } from 'vue';
 import { debounce } from 'debounce';
 import { useQuery, useResult } from '@vue/apollo-composable';
-import { gql } from '@apollo/client/core';
-
 import clickOutside from '../library/click-outside';
-
 import Loader from './Loader.vue';
-import { searchByUsernameOrGamename } from '@/apollo/search.gql'
+import { searchByUsernameOrGamename } from '@/apollo/search.gql';
 
 interface SearchApiResponse {
   SearchByUsernameOrGamename: SearchApiData;
@@ -96,7 +93,8 @@ export default defineComponent({
       input: ''
     });
     const enabled = ref(false);
-    const { result, loading, error } = useQuery<SearchApiResponse>(searchByUsernameOrGamename,
+    const { result, loading, error } = useQuery<SearchApiResponse>(
+      searchByUsernameOrGamename,
       inputRef,
       () => ({
         enabled: enabled.value
