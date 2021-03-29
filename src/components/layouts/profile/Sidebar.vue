@@ -1,12 +1,19 @@
 <template>
   <div class="flex flex-col lg:w-80 sm:w-24 bg-purple-1100">
-    <div class="flex flex-row items-center my-8 ml-6">
+    <div class="flex flex-row items-center my-6 ml-6" v-if="profile">
       <img
-        :src="currentProfilePic.profileImage"
-        alt="profile image"
+        v-if="profile?.profileImage"
+        :src="profile.profileImage"
+        alt="profile picture"
         class="object-cover inline-flex rounded-full h-16 w-16 cursor-pointer hover:opacity-80 transition duration-100"
         @click="openInputFile"
       />
+      <span
+        v-else
+        alt="placeholder profile picture"
+        class="inline-flex rounded-full h-16 w-16 cursor-pointer hover:opacity-80 transition duration-100 bg-gray-500"
+        @click="openInputFile"
+      ></span>
       <input
         type="file"
         id="uploadFile"
@@ -15,9 +22,9 @@
         accept="image/*"
         @change="onUploadFile"
       />
-      <span class="text-white mx-4 hidden lg:block">Jean Paul</span>
+      <span class="text-white mx-4 hidden lg:block">{{ profile.username }}</span>
     </div>
-    <span class="text-blueGray-custom ml-6 text-sm font-semibold">Menu</span>
+    <span class="text-blueGray-custom ml-6 text-sm font-semibold mt-2">Menu</span>
     <ul class="flex flex-col py-4">
       <div v-for="route in myProfileRoutes.children" :key="route.path">
         <router-link
@@ -50,14 +57,15 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { myProfileRoutes } from '@/router/myProfile';
-import { getProfilePicture, updateProfilePicMutation } from '@/apollo/user.gql';
+import { getProfileSidebar, updateProfilePicMutation } from '@/apollo/user.gql';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import { useToast } from 'vue-toastification';
 
-interface ProfilePicResponse {
+interface ProfileSidebarResponse {
   getProfile: {
     id: string;
     profileImage: string;
+    username: string;
   };
 }
 
@@ -77,8 +85,8 @@ export default defineComponent({
     const { mutate: updateProfilePic } = useMutation<boolean, UpdateProfilePicVariables>(
       updateProfilePicMutation
     );
-    const { result } = useQuery(getProfilePicture);
-    const { value: currentProfilePic } = useResult<ProfilePicResponse>(result);
+    const { result } = useQuery<ProfileSidebarResponse>(getProfileSidebar);
+    const { value: profile } = useResult(result);
     const toast = useToast();
 
     const openInputFile = () => {
@@ -99,7 +107,7 @@ export default defineComponent({
       fileInput,
       openInputFile,
       onUploadFile,
-      currentProfilePic
+      profile
     };
   }
 });

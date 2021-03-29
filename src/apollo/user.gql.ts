@@ -33,11 +33,12 @@ export const getProfile = gql`
     }
   }
 `;
-export const getProfilePicture = gql`
-  query getProfilePicture {
+export const getProfileSidebar = gql`
+  query getProfileSidebar {
     getProfile {
       id
       profileImage
+      username
     }
   }
 `;
