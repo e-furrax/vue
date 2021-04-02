@@ -61,6 +61,7 @@ export default defineComponent({
   setup() {
     const { result, loading, error } = useQuery(getUsers);
     const users = useResult(result, null, data => data.getUsers);
+    console.log(users);
 
     return { users, loading, error };
   }

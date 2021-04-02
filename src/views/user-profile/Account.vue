@@ -3,7 +3,7 @@
     <h1 class="font-bold text-2xl">Account Settings</h1>
     <hr class="border-white opacity-20" />
     <h2 class="font-semibold text-xl">Personal Informations</h2>
-    <form class="space-y-16" @submit.prevent="saveChanges" v-if="myProfile">
+    <form class="space-y-16" @submit.prevent="saveChanges" v-if="result">
       <div class="space-y-5">
         <div class="flex flex-col space-y-1 max-w-lg">
           <label for="name" class="text-sm font-semibold">Name</label>
@@ -32,9 +32,10 @@
         <button>Discard Changes</button>
         <button
           type="submit"
-          class="bg-purple-700 rounded-full py-2 px-12 hover:bg-purple-600 transition-all duration-200"
+          class="bg-purple-700 rounded-full py-2 px-12 hover:bg-purple-600 transition-all duration-200 flex justify-between relative"
         >
           Save Changes
+          <span class="absolute right-5" v-if="saveChangesLoading">🤯</span>
         </button>
       </div>
     </form>
@@ -44,7 +45,7 @@
 <script lang="ts">
 import { getProfile, updateProfileMutation } from '@/apollo/user.gql';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 import { useField, useForm } from 'vee-validate';
 import Alert from '@/components/Alert.vue';
 import * as yup from 'yup';
@@ -80,17 +81,18 @@ export default defineComponent({
   },
   setup() {
     const { result, loading, error } = useQuery<Profile>(getProfile);
-    const { value: myProfile } = useResult(result);
+    const { value: myProfile } = useResult(result, null, data => data.getProfile);
 
-    const { mutate: updateProfile } = useMutation<Partial<UserModel>, UpdateProfileVariables>(
-      updateProfileMutation
-    );
+    const { mutate: updateProfile, loading: saveChangesLoading } = useMutation<
+      Partial<UserModel>,
+      UpdateProfileVariables
+    >(updateProfileMutation);
 
     const schema = yup.object({
       username: yup
         .string()
         .required()
-        .min(8),
+        .min(2),
       email: yup
         .string()
         .required()
@@ -98,13 +100,19 @@ export default defineComponent({
       bio: yup.string().max(200)
     });
 
-    const { handleSubmit } = useForm<ProfileForm>({
+    const { handleSubmit, setFieldValue } = useForm<ProfileForm>({
       validationSchema: schema,
       initialValues: {
-        email: myProfile?.email,
         username: myProfile?.username,
+        email: myProfile?.email,
         bio: myProfile?.description
       }
+    });
+
+    watch(result, () => {
+      setFieldValue('email', result.value.getProfile.email);
+      setFieldValue('username', result.value.getProfile.username);
+      setFieldValue('bio', result.value.getProfile.description);
     });
 
     const toast = useToast();
@@ -138,7 +146,8 @@ export default defineComponent({
       bio,
       bioError,
       saveChanges,
-      result
+      result,
+      saveChangesLoading
     };
   }
 });
