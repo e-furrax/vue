@@ -43,36 +43,19 @@
 </template>
 
 <script lang="ts">
-import { getProfile, updateProfileMutation } from '@/apollo/user.gql';
+import { getProfileQuery, updateProfileMutation } from '@/apollo/user.gql';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import { defineComponent, watch } from 'vue';
 import { useField, useForm } from 'vee-validate';
 import Alert from '@/components/Alert.vue';
 import * as yup from 'yup';
-import UserModel from '@/models/user.model';
 import { useToast } from 'vue-toastification';
-
-export interface Profile {
-  getProfile: {
-    username: string;
-    email: string;
-    description: string;
-  };
-}
-
-interface ProfileForm {
-  email?: string;
-  username?: string;
-  bio?: string;
-}
-
-interface UpdateProfileVariables {
-  data: {
-    username: string;
-    email: string;
-    description?: string;
-  };
-}
+import {
+  ProfileQuery,
+  UpdateProfileMutationResponse,
+  ProfileForm,
+  UpdateProfileVariables
+} from '@/models/profile.model';
 
 export default defineComponent({
   name: 'Account',
@@ -80,13 +63,24 @@ export default defineComponent({
     Alert
   },
   setup() {
-    const { result, loading, error } = useQuery<Profile>(getProfile);
-    const { value: myProfile } = useResult(result, null, data => data.getProfile);
+    const { result, loading, error } = useQuery<ProfileQuery>(getProfileQuery);
+    const { value: myProfile } = useResult(result);
 
     const { mutate: updateProfile, loading: saveChangesLoading } = useMutation<
-      Partial<UserModel>,
+      UpdateProfileMutationResponse,
       UpdateProfileVariables
-    >(updateProfileMutation);
+    >(updateProfileMutation, {
+      update: (cache, { data }) => {
+        const profileInCache = cache.readQuery<ProfileQuery>({ query: getProfileQuery });
+        const newProfile = {
+          getProfile: {
+            ...profileInCache?.getProfile,
+            ...data?.updateProfile
+          }
+        };
+        cache.writeQuery({ query: getProfileQuery, data: newProfile });
+      }
+    });
 
     const schema = yup.object({
       username: yup
@@ -122,7 +116,7 @@ export default defineComponent({
     const { value: bio, errorMessage: bioError } = useField<string>('bio');
 
     const saveChanges = handleSubmit(values => {
-      if (values.username && values.email) {
+      if (values.username && values.email && values.bio) {
         updateProfile({
           data: {
             username: values.username,

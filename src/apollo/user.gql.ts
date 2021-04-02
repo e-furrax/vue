@@ -23,7 +23,7 @@ export const getUser = gql`
     }
   }
 `;
-export const getProfile = gql`
+export const getProfileQuery = gql`
   query getProfile {
     getProfile {
       id
