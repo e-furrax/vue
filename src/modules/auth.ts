@@ -7,7 +7,7 @@ const AUTH_KEY = 'furrax_token';
 export const AUTH_TOKEN = 'accessToken';
 
 provideApolloClient(apolloClient);
-interface User {
+export interface User {
   [AUTH_TOKEN]: string;
 }
 
