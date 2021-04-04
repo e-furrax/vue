@@ -1,6 +1,8 @@
 <template>
   <div
-    class="game-preview relative mx-2 transition duration-300 transform hover:scale-105 rounded-sm cursor-pointer"
+    class="game-preview relative mx-2 transition duration-300 transform hover:-translate-y-3 rounded-sm cursor-pointer"
+    :data-background="background"
+    @mouseover="handleMouseOver"
   >
     <img :src="src" class="rounded-sm" :alt="src" />
     <div
@@ -28,7 +30,19 @@ export default defineComponent({
   name: 'GamePreview',
   props: {
     src: String,
-    name: String
+    name: String,
+    background: String
+  },
+  methods: {
+    handleMouseOver() {
+      console.log(this.background);
+      const bg = document.querySelector(`.bg-img img[data-src="${this.background}"]`);
+      const allBg = document.querySelectorAll('.bg-img img');
+      if (bg && allBg) {
+        allBg.forEach(bg => bg.classList.add('hidden'));
+        bg.classList.remove('hidden');
+      }
+    }
   }
 });
 </script>
@@ -36,6 +50,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .game-preview {
   width: 300px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.6);
   & .name {
     text-shadow: rgb(0 0 0) 1px 1px, rgb(0 0 0) 1px 1px 0.1px;
   }
