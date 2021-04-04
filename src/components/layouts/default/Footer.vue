@@ -1,7 +1,6 @@
 <template>
   <footer
-    class="flex flex-col text-xs text-purple-200 justify-center items-center bg-purple-1200 h-24"
-    style="bottom: 0; left: 0"
+    class="flex flex-col text-xs text-purple-200 justify-center items-center bg-purple-1200 py-6"
   >
     <div class="mb-2 text-sm">
       <router-link class="mx-4 hover:text-white transition duration-300" to="/"

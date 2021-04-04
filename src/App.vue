@@ -1,9 +1,9 @@
 <template>
-  <router-view name="header" class="navbar" />
   <div class="body">
+    <router-view name="header" class="navbar" />
     <router-view />
+    <router-view name="footer" class="footer" />
   </div>
-  <router-view name="footer" class="footer" />
 </template>
 
 <script lang="ts">
@@ -19,13 +19,21 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-// .body {
-//   padding-top: 3.5rem;
-// }
+<style lang="scss" scoped>
 html,
 body {
-  height: 100%;
   width: 100%;
+  height: 100%;
+}
+
+.footer {
+  margin-top: auto;
+}
+
+.body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 </style>

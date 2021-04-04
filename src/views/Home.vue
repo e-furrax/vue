@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <section class="relative main-section flex flex-col justify-center items-center">
-      <div class="flex flex-col">
+      <div class="flex flex-col" style="margin-top: -3.5rem;">
         <div class="w-full z-20 text-white flex flex-col items-center justify-center">
           <h1 class="uppercase text-4xl font-bold">Find your perfect teammate</h1>
           <p class="text-xl">

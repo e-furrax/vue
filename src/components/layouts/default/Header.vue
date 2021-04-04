@@ -4,7 +4,7 @@
       <div class="flex text-white text-sm mx-4 h-full items-center justify-between">
         <div class="flex h-full items-center">
           <a class="cursor-pointer text-lg">
-            <router-link to="/">LOGO</router-link>
+            <router-link to="/" class="flex items-center"><img src="/images/e-furrax.svg" width="28" /><span class="ml-3">E-FURRAX</span></router-link>
           </a>
           <ul class="h-full ml-14 flex items-center">
             <li
