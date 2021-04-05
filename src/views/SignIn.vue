@@ -118,7 +118,7 @@ export default defineComponent({
       this.login(values).then(({ data }) => {
         if (data) {
           this.setUser(data.login);
-          // this.$router.push({ name: 'Home' });
+          this.$router.push({ name: 'Home' });
         }
       });
     },
