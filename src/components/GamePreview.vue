@@ -1,17 +1,28 @@
 <template>
   <div
-    class="game-preview relative mx-2 transition duration-300 transform hover:-translate-y-3 rounded-sm cursor-pointer"
+    class="game-preview relative transition duration-300 rounded-sm cursor-pointer
+      xl:w-72 xl:h-96
+      lg:w-60 lg:h-72
+      md:w-92 md:h-32
+      w-full h-32
+    "
     :data-background="background"
+    :style="`background: center / cover no-repeat url('${src}');`"
     @mouseover="handleMouseOver"
   >
-    <img :src="src" class="rounded-sm" :alt="src" />
+    <div class="mask-layer opacity-1 transition duration-300"></div>
+    <div class="gradient-layer opacity-0 transition duration-300"></div>
     <div
-      class="name text-2xl text-center absolute w-full h-full uppercase font-bold"
-      style="top: 1rem"
+      class="name text-center absolute w-full h-full uppercase font-bold
+        xl:text-2xl
+        lg:text-xl
+        text-2xl
+        top-10
+        lg:top-4
+      "
     >
       {{ name }}
     </div>
-    <div class="gradient-layer opacity-0 transition duration-300"></div>
     <div
       class="find-a-mate flex items-center transition duration-300 opacity-0 text-orange-600 absolute font-bold uppercase w-full text-center"
       style="bottom: 2rem"
@@ -35,7 +46,6 @@ export default defineComponent({
   },
   methods: {
     handleMouseOver() {
-      console.log(this.background);
       const bg = document.querySelector(`.bg-img img[data-src="${this.background}"]`);
       const allBg = document.querySelectorAll('.bg-img img');
       if (bg && allBg) {
@@ -49,11 +59,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .game-preview {
-  width: 300px;
-  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.6);
-  & .name {
-    text-shadow: rgb(0 0 0) 1px 1px, rgb(0 0 0) 1px 1px 0.1px;
-  }
+  box-shadow: 0px 4px 14px rgba(9, 7, 22, 0.6);
 
   &:hover {
     .find-a-mate {
@@ -62,11 +68,23 @@ export default defineComponent({
     .gradient-layer {
       opacity: 1;
     }
+
+    .mask-layer {
+      opacity: 0.7;
+    }
   }
 }
 
+.mask-layer {
+  background-image: linear-gradient(180deg, rgba(23, 16, 56, 0.2) 50%, rgba(23, 16, 56, 0.7) 100%);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+}
+
 .gradient-layer {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 0px, rgba(0, 0, 0, 0.95) 100%);
+  background-image: linear-gradient(rgba(23, 16, 56, 0.2) 0px, rgba(0, 0, 0, 0.5) 100%);
   height: 100%;
   width: 100%;
   position: absolute;

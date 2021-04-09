@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <section
-      class="relative main-section flex flex-col justify-center items-center overflow-hidden"
+      class="main-section relative flex flex-col justify-center items-center py-20 xl:py-32"
     >
       <div class="bg-img">
         <img
@@ -25,18 +25,28 @@
           class="opacity-25 absolute left-0 top-0 hidden lazyload w-full h-full object-cover"
         />
       </div>
-      <div class="bg-mask absolute w-full h-full"></div>
-      <div class="flex flex-col" style="margin-top: -3.5rem">
+      <!-- <div class="bg-mask absolute w-full h-full"></div> -->
+      <div class="flex flex-col items-center px-4 md:px-0">
         <div class="w-full z-20 text-white flex flex-col items-center justify-center">
-          <h1 class="uppercase text-5xl font-bold mb-4">
+          <h1 class="uppercase font-bold mb-4 text-center
+            lg:text-5xl
+            text-4xl
+          ">
             Find your <span class="text-orange-600">perfect</span> teammate
           </h1>
-          <p class="text-xl text-center" style="width: 500px">
+          <p class="text-xl text-center" style="max-width: 500px">
             E-furrax helps you find the teammate that matches your requirements. Surrend at 20 is
             over.
           </p>
         </div>
-        <div class="flex justify-center text-white games-preview z-20 pt-10">
+        <div class="grid gap-4
+          grid-cols-1 grid-rows-4 sm:gap-4
+          md:grid-cols-2 sm:grid-rows-2 sm:gap-2
+          lg:grid-cols-4 lg:grid-rows-1 lg:gap-3
+          xl:grid-cols-4 xl:grid-rows-1 xl:gap-4
+          text-white games-preview z-20 pt-10
+          w-full
+        ">
           <GamePreview
             name="Rocket League"
             src="/images/rl.jpg"
@@ -61,7 +71,7 @@
       </div>
     </section>
     <section class="text-white py-20 bg-purple-1000 flex flex-col items-center">
-      <h3 class="mb-10 text-2xl">Do you want to find a teammate and start winning again?</h3>
+      <h3 class="mb-10 text-2xl text-center">Do you want to find a <span class="text-orange-600">teammate</span> and start winning again?</h3>
       <router-link
         to="/sign-up"
         class="uppercase px-4 py-3 bg-orange-600 hover:bg-orange-500 transition duration-300 font-bold rounded-sm"
@@ -85,9 +95,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.main-section {
-  height: calc(100vh - 3.5rem);
-}
 .bg-mask {
   opacity: 1;
   background-image: url('/images/backgrounds/bg-mask.png');

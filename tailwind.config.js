@@ -1,11 +1,19 @@
 /* eslint-disable */
-const { orange } = require('tailwindcss/colors');
 const colors = require('tailwindcss/colors');
+
 module.exports = {
   purge: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        '72': '18rem',
+        '84': '21rem',
+        '88': '22rem',
+        '92': '23rem',
+        '96': '24rem',
+      },
+    },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
