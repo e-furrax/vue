@@ -1,6 +1,9 @@
 <template>
   <div class="h-full w-full fixed top-0 left-0 z-50">
-    <div class="burger-layer w-full h-full bg-black bg-opacity-50 transition duration-300" @click="handleBurger"></div>
+    <div
+      class="burger-layer w-full h-full bg-black bg-opacity-50 transition duration-300"
+      @click="handleBurger"
+    ></div>
     <div
       class="burger-nav absolute top-0 left-0 bg-purple-1200 h-full translate-x-240"
       style="width: 240px"
@@ -24,7 +27,7 @@
         </li>
         <li class="cursor-pointer px-6 py-2 hover:bg-purple-1000">
           <router-link to="/search" class="flex items-center">
-            <img src="/images/icons/explore.svg" class="opacity-50 mr-6" />
+            <img src="/images/icons/person_search.svg" class="opacity-50 mr-6" />
             <span>Find your teammate</span>
           </router-link>
         </li>
@@ -65,7 +68,6 @@ export default defineComponent({
 }
 
 .burger-nav {
-    transition: transform .3s ease;
+  transition: transform 0.3s ease;
 }
 </style>
-
