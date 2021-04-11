@@ -7,29 +7,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'FeatureCard',
   props: {},
-  setup() {
-    const floatingImg = ref(null);
-
-    onMounted(() => {
-      const rand = 7 + Math.random() * 8;
-      floatingImg.value.style.animationDuration = `${rand}s`;
-    });
-
-    return {
-      floatingImg
-    };
+  mounted() {
+    const rand = 7 + Math.random() * 8;
+    const floatingImg = this.$refs.floatingImg as HTMLDivElement | null;
+    if (floatingImg) {
+      floatingImg.style.animationDuration = `${rand}s`;
+    }
   }
 });
 </script>
 
 <style lang="scss" scoped>
 .floating {
-  filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.6));
+  filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.6));
   animation-name: floating;
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;

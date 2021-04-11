@@ -2,11 +2,17 @@
   <header>
     <nav class="w-full bg-purple-1200 h-14 border-b z-50">
       <div class="flex text-white text-sm mx-6 h-full items-center justify-between">
-        <HeaderBurger ref="burgerMenu" class="burger-menu hidden" />
+        <HeaderBurger />
         <div class="flex h-full items-center">
-          <img src="/images/icons/menu.svg" class="block md:hidden mr-6 cursor-pointer z-50" @click="handleBurger" />
+          <img
+            src="/images/icons/menu.svg"
+            class="block md:hidden mr-6 cursor-pointer"
+            @click="handleBurger"
+          />
           <router-link to="/" class="text-lg flex items-center">
-            <img src="/images/e-furrax.svg" width="24" /><span class="ml-3 text-base">E-FURRAX</span>
+            <img src="/images/e-furrax.svg" width="24" /><span class="ml-3 text-base"
+              >E-FURRAX</span
+            >
           </router-link>
           <ul class="hidden md:flex h-full ml-8 items-center">
             <li
@@ -48,17 +54,51 @@ import HeaderBurger from './HeaderBurger.vue';
 export default defineComponent({
   components: { SearchBar, HeaderBurger },
   name: 'Header',
-  provide() {
+  data() {
     return {
-      handleBurger: this.handleBurger,
+      burgerClosing: false,
     }
   },
+  mounted() {
+    const burgerMenu = document.querySelector('.burger-menu') as HTMLDivElement;
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        if (burgerMenu.dataset.opened === 'true' && !this.burgerClosing) {
+          this.burgerClosing = true;
+          this.handleBurger();
+        }
+      }
+    });
+
+    burgerMenu.addEventListener('transitionend', event => {
+      if (event.propertyName === 'transform') {
+        if (burgerMenu.dataset.opened === 'true') {
+          burgerMenu.classList.add('invisible');
+          burgerMenu.dataset.opened = 'false';
+          this.burgerClosing = false;
+          return;
+        }
+        burgerMenu.dataset.opened = 'true';
+      }
+    });
+  },
+  provide() {
+    return {
+      handleBurger: this.handleBurger
+    };
+  },
   methods: {
-    handleBurger(event: { target: HTMLDivElement }) {
+    handleBurger() {
       const burgerMenu = document.querySelector('.burger-menu') as HTMLDivElement;
+      const burgerLayer = document.querySelector('.burger-layer') as HTMLDivElement;
       const burgerNav = burgerMenu.querySelector('.burger-nav') as HTMLDivElement;
-      burgerMenu.classList.toggle('hidden');
+      const body = document.querySelector('body') as HTMLBodyElement;
+      if (burgerMenu.dataset.opened === 'false') {
+        burgerMenu.classList.remove('invisible');
+      }
+      burgerLayer.classList.toggle('opacity-50');
       burgerNav.classList.toggle('translate-x-240');
+      body.classList.toggle('overflow-hidden');
     }
   }
 });
