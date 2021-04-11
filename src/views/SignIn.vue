@@ -74,7 +74,7 @@
 <script lang="ts">
 import { useMutation } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
-import { useAuth, User } from '../modules/auth';
+import { useAuth, User } from '../composables/auth';
 import { loginMutation } from '@/apollo/user.gql';
 import { Form, Field } from 'vee-validate';
 import { object, string } from 'yup';

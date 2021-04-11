@@ -83,3 +83,8 @@ export const updateProfilePicMutation = gql`
     updateProfilePic(picture: $picture)
   }
 `;
+export const confirmUserMutation = gql`
+  mutation confirmUser($token: String!) {
+    confirmUser(token: $token)
+  }
+`;
