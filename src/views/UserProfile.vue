@@ -1,90 +1,162 @@
 <template>
   <Loader v-if="loading" />
   <div v-else-if="error">Error: {{ error.message }}</div>
-  <div class="pt-16" v-if="user">
-    <section
-      class="relative font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover"
-    >
-      <div class="max-w-4xl flex items-center h-auto lg:h-full flex-wrap mx-auto my-32 lg:my-0">
-        <div
-          id="profile"
-          class="w-full lg:w-3/5 rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
+  <div class="relative text-white" v-if="user">
+    <div
+      :style="`
+        background-image: linear-gradient(180deg, rgba(23, 16, 56, 0) 70%, #1b153d 100%),
+          url('/images/backgrounds/profile-header.jpeg');
+      `"
+      class="profile-header absolute top-0 left-0 w-full bg-no-repeat bg-cover bg-top opacity-40"
+    ></div>
+    <div class="mt-60">
+      <div class="container mx-auto w-full flex justify-end">
+        <button
+          class="mr-4 uppercase rounded bg-transparent border border-purple-400 text-purple-400 text-sm py-2 px-6 hover:border-purple-300 hover:text-purple-300 transition-all ease-in duration-200"
         >
-          <div class="p-4 md:p-12 text-center lg:text-left">
-            <div
-              class="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
-              style="background-image: url('/user_icon.jpg')"
-            ></div>
-            <h1 class="text-4xl font-bold pt-8 lg:pt-0 w-1/3">{{ user.username }}</h1>
-            <h3 class="font-bold pt-8 lg:pt-0 w-1/3">3.5★</h3>
-            <div class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-purple-1100 opacity-25"></div>
-            <p class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
-              <svg
-                class="h-4 fill-current text-purple-1100 pr-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+          Chat
+        </button>
+        <button
+          class="font-bold uppercase rounded bg-orange-600 text-sm py-2 px-6 hover:bg-orange-700 transition-all ease-in duration-200"
+        >
+          Play together
+        </button>
+      </div>
+      <div class="container mx-auto mt-4 flex items-start">
+        <div class="mb-10 mr-4">
+          <div class="bg-purple-925 w-full rounded-sm border border-purple-custom relative mb-4 pb-3">
+            <div class="profile-card absolute transform -translate-y-1/2 flex items-center px-4">
+              <img
+                src="/images/avatar1.png"
+                class="rounded-full border-2 border-yellow-800 z-20"
+                width="175"
+                height="175"
+              />
+              <div
+                class="flex flex-col bg-purple-1000 pl-16 pr-16 py-2 z-10 border border-purple-custom transform -translate-x-12 rounded-sm"
               >
-                <path
-                  d="M9 12H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-8v2H9v-2zm0-1H0V5c0-1.1.9-2 2-2h4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v6h-9V9H9v2zm3-8V2H8v1h4z"
-                />
-              </svg>
-              your games
-            </p>
-            <p
-              class="pt-2 text-gray-600 text-xs lg:text-sm flex items-center justify-center lg:justify-start"
-            >
-              <svg
-                class="h-4 fill-current text-purple-1100 pr-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm7.75-8a8.01 8.01 0 0 0 0-4h-3.82a28.81 28.81 0 0 1 0 4h3.82zm-.82 2h-3.22a14.44 14.44 0 0 1-.95 3.51A8.03 8.03 0 0 0 16.93 14zm-8.85-2h3.84a24.61 24.61 0 0 0 0-4H8.08a24.61 24.61 0 0 0 0 4zm.25 2c.41 2.4 1.13 4 1.67 4s1.26-1.6 1.67-4H8.33zm-6.08-2h3.82a28.81 28.81 0 0 1 0-4H2.25a8.01 8.01 0 0 0 0 4zm.82 2a8.03 8.03 0 0 0 4.17 3.51c-.42-.96-.74-2.16-.95-3.51H3.07zm13.86-8a8.03 8.03 0 0 0-4.17-3.51c.42.96.74 2.16.95 3.51h3.22zm-8.6 0h3.34c-.41-2.4-1.13-4-1.67-4S8.74 3.6 8.33 6zM3.07 6h3.22c.2-1.35.53-2.55.95-3.51A8.03 8.03 0 0 0 3.07 6z"
-                />
-              </svg>
-              Your language
-            </p>
-            <div class="flex flex-col text-left pl-2 w-full">
-              <hr class="border-gray-400 my-2 w-full" />
-              <p class="description pt-8 text-sm">
-                <span class="text-gray-600">Presentation: </span>
-                {{ user.description }}
+                <div class="flex items-center">
+                  <h2 class="text-2xl mr-2">{{ user.username }}</h2>
+                  <img src="/images/icons/verified.svg" title="Verified user" />
+                </div>
+                <div class="flex flex-col mt-2 text-sm">
+                  <span>French, English</span>
+                  <span>22 y.o</span>
+                  <span>Joined 1 year ago</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center absolute top-3 right-4">
+              <img
+                v-for="index of [1, 2, 3, 4]"
+                :key="index"
+                src="/images/icons/star.svg"
+                width="22"
+              />
+              <img src="/images/icons/star_half.svg" width="22" />
+              <span class="ml-2">(12)</span>
+            </div>
+            <section style="margin-top: 87.5px" class="pt-4 px-4">
+              <h4 class="font-bold uppercase">Games</h4>
+              <div class="grid gap-2 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
+                <GameRank background="/images/backgrounds/lowres/rocket-league.jpg">
+                  <template v-slot:image>
+                    <img src="/images/ranks/rocket-league/c3.png" width="60" />
+                  </template>
+                  <template v-slot:game>Rocket League</template>
+                  <template v-slot:mode>Ranked standard 3v3</template>
+                  <template v-slot:rank>Champion III Division IV</template>
+                </GameRank>
+                <GameRank background="/images/backgrounds/lowres/csgo.jpg">
+                  <template v-slot:image>
+                    <img src="/images/ranks/csgo/supreme.png" width="75" />
+                  </template>
+                  <template v-slot:game>CS:GO</template>
+                  <template v-slot:mode>Competitive 5v5</template>
+                  <template v-slot:rank>Supreme Master</template>
+                </GameRank>
+                <GameRank background="/images/backgrounds/lowres/valorant.png">
+                  <template v-slot:image>
+                    <img src="/images/ranks/valorant/radiant.png" width="50" />
+                  </template>
+                  <template v-slot:game>Valorant</template>
+                  <template v-slot:mode>Competitive 5v5</template>
+                  <template v-slot:rank>Radiant</template>
+                </GameRank>
+                <GameRank background="/images/backgrounds/lowres/league-of-legends.jpg">
+                  <template v-slot:image>
+                    <img src="/images/ranks/lol/master.png" width="60" />
+                  </template>
+                  <template v-slot:game>League of Legends</template>
+                  <template v-slot:mode>Competitive 5v5</template>
+                  <template v-slot:rank>Master</template>
+                </GameRank>
+              </div>
+            </section>
+            <section class="mt-4 pt-4 px-4">
+              <h4 class="font-bold uppercase">About me</h4>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
+                blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
+                quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing
+                elit. Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla
+                porro quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
               </p>
-            </div>
-            <div class="pt-12 pb-8">
-              <button
-                class="bg-purple-1100 hover:bg-text-purple-1100 text-white font-bold py-2 px-4 rounded-full"
-              >
-                Get In Touch
-              </button>
+            </section>
+            <section class="px-4 bg-purple-925">
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
+                blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
+                quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing
+                elit. Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla
+                porro quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
+              </p>
+            </section>
+          </div>
+          <div class="bg-purple-925 w-full rounded-sm border border-purple-custom">
+            <div class="flex items-center">
+              <div class="p-4 md:p-6 text-center lg:text-left">
+                <h4 class="font-bold uppercase">Comments</h4>
+                <Commentary v-for="com in commentaries" :key="com.id" :commentary="com"></Commentary>
+                <div class="flex items-center cursor-pointer w-full py-6">
+                  <hr class="w-full border-1 border-purple-800" />
+                  <p class="text-xs text-purple-300 uppercase flex-no-wrap w-1/3 px-2 text-center">
+                    Load more comments
+                  </p>
+                  <hr class="w-full border-1 border-purple-800" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="w-full lg:w-2/5">
-          <img
-            src="/user_icon.jpg"
-            class="rounded-none lg:rounded-lg shadow-2xl hidden lg:block"
-            alt="pp"
-            style="height: 511px; width: 700px"
-          />
+        <div class="bg-purple-925 rounded-sm border bg-purple-925 border-purple-custom max-w-sm">
+          <section class="pt-4 p-4">
+            <h4 class="font-bold uppercase">Today's Agenda</h4>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
+              blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo quas
+              illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla porro
+              quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
+              blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo quas
+              illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla porro
+              quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
+              blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo quas
+              illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla porro
+              quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
+            </p>
+          </section>
         </div>
       </div>
-    </section>
-    <section
-      class="relative font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover p-8"
-    >
-      <div class="max-w-4xl flex items-center h-auto lg:h-full flex-wrap mx-auto my-32 lg:my-0">
-        <div
-          id="commentary"
-          class="w-full rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
-        >
-          <div class="p-4 md:p-6 text-center lg:text-left">
-            <h1 class="text-5xl font-bold pt-8 lg:pt-0 underline pb-2">Commentary</h1>
-            <Commentary v-for="com in commentaries" :key="com.id" :commentary="com"></Commentary>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -95,6 +167,7 @@ import { getUser } from '@/apollo/user.gql';
 
 import Commentary from '@/components/Commentary';
 import Loader from '@/components/Loader';
+import GameRank from '@/components/GameRank';
 
 export default defineComponent({
   props: {
@@ -113,7 +186,7 @@ export default defineComponent({
     };
   },
   name: 'UserProfile',
-  components: { Commentary, Loader },
+  components: { Commentary, Loader, GameRank },
   data() {
     return {
       loaded: false,
@@ -143,7 +216,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.full-vh {
-  height: 100vh;
+.profile-header {
+  height: 500px;
+  z-index: -1;
+}
+.border-purple-custom {
+  border-color: #3b2963;
 }
 </style>

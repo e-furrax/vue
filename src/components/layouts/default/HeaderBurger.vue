@@ -40,14 +40,14 @@
       </ul>
       <ul class="py-3 px-4 flex flex-col items-start">
         <li
-          class="px-3 py-1 cursor-pointer bg-purple-700 hover:bg-purple-600 transition duration-300 rounded"
+          class="px-3 py-1 cursor-pointer bg-orange-600 hover:bg-orange-700 transition duration-300 rounded"
           @click="handleBurger"
         >
           <router-link to="/sign-up"> Sign Up </router-link>
         </li>
         <li
           @click="handleBurger"
-          class="px-3 py-1 mt-3 cursor-pointer bg-gray-700 hover:bg-gray-600 transition duration-300 rounded"
+          class="px-3 py-1 mt-3 cursor-pointer rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
         >
           <router-link to="/sign-in"> Log In </router-link>
         </li>

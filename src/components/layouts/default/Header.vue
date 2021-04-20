@@ -31,13 +31,13 @@
           <SearchBar class="mr-4" />
           <router-link
             to="/sign-up"
-            class="hidden md:block px-3 py-1 mx-2 bg-purple-700 rounded hover:bg-purple-600 transition duration-300"
+            class="hidden md:block px-3 py-1 mx-2 bg-orange-600 rounded hover:bg-orange-700 transition duration-300"
           >
             Sign Up
           </router-link>
           <router-link
             to="/sign-in"
-            class="hidden md:block px-3 py-1 mx-2 bg-gray-700 hover:bg-gray-600 transition duration-300 rounded"
+            class="hidden md:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
             >Log In</router-link
           >
         </div>
