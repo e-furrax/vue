@@ -139,28 +139,8 @@
           class="bg-purple-925 bg-opacity-70 sm:rounded-sm border bg-purple-925 border-purple-custom lg:max-w-sm mb-10 lg:mb-0"
         >
           <section class="pt-4 p-4">
-            <h4 class="font-bold uppercase">Today's Agenda</h4>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
-              blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
-              quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla
-              porro quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
-              blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
-              quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla
-              porro quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
-              blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
-              quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Corrupti cumque ad veritatis similique molestias doloribus adipisci ut nulla
-              porro quisquam dolorum voluptatibus, explicabo et est dicta id itaque quia saepe!
-            </p>
+            <h4 class="font-bold uppercase mb-2">Availability</h4>
+            <Availability />
           </section>
         </div>
       </div>
@@ -176,6 +156,7 @@ import { getUser } from '@/apollo/user.gql';
 import Comment from '@/components/Comment';
 import Loader from '@/components/Loader';
 import GameRank from '@/components/GameRank';
+import Availability from '@/components/Availability';
 
 export default defineComponent({
   props: {
@@ -194,7 +175,7 @@ export default defineComponent({
     };
   },
   name: 'UserProfile',
-  components: { Comment, Loader, GameRank },
+  components: { Comment, Loader, GameRank, Availability },
   data() {
     return {
       loaded: false,
