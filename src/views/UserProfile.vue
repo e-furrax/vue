@@ -12,17 +12,13 @@
     <div class="mt-8 lg:mt-40">
       <div class="container mx-auto w-full flex justify-center lg:justify-end">
         <button
-          class="mr-4 uppercase rounded bg-transparent border border-purple-400 text-purple-400 text-sm py-2 px-6 hover:border-purple-300 hover:text-purple-300 transition-all ease-in duration-200"
-        >
-          Chat
-        </button>
-        <button
           class="font-bold uppercase rounded bg-orange-600 text-sm py-2 px-6 hover:bg-orange-700 transition-all ease-in duration-200"
+          @click="handleModal"
         >
           Play together
         </button>
       </div>
-      <div class="container mx-auto mt-4 flex flex-col lg:flex-row items-start">
+      <div class="container mx-auto mt-4 flex flex-col items-center lg:flex-row lg:items-start">
         <div class="lg:mb-10 mb-4 lg:mr-4">
           <div
             class="bg-purple-925 bg-opacity-70 w-full sm:rounded-sm border border-purple-custom relative mb-4 pb-3"
@@ -146,9 +142,56 @@
       </div>
     </div>
   </div>
+  <div
+    class="hidden absolute top-0 left-0 w-full h-full flex items-center justify-center"
+    id="play-modal"
+  >
+    <div class="w-full z-10 h-full bg-black bg-opacity-50 absolute" @click="handleModal"></div>
+    <div class="w-96 bg-purple-1100 shadow-xl z-20 p-4 text-white rounded-sm relative">
+      <img
+        src="/images/icons/close.svg"
+        width="20"
+        class="absolute top-4 right-4 cursor-pointer transform hover:rotate-90 transition duration-700"
+        @click="handleModal"
+      />
+      <h2 class="text-xl">Play with <span class="text-orange-600">Kyzoid</span></h2>
+      <p class="mt-4">
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus necessitatibus iusto
+        facere excepturi odio quasi ipsum harum distinctio, a laudantium, doloremque, rerum beatae
+        nam sint praesentium vero nobis impedit! Nobis.
+      </p>
+      <div class="mt-4 flex flex-col">
+        <label for="game">Game</label>
+        <select name="game" class="bg-purple-1200 p-1">
+          <option value="">-</option>
+          <option value="rl">Rocket League</option>
+          <option value="lol">League of Legends</option>
+          <option value="valorant">Valorant</option>
+          <option value="csgo">Counter Strike: Global Offensive</option>
+        </select>
+      </div>
+      <div class="mt-4 flex flex-col">
+        <label for="time">Start time</label>
+        <input type="datetime-local" name="time" class="bg-purple-1200 p-1 text-white" />
+      </div>
+      <div class="flex items-center mt-4 justify-between">
+        <button
+          class="font-bold uppercase rounded bg-transparent border border-purple-custom text-sm py-2 px-6 hover:bg-purple-1200 transition-all ease-in duration-200"
+          @click="handleModal"
+        >
+          Cancel
+        </button>
+        <button
+          class="font-bold uppercase rounded bg-orange-600 text-sm py-2 px-6 hover:bg-orange-700 transition-all ease-in duration-200"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
 import { getUser } from '@/apollo/user.gql';
@@ -176,6 +219,14 @@ export default defineComponent({
   },
   name: 'UserProfile',
   components: { Comment, Loader, GameRank, Availability },
+  methods: {
+    handleModal() {
+      const playModal = document.getElementById('play-modal') as HTMLDivElement;
+      playModal.classList.toggle('hidden');
+      const body = document.querySelector('body') as HTMLBodyElement;
+      body.classList.toggle('overflow-hidden');
+    }
+  },
   data() {
     return {
       loaded: false,
