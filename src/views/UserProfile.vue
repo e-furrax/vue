@@ -44,15 +44,21 @@
                 </div>
               </div>
             </div>
-            <div class="flex items-center absolute top-8 lg:top-4 right-4">
-              <img
-                v-for="index of [1, 2, 3, 4]"
-                :key="index"
-                src="/images/icons/star.svg"
-                width="18"
-              />
-              <img src="/images/icons/star_half.svg" width="18" />
-              <span class="ml-2 text-sm">(12)</span>
+            <div class="flex flex-col justify-center items-end absolute top-8 lg:top-4 right-4">
+              <div class="flex items-center">
+                <img src="/images/icons/local_atm.svg" class="mr-1" height="20" />
+                <span class="text-lg">4.50<span class="text-sm">/Match</span></span>
+              </div>
+              <div class="flex items-center">
+                <img
+                  v-for="index of [1, 2, 3, 4]"
+                  :key="index"
+                  src="/images/icons/star.svg"
+                  width="18"
+                />
+                <img src="/images/icons/star_half.svg" width="18" />
+                <span class="ml-2 text-sm">(12)</span>
+              </div>
             </div>
             <section class="lg:mt-20 pt-4 px-4">
               <h4 class="font-bold uppercase">Games</h4>
@@ -147,34 +153,61 @@
     id="play-modal"
   >
     <div class="w-full z-10 h-full bg-black bg-opacity-50 absolute" @click="handleModal"></div>
-    <div class="w-96 bg-purple-1100 shadow-xl z-20 p-4 text-white rounded-sm relative">
+    <div class="w-96 bg-purple-1100 shadow-xl z-20 text-white rounded-sm relative">
       <img
         src="/images/icons/close.svg"
         width="20"
-        class="absolute top-4 right-4 cursor-pointer transform hover:rotate-90 transition duration-700"
+        class="absolute top-4 right-4 cursor-pointer"
         @click="handleModal"
       />
-      <h2 class="text-xl">Play with <span class="text-orange-600">Kyzoid</span></h2>
-      <p class="mt-4">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellendus necessitatibus iusto
-        facere excepturi odio quasi ipsum harum distinctio, a laudantium, doloremque, rerum beatae
-        nam sint praesentium vero nobis impedit! Nobis.
-      </p>
-      <div class="mt-4 flex flex-col">
-        <label for="game">Game</label>
-        <select name="game" class="bg-purple-1200 p-1">
-          <option value="">-</option>
-          <option value="rl">Rocket League</option>
-          <option value="lol">League of Legends</option>
-          <option value="valorant">Valorant</option>
-          <option value="csgo">Counter Strike: Global Offensive</option>
-        </select>
+      <h2 class="text-xl p-4">Complete demand</h2>
+      <div
+        class="flex items-start justify-between bg-purple-1200 p-4"
+        :style="`
+        background-image: linear-gradient(90deg, rgba(22, 16, 51, 1) 55%, rgba(22, 16, 51, 0.4) 100%),
+        url('/images/backgrounds/lowres/league-of-legends.jpg');
+        `"
+      >
+        <div class="flex flex-col">
+          <span>League of Legends</span>
+          <div class="mt-2 flex items-center">
+            <img src="/images/avatar1.png" class="mr-2 w-5 h-5 rounded-full" />
+            <span class="text-sm">{{ user.username }}</span>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
+          <span>4.50<span class="text-xs">/Match</span></span>
+        </div>
       </div>
-      <div class="mt-4 flex flex-col">
-        <label for="time">Start time</label>
-        <input type="datetime-local" name="time" class="bg-purple-1200 p-1 text-white" />
+      <div class="px-4 my-4">
+        <div class="flex justify-between items-center">
+          <label for="game">Change game</label>
+          <select name="game" class="bg-purple-1200 p-1">
+            <option value="">-</option>
+            <option value="rl">Rocket League</option>
+            <option value="lol">League of Legends</option>
+            <option value="valorant">Valorant</option>
+            <option value="csgo">CS:GO</option>
+          </select>
+        </div>
+        <div class="mt-4 flex justify-between items-center">
+          <label for="round">Matches</label>
+          <input type="number" name="round" class="w-20 bg-purple-1200 p-1 text-white" />
+        </div>
+        <div class="mt-4 flex justify-between items-center">
+          <label for="time">Start time</label>
+          <input type="datetime-local" name="time" class="bg-purple-1200 p-1 text-white" />
+        </div>
       </div>
-      <div class="flex items-center mt-4 justify-between">
+      <div class="p-4 border-t border-purple-925 flex justify-between items-center">
+        <span>Total</span>
+        <div class="flex items-center">
+          <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
+          <span>9.00</span>
+        </div>
+      </div>
+      <div class="p-4 bg-purple-1200 flex items-center justify-between">
         <button
           class="font-bold uppercase rounded bg-transparent border border-purple-custom text-sm py-2 px-6 hover:bg-purple-1200 transition-all ease-in duration-200"
           @click="handleModal"
@@ -196,10 +229,10 @@ import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
 import { getUser } from '@/apollo/user.gql';
 
-import Comment from '@/components/Comment';
-import Loader from '@/components/Loader';
-import GameRank from '@/components/GameRank';
-import Availability from '@/components/Availability';
+import Comment from '@/components/Comment.vue';
+import Loader from '@/components/Loader.vue';
+import GameRank from '@/components/GameRank.vue';
+import Availability from '@/components/Availability.vue';
 
 export default defineComponent({
   props: {
