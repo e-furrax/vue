@@ -86,7 +86,7 @@
           </div>
           <button
             type="submit"
-            class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+            class="border-none outline-none font-bold text-white uppercase rounded bg-orange-600 text-sm leading-8 py-1 hover:bg-orange-700 transition-all ease-in duration-200"
           >
             Sign up
           </button>

@@ -3,18 +3,18 @@
     <section class="main-section relative flex flex-col justify-center items-center py-20 xl:py-32">
       <div class="bg-img">
         <img
-          src="/images/backgrounds/lowres/rocket-league.jpg"
-          data-src="/images/backgrounds/rocket-league.jpg"
+          src="/images/backgrounds/lowres/rl.jpg"
+          data-src="/images/backgrounds/rl.jpg"
           class="opacity-25 absolute left-0 top-0 lazyload w-full h-full object-cover"
         />
         <img
-          src="/images/backgrounds/lowres/league-of-legends.jpg"
-          data-src="/images/backgrounds/league-of-legends.jpg"
+          src="/images/backgrounds/lowres/lol.jpg"
+          data-src="/images/backgrounds/lol.jpg"
           class="opacity-25 absolute left-0 top-0 hidden lazyload w-full h-full object-cover"
         />
         <img
-          src="/images/backgrounds/lowres/valorant.png"
-          data-src="/images/backgrounds/valorant.png"
+          src="/images/backgrounds/lowres/valorant.jpg"
+          data-src="/images/backgrounds/valorant.jpg"
           class="opacity-25 absolute left-0 top-0 hidden lazyload w-full h-full object-cover"
         />
         <img
@@ -40,17 +40,17 @@
           <GamePreview
             name="Rocket League"
             src="/images/rl.jpg"
-            background="/images/backgrounds/rocket-league.jpg"
+            background="/images/backgrounds/rl.jpg"
           />
           <GamePreview
             name="League of Legends"
             src="/images/lol.jpg"
-            background="/images/backgrounds/league-of-legends.jpg"
+            background="/images/backgrounds/lol.jpg"
           />
           <GamePreview
             name="Valorant"
             src="/images/valorant.jpg"
-            background="/images/backgrounds/valorant.png"
+            background="/images/backgrounds/valorant.jpg"
           />
           <GamePreview
             name="CS:GO"
@@ -61,7 +61,9 @@
       </div>
     </section>
     <section class="bg-purple-1000 py-20 px-4 lg:px-0">
-      <div class="container mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-center">
+      <div
+        class="container mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-center"
+      >
         <FeatureCard class="lg:w-1/3">
           <template v-slot:icon>
             <img src="/images/icons/badge.svg" width="100" />

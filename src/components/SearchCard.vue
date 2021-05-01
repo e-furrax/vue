@@ -15,7 +15,7 @@
         style="width: 150px"
       />
       <div class="flex flex-col text-white items-center z-20 mb-2 mt-1">
-        <h3 class="font-bold username">{{ user.name }}</h3>
+        <h3 class="font-bold username">{{ user.username }}</h3>
         <div class="text-xs flex items-center">
           <img src="/images/star-rate.svg" class="h-4" />
           <span class="pl-1">4.8 (232)</span>
