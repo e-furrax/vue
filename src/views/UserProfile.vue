@@ -162,14 +162,19 @@
       />
       <h2 class="text-xl p-4">Complete demand</h2>
       <div
-        class="flex items-start justify-between bg-purple-1200 p-4"
+        class="demand-banner flex items-start justify-between bg-purple-1200 p-4"
         :style="`
-        background-image: linear-gradient(90deg, rgba(22, 16, 51, 1) 55%, rgba(22, 16, 51, 0.4) 100%),
-        url('/images/backgrounds/lowres/league-of-legends.jpg');
+        background-image: linear-gradient(90deg, rgba(22, 16, 51, 1) 70%, rgba(22, 16, 51, 0.4) 100%),
+        url('/images/backgrounds/lowres/${demandGame}.jpg');
         `"
       >
         <div class="flex flex-col">
-          <span>League of Legends</span>
+          <select @change="handleGameChange" name="game" class="bg-purple-1200">
+            <option value="lol">League of Legends</option>
+            <option value="rl">Rocket League</option>
+            <option value="valorant">Valorant</option>
+            <option value="csgo">CS:GO</option>
+          </select>
           <div class="mt-2 flex items-center">
             <img src="/images/avatar1.png" class="mr-2 w-5 h-5 rounded-full" />
             <span class="text-sm">{{ user.username }}</span>
@@ -181,19 +186,17 @@
         </div>
       </div>
       <div class="px-4 my-4">
-        <div class="flex justify-between items-center">
-          <label for="game">Change game</label>
-          <select name="game" class="bg-purple-1200 p-1">
-            <option value="">-</option>
-            <option value="rl">Rocket League</option>
-            <option value="lol">League of Legends</option>
-            <option value="valorant">Valorant</option>
-            <option value="csgo">CS:GO</option>
-          </select>
-        </div>
         <div class="mt-4 flex justify-between items-center">
           <label for="round">Matches</label>
-          <input type="number" name="round" class="w-20 bg-purple-1200 p-1 text-white" />
+          <input
+            @input="handleRoundChange"
+            type="number"
+            name="round"
+            min="1"
+            max="999"
+            value="1"
+            class="w-20 bg-purple-1200 p-1 text-white"
+          />
         </div>
         <div class="mt-4 flex justify-between items-center">
           <label for="time">Start time</label>
@@ -204,7 +207,7 @@
         <span>Total</span>
         <div class="flex items-center">
           <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
-          <span>9.00</span>
+          <span>{{ totalPrice }}</span>
         </div>
       </div>
       <div class="p-4 bg-purple-1200 flex items-center justify-between">
@@ -258,11 +261,19 @@ export default defineComponent({
       playModal.classList.toggle('hidden');
       const body = document.querySelector('body') as HTMLBodyElement;
       body.classList.toggle('overflow-hidden');
+    },
+    handleRoundChange(event: { target: HTMLInputElement }) {
+      this.totalPrice = (4.50 * +event.target.value).toFixed(2);
+    },
+    handleGameChange(event: { target: HTMLInputElement }) {
+      this.demandGame = event.target.value;
     }
   },
   data() {
     return {
       loaded: false,
+      totalPrice: '4.50',
+      demandGame: 'lol',
       comments: [
         {
           id: 1,
@@ -288,12 +299,18 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .profile-header {
   height: 500px;
   z-index: -1;
 }
 .border-purple-custom {
   border-color: #3b2963;
+}
+
+.demand-banner {
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
 }
 </style>
