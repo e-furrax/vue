@@ -1,100 +1,241 @@
 <template>
   <Loader v-if="loading" />
   <div v-else-if="error">Error: {{ error.message }}</div>
-  <div class="pt-16" v-if="user">
-    <section
-      class="relative font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover"
-    >
-      <div class="max-w-4xl flex items-center h-auto lg:h-full flex-wrap mx-auto my-32 lg:my-0">
-        <div
-          id="profile"
-          class="w-full lg:w-3/5 rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
+  <div class="relative text-white" v-if="user">
+    <div
+      :style="`
+        background-image: linear-gradient(180deg, rgba(23, 16, 56, 0) 70%, #1b153d 100%),
+          url('/images/backgrounds/profile-header.jpeg');
+      `"
+      class="profile-header absolute top-0 left-0 w-full bg-no-repeat bg-cover bg-top opacity-40"
+    ></div>
+    <div class="mt-8 lg:mt-40">
+      <div class="container mx-auto w-full flex justify-center lg:justify-end">
+        <button
+          class="font-bold uppercase rounded bg-orange-600 text-sm py-2 px-6 hover:bg-orange-700 transition-all ease-in duration-200"
+          @click="handleModal"
         >
-          <div class="p-4 md:p-12 text-center lg:text-left">
+          Play together
+        </button>
+      </div>
+      <div class="container mx-auto mt-4 flex flex-col items-center lg:flex-row lg:items-start">
+        <div class="lg:mb-10 mb-4 lg:mr-4">
+          <div
+            class="bg-purple-925 bg-opacity-70 w-full sm:rounded-sm border border-purple-custom relative mb-4 pb-3"
+          >
             <div
-              class="block lg:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
-              style="background-image: url('/user_icon.jpg')"
-            ></div>
-            <h1 class="text-4xl font-bold pt-8 lg:pt-0 w-1/3">{{ user.username }}</h1>
-            <h3 class="font-bold pt-8 lg:pt-0 w-1/3">3.5★</h3>
-            <div class="mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-purple-1100 opacity-25"></div>
-            <p class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
-              <svg
-                class="h-4 fill-current text-purple-1100 pr-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M9 12H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-8v2H9v-2zm0-1H0V5c0-1.1.9-2 2-2h4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v6h-9V9H9v2zm3-8V2H8v1h4z"
-                />
-              </svg>
-              your games
-            </p>
-            <p
-              class="pt-2 text-gray-600 text-xs lg:text-sm flex items-center justify-center lg:justify-start"
+              class="profile-card mt-4 lg:mt-0 lg:absolute lg:transform lg:-translate-y-1/2 flex items-center px-4"
             >
-              <svg
-                class="h-4 fill-current text-purple-1100 pr-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+              <img
+                src="/images/avatar1.png"
+                class="rounded-full border-2 border-yellow-800 z-20 w-32 lg:w-40"
+              />
+              <div
+                class="flex flex-col lg:bg-purple-1000 ml-4 lg:pl-16 lg:pr-16 w-full lg:w-auto lg:py-2 lg:z-10 lg:border border-purple-custom lg:transform lg:-translate-x-12 rounded-sm"
               >
-                <path
-                  d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm7.75-8a8.01 8.01 0 0 0 0-4h-3.82a28.81 28.81 0 0 1 0 4h3.82zm-.82 2h-3.22a14.44 14.44 0 0 1-.95 3.51A8.03 8.03 0 0 0 16.93 14zm-8.85-2h3.84a24.61 24.61 0 0 0 0-4H8.08a24.61 24.61 0 0 0 0 4zm.25 2c.41 2.4 1.13 4 1.67 4s1.26-1.6 1.67-4H8.33zm-6.08-2h3.82a28.81 28.81 0 0 1 0-4H2.25a8.01 8.01 0 0 0 0 4zm.82 2a8.03 8.03 0 0 0 4.17 3.51c-.42-.96-.74-2.16-.95-3.51H3.07zm13.86-8a8.03 8.03 0 0 0-4.17-3.51c.42.96.74 2.16.95 3.51h3.22zm-8.6 0h3.34c-.41-2.4-1.13-4-1.67-4S8.74 3.6 8.33 6zM3.07 6h3.22c.2-1.35.53-2.55.95-3.51A8.03 8.03 0 0 0 3.07 6z"
-                />
-              </svg>
-              Your language
-            </p>
-            <div class="flex flex-col text-left pl-2 w-full">
-              <hr class="border-gray-400 my-2 w-full" />
-              <p class="description pt-8 text-sm">
-                <span class="text-gray-600">Presentation: </span>
-                {{ user.description }}
-              </p>
+                <div class="flex items-center">
+                  <h2 class="text-xl lg:text-2xl mr-2">{{ user.username }}</h2>
+                  <img src="/images/icons/verified.svg" title="Verified user" width="18" />
+                </div>
+                <div class="flex flex-col mt-2 text-sm">
+                  <span>French, English</span>
+                  <span>22 y.o</span>
+                  <span>Joined 1 year ago</span>
+                </div>
+              </div>
             </div>
-            <div class="pt-12 pb-8">
-              <button
-                class="bg-purple-1100 hover:bg-text-purple-1100 text-white font-bold py-2 px-4 rounded-full"
-              >
-                Get In Touch
-              </button>
+            <div class="flex flex-col justify-center items-end absolute top-8 lg:top-4 right-4">
+              <div class="flex items-center">
+                <img src="/images/icons/local_atm.svg" class="mr-1" height="20" />
+                <span class="text-lg">4.50<span class="text-sm">/Match</span></span>
+              </div>
+              <div class="flex items-center">
+                <img
+                  v-for="index of [1, 2, 3, 4]"
+                  :key="index"
+                  src="/images/icons/star.svg"
+                  width="18"
+                />
+                <img src="/images/icons/star_half.svg" width="18" />
+                <span class="ml-2 text-sm">(12)</span>
+              </div>
+            </div>
+            <section class="lg:mt-20 pt-4 px-4">
+              <h4 class="font-bold uppercase">Games</h4>
+              <div class="grid gap-2 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
+                <GameRank background="/images/backgrounds/lowres/rocket-league.jpg">
+                  <template v-slot:image>
+                    <img src="/images/ranks/rocket-league/c3.png" width="60" />
+                  </template>
+                  <template v-slot:game>Rocket League</template>
+                  <template v-slot:mode>Ranked standard 3v3</template>
+                  <template v-slot:rank>Champion III Division IV</template>
+                </GameRank>
+                <GameRank background="/images/backgrounds/lowres/csgo.jpg">
+                  <template v-slot:image>
+                    <img src="/images/ranks/csgo/supreme.png" width="75" />
+                  </template>
+                  <template v-slot:game>CS:GO</template>
+                  <template v-slot:mode>Competitive 5v5</template>
+                  <template v-slot:rank>Supreme Master</template>
+                </GameRank>
+                <GameRank background="/images/backgrounds/lowres/valorant.png">
+                  <template v-slot:image>
+                    <img src="/images/ranks/valorant/radiant.png" width="50" />
+                  </template>
+                  <template v-slot:game>Valorant</template>
+                  <template v-slot:mode>Competitive 5v5</template>
+                  <template v-slot:rank>Radiant</template>
+                </GameRank>
+                <GameRank background="/images/backgrounds/lowres/league-of-legends.jpg">
+                  <template v-slot:image>
+                    <img src="/images/ranks/lol/master.png" width="60" />
+                  </template>
+                  <template v-slot:game>League of Legends</template>
+                  <template v-slot:mode>Competitive 5v5</template>
+                  <template v-slot:rank>Master</template>
+                </GameRank>
+              </div>
+            </section>
+            <section class="pt-4 px-4">
+              <h4 class="font-bold uppercase">About me</h4>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
+                blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
+                quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur
+                adipisicing elit. Corrupti cumque ad veritatis similique molestias doloribus
+                adipisci ut nulla porro quisquam dolorum voluptatibus, explicabo et est dicta id
+                itaque quia saepe!
+              </p>
+            </section>
+            <section class="px-4 bg-purple-925">
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
+                blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
+                quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur
+                adipisicing elit. Corrupti cumque ad veritatis similique molestias doloribus
+                adipisci ut nulla porro quisquam dolorum voluptatibus, explicabo et est dicta id
+                itaque quia saepe!
+              </p>
+            </section>
+          </div>
+          <div
+            class="bg-purple-925 sm:bg-opacity-70 w-full lg:rounded-sm border border-purple-custom"
+          >
+            <div class="p-4 text-left">
+              <h4 class="font-bold uppercase">Comments ({{ comments.length }})</h4>
+              <Comment v-for="com in comments" :key="com.id" :comment="com" class="mt-2"></Comment>
+              <div class="flex items-center cursor-pointer w-full pt-6">
+                <hr class="w-full border-1 border-purple-800" />
+                <p
+                  class="text-xs text-purple-300 hover:underline hover:text-purple-200 uppercase flex-no-wrap w-1/3 px-2 text-center"
+                >
+                  Load more comments
+                </p>
+                <hr class="w-full border-1 border-purple-800" />
+              </div>
             </div>
           </div>
         </div>
-        <div class="w-full lg:w-2/5">
-          <img
-            src="/user_icon.jpg"
-            class="rounded-none lg:rounded-lg shadow-2xl hidden lg:block"
-            alt="pp"
-            style="height: 511px; width: 700px"
+        <div
+          class="bg-purple-925 bg-opacity-70 sm:rounded-sm border bg-purple-925 border-purple-custom lg:max-w-sm mb-10 lg:mb-0"
+        >
+          <section class="pt-4 p-4">
+            <h4 class="font-bold uppercase mb-2">Availability</h4>
+            <Availability />
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="hidden absolute top-0 left-0 w-full h-full flex items-center justify-center"
+    id="play-modal"
+  >
+    <div class="w-full z-10 h-full bg-black bg-opacity-50 absolute" @click="handleModal"></div>
+    <div class="w-96 bg-purple-1100 shadow-xl z-20 text-white rounded-sm relative">
+      <img
+        src="/images/icons/close.svg"
+        width="20"
+        class="absolute top-4 right-4 cursor-pointer"
+        @click="handleModal"
+      />
+      <h2 class="text-xl p-4">Complete demand</h2>
+      <div
+        class="demand-banner flex items-start justify-between bg-purple-1200 p-4"
+        :style="`
+        background-image: linear-gradient(90deg, rgba(22, 16, 51, 1) 70%, rgba(22, 16, 51, 0.4) 100%),
+        url('/images/backgrounds/lowres/${demandGame}.jpg');
+        `"
+      >
+        <div class="flex flex-col">
+          <select @change="handleGameChange" name="game" class="bg-purple-1200">
+            <option value="lol">League of Legends</option>
+            <option value="rl">Rocket League</option>
+            <option value="valorant">Valorant</option>
+            <option value="csgo">CS:GO</option>
+          </select>
+          <div class="mt-2 flex items-center">
+            <img src="/images/avatar1.png" class="mr-2 w-5 h-5 rounded-full" />
+            <span class="text-sm">{{ user.username }}</span>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
+          <span>4.50<span class="text-xs">/Match</span></span>
+        </div>
+      </div>
+      <div class="px-4 my-4">
+        <div class="mt-4 flex justify-between items-center">
+          <label for="round">Matches</label>
+          <input
+            @input="handleRoundChange"
+            type="number"
+            name="round"
+            min="1"
+            max="999"
+            value="1"
+            class="w-20 bg-purple-1200 p-1 text-white"
           />
         </div>
-      </div>
-    </section>
-    <section
-      class="relative font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover p-8"
-    >
-      <div class="max-w-4xl flex items-center h-auto lg:h-full flex-wrap mx-auto my-32 lg:my-0">
-        <div
-          id="commentary"
-          class="w-full rounded-lg lg:rounded-l-lg lg:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 lg:mx-0"
-        >
-          <div class="p-4 md:p-6 text-center lg:text-left">
-            <h1 class="text-5xl font-bold pt-8 lg:pt-0 underline pb-2">Commentary</h1>
-            <Commentary v-for="com in commentaries" :key="com.id" :commentary="com"></Commentary>
-          </div>
+        <div class="mt-4 flex justify-between items-center">
+          <label for="time">Start time</label>
+          <input type="datetime-local" name="time" class="bg-purple-1200 p-1 text-white" />
         </div>
       </div>
-    </section>
+      <div class="p-4 border-t border-purple-925 flex justify-between items-center">
+        <span>Total</span>
+        <div class="flex items-center">
+          <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
+          <span>{{ totalPrice }}</span>
+        </div>
+      </div>
+      <div class="p-4 bg-purple-1200 flex items-center justify-between">
+        <button
+          class="font-bold uppercase rounded bg-transparent border border-purple-custom text-sm py-2 px-6 hover:bg-purple-1200 transition-all ease-in duration-200"
+          @click="handleModal"
+        >
+          Cancel
+        </button>
+        <button
+          class="font-bold uppercase rounded bg-orange-600 text-sm py-2 px-6 hover:bg-orange-700 transition-all ease-in duration-200"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 import { useQuery, useResult } from '@vue/apollo-composable';
 import { getUser } from '@/apollo/user.gql';
 
-import Commentary from '@/components/Commentary';
-import Loader from '@/components/Loader';
+import Comment from '@/components/Comment.vue';
+import Loader from '@/components/Loader.vue';
+import GameRank from '@/components/GameRank.vue';
+import Availability from '@/components/Availability.vue';
 
 export default defineComponent({
   props: {
@@ -113,11 +254,27 @@ export default defineComponent({
     };
   },
   name: 'UserProfile',
-  components: { Commentary, Loader },
+  components: { Comment, Loader, GameRank, Availability },
+  methods: {
+    handleModal() {
+      const playModal = document.getElementById('play-modal') as HTMLDivElement;
+      playModal.classList.toggle('hidden');
+      const body = document.querySelector('body') as HTMLBodyElement;
+      body.classList.toggle('overflow-hidden');
+    },
+    handleRoundChange(event: { target: HTMLInputElement }) {
+      this.totalPrice = (4.50 * +event.target.value).toFixed(2);
+    },
+    handleGameChange(event: { target: HTMLInputElement }) {
+      this.demandGame = event.target.value;
+    }
+  },
   data() {
     return {
       loaded: false,
-      commentaries: [
+      totalPrice: '4.50',
+      demandGame: 'lol',
+      comments: [
         {
           id: 1,
           author: 'Thomas',
@@ -142,8 +299,18 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.full-vh {
-  height: 100vh;
+<style lang="postcss" scoped>
+.profile-header {
+  height: 500px;
+  z-index: -1;
+}
+.border-purple-custom {
+  border-color: #3b2963;
+}
+
+.demand-banner {
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
 }
 </style>

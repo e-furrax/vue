@@ -2,8 +2,8 @@
   <div class="relative">
     <div
       id="search-bar"
-      class="p-1 text-xs mr-4 rounded-full bg-gray-900 search-bar transition duration-300 border"
-      :class="[isActive ? 'border-purple-800 w-96' : 'search-bar-default']"
+      class="p-1 text-xs rounded-full bg-gray-900 search-bar transition duration-300 border"
+      :class="[isActive ? 'border-purple-800' : 'search-bar-default w-28']"
       @click="isActive = !isActive ? !isActive : isActive"
       v-click-outside="onClickOutside"
     >

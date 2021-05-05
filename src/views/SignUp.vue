@@ -1,6 +1,6 @@
 <template>
   <section class="h-screen w-screen background">
-    <router-link to="/" class="absolute m-6 text-white font-bold">LOGO</router-link>
+    <router-link to="/" class="absolute m-6 text-white flex items-center"><img src="/images/e-furrax.svg" width="38" /><span class="ml-3 text-xl">E-FURRAX</span></router-link>
     <div class="h-full w-full flex justify-center items-center">
       <div class="w-96 flex flex-col items-center">
         <h1 class="text-3xl font-semibold mb-6 text-white">Register</h1>
@@ -86,7 +86,7 @@
           </div>
           <button
             type="submit"
-            class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+            class="border-none outline-none font-bold text-white uppercase rounded bg-orange-600 text-sm leading-8 py-1 hover:bg-orange-700 transition-all ease-in duration-200"
           >
             Sign up
           </button>

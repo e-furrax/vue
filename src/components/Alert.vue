@@ -19,17 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import {
-  danger,
-  warning,
-  primary,
-  secondary,
-  success,
-  info,
-  dark
-} from '@/utils/alertComponentIcons';
-
-type AlertType = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'dark';
+import { svgPath, AlertType } from '@/utils/alertComponentIcons';
 
 export default defineComponent({
   name: 'Alert',
@@ -38,29 +28,13 @@ export default defineComponent({
       type: String
     },
     alertType: {
-      type: String as PropType<AlertType>
+      type: String as PropType<AlertType>,
+      required: true
     }
   },
   computed: {
-    iconHtml() {
-      switch (this.alertType) {
-        case 'warning':
-          return warning;
-        case 'danger':
-          return danger;
-        case 'primary':
-          return primary;
-        case 'secondary':
-          return secondary;
-        case 'success':
-          return success;
-        case 'info':
-          return info;
-        case 'dark':
-          return dark;
-        default:
-          return '';
-      }
+    iconHtml(): string | null {
+      return svgPath(this.alertType);
     }
   }
 });
