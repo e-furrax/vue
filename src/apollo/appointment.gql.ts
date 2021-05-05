@@ -22,6 +22,7 @@ export const getAppointmentsOverview = gql`
   {
     getAppointments {
       _id
+      _createdAt
       _updatedAt
       from
       to
