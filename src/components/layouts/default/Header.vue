@@ -56,8 +56,8 @@ export default defineComponent({
   name: 'Header',
   data() {
     return {
-      burgerClosing: false,
-    }
+      burgerClosing: false
+    };
   },
   mounted() {
     const burgerMenu = document.querySelector('.burger-menu') as HTMLDivElement;

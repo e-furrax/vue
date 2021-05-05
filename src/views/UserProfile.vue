@@ -3,10 +3,12 @@
   <div v-else-if="error">Error: {{ error.message }}</div>
   <div class="relative text-white" v-if="user">
     <div
-      :style="`
+      :style="
+        `
         background-image: linear-gradient(180deg, rgba(23, 16, 56, 0) 70%, #1b153d 100%),
           url('/images/backgrounds/profile-header.jpeg');
-      `"
+      `
+      "
       class="profile-header absolute top-0 left-0 w-full bg-no-repeat bg-cover bg-top opacity-40"
     ></div>
     <div class="mt-8 lg:mt-40">
@@ -163,10 +165,12 @@
       <h2 class="text-xl p-4">Complete demand</h2>
       <div
         class="demand-banner flex items-start justify-between bg-purple-1200 p-4"
-        :style="`
+        :style="
+          `
         background-image: linear-gradient(90deg, rgba(22, 16, 51, 1) 70%, rgba(22, 16, 51, 0.4) 100%),
         url('/images/backgrounds/lowres/${demandGame}.jpg');
-        `"
+        `
+        "
       >
         <div class="flex flex-col">
           <select @change="handleGameChange" name="game" class="bg-purple-1200">
@@ -263,7 +267,7 @@ export default defineComponent({
       body.classList.toggle('overflow-hidden');
     },
     handleRoundChange(event: { target: HTMLInputElement }) {
-      this.totalPrice = (4.50 * +event.target.value).toFixed(2);
+      this.totalPrice = (4.5 * +event.target.value).toFixed(2);
     },
     handleGameChange(event: { target: HTMLInputElement }) {
       this.demandGame = event.target.value;
