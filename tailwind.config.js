@@ -2,7 +2,7 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  purge: [],
+  purge: ['./src/**/*.html', './src/**/*.js', './src/**/*.vue'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -11,8 +11,8 @@ module.exports = {
         '84': '21rem',
         '88': '22rem',
         '92': '23rem',
-        '96': '24rem',
-      },
+        '96': '24rem'
+      }
     },
     colors: {
       transparent: 'transparent',
@@ -34,7 +34,7 @@ module.exports = {
   },
   variants: {
     extend: {
-      backgroundColor: ['even'],
+      backgroundColor: ['even']
     }
   },
   plugins: []
