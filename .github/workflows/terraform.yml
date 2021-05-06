@@ -22,6 +22,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
+      - name: Generate ssh key
+        working-directory: ./ci
+        run: ssh-keygen -t rsa -f ./id_rsa_aws
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
