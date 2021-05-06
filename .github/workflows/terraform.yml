@@ -1,7 +1,10 @@
-name: Terraform CI
+name: Deploy
 
 on:
-  push
+  workflow_run:
+    workflows: ['Common Jobs']
+    branches: [build/build-ci]
+    types: [completed]
   # push:
   #   branches:
   #     - main
@@ -9,8 +12,8 @@ on:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }
     name: 'Deploy application to production'
-    needs: common
     runs-on: ubuntu-latest
 
     steps:

@@ -1,4 +1,4 @@
-name: Common Jobs CI
+name: Common Jobs
 
 on: push
 
