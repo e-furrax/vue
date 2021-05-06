@@ -70,7 +70,7 @@ resource "aws_security_group" "my_security_group" {
 
 resource "aws_key_pair" "mykey" {
   key_name   = "mykey"
-  public_key = file("./id_rsa_aws.pub")
+  public_key = file("./.ssh/id_rsa_aws.pub")
 }
 
 resource "aws_s3_bucket" "terraform_state" {

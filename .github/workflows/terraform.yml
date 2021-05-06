@@ -24,7 +24,9 @@ jobs:
 
       - name: Generate ssh key
         working-directory: ./ci
-        run: ssh-keygen -t rsa -f ./id_rsa_aws
+        run: |
+          mkdir .ssh
+          ssh-keygen -t rsa -f .ssh/id_rsa_aws
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -44,4 +46,4 @@ jobs:
       - name: terraform apply
         working-directory: ./ci
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply --auto-approve
+        run: terraform apply --auto-approve -lock=false
