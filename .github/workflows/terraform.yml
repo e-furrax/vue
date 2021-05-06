@@ -4,7 +4,7 @@ on:
   push
   # push:
   #   branches:
-  #     - build/build-ci
+  #     - main
   # pull_request:
 
 jobs:
@@ -22,6 +22,8 @@ jobs:
         with:
           name: dist
           path: dist
+
+      - name: test
         run: ls dist
       # - name: Configure AWS Credentials
       #   uses: aws-actions/configure-aws-credentials@v1
