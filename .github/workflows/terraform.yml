@@ -2,8 +2,10 @@ name: Deploy
 
 on:
   workflow_run:
-    workflows: ['Common Jobs']
-    types: [completed]
+    workflows:
+      - Common Jobs
+    types:
+      - completed
   # push:
   #   branches:
   #     - main
@@ -11,7 +13,7 @@ on:
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }
     name: 'Deploy application to production'
     runs-on: ubuntu-latest
 
