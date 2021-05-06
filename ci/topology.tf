@@ -75,6 +75,7 @@ resource "aws_key_pair" "mykey" {
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "terraform-state-efurrax-front"
+  force_destroy = true
 
   versioning {
     enabled = true
