@@ -20,13 +20,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout/@v2
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
-      - run: git branch
 
       - name: Download build artifact
-        uses: actions/download-artifact@v2
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: common.yml
+          workflow_conclusion: success
           name: dist
           path: dist
 
