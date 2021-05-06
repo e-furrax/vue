@@ -3,7 +3,6 @@ name: Deploy
 on:
   workflow_run:
     workflows: ['Common Jobs']
-    branches: [build/build-ci]
     types: [completed]
   # push:
   #   branches:
