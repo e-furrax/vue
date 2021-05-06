@@ -3,47 +3,48 @@ name: Terraform CI
 on:
   push:
     branches:
-      - main
+      - build/build-ci
   pull_request:
 
 jobs:
-  terraform-deploy:
-    name: 'Terraform deploy infra'
+  deploy:
+    name: 'Deploy application to production'
+    needs: common
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout/@v2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-
-      - name: Generate ssh key
-        working-directory: ./ci
-        run: |
-          mkdir .ssh
-          ssh-keygen -t rsa -f .ssh/id_rsa_aws
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-
-      - name: terraform init
-        working-directory: ./ci/10_deploy
-        run: terraform init
-
-      - name: terraform fmt
-        working-directory: ./ci/10_deploy
-        run: terraform fmt
-
-      - name: terraform plan
-        working-directory: ./ci/10_deploy
-        run: terraform plan
-
-      - name: terraform apply
-        working-directory: ./ci/10_deploy
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply --auto-approve
+          name: dist
+          path: dist
+        run: ls dist
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      # - name: Generate ssh key
+      #   working-directory: ./ci
+      #   run: |
+      #     mkdir .ssh
+      #     ssh-keygen -t rsa -f .ssh/id_rsa_aws
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v1
+      # - name: terraform init
+      #   working-directory: ./ci/10_deploy
+      #   run: terraform init
+      # - name: terraform fmt
+      #   working-directory: ./ci/10_deploy
+      #   run: terraform fmt
+      # - name: terraform plan
+      #   working-directory: ./ci/10_deploy
+      #   run: terraform plan
+      # - name: terraform apply
+      #   working-directory: ./ci/10_deploy
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: terraform apply --auto-approve
