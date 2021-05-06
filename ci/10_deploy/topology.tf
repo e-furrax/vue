@@ -18,10 +18,6 @@ resource "aws_subnet" "my_subnet" {
   availability_zone = local.availability_zone
   cidr_block        = var.subnet_cidr_block
   vpc_id            = aws_vpc.my_vpc.id
-  tags = {
-    Name = "Vue"
-    User = "thomas.gorszczyk"
-  }
 }
 
 resource "aws_route_table_association" "my_route_table_association" {
@@ -32,10 +28,6 @@ resource "aws_route_table_association" "my_route_table_association" {
 resource "aws_security_group" "my_security_group" {
   name_prefix = "Thomas"
   vpc_id      = aws_vpc.my_vpc.id
-  tags = {
-    Name = "Vue"
-    User = "thomas.gorszczyk"
-  }
 
   dynamic "egress" {
     for_each = var.egress_ports
@@ -70,8 +62,4 @@ resource "aws_instance" "web" {
   vpc_security_group_ids      = [aws_security_group.my_security_group.id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.mykey.key_name
-  tags = {
-    Name = "Vue"
-    User = "thomas.gorszczyk"
-  }
 }

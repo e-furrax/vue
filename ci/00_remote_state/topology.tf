@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-state-efurrax-front"
+  bucket = "terraform-state-efurrax-front2"
   force_destroy = true
 
   versioning {
