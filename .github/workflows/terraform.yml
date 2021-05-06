@@ -35,7 +35,7 @@ jobs:
 
       - name: terraform plan
         working-directory: ./ci
-        run: terraform plan
+        run: terraform plan -lock=false
 
       - name: terraform apply
         working-directory: ./ci
