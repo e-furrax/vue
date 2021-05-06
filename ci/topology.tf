@@ -1,12 +1,12 @@
-# terraform {
-#   backend "s3" {
-#     bucket         = "terraform-state-efurrax-front"
-#     key            = "global/s3/terraform.tfstate"
-#     region         = "eu-west-1"
-#     dynamodb_table = "terraform-locks"
-#     encrypt        = true
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-efurrax-front"
+    key            = "global/s3/terraform.tfstate"
+    region         = "eu-west-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
 
 resource "aws_vpc" "my_vpc" {
   cidr_block = "10.0.0.0/16"
