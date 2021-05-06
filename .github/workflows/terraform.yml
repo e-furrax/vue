@@ -7,41 +7,6 @@ on:
   pull_request:
 
 jobs:
-  terraform-init:
-    name: 'Terraform setup remote state'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout/@v2
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-
-      - name: terraform init
-        working-directory: ./ci/00_remote_state
-        run: terraform init
-
-      - name: terraform fmt
-        working-directory: ./ci/00_remote_state
-        run: terraform fmt
-
-      - name: terraform plan
-        working-directory: ./ci/00_remote_state
-        run: terraform plan
-
-      - name: terraform apply
-        working-directory: ./ci/00_remote_state
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply --auto-approve
-
   terraform-deploy:
     name: 'Terraform deploy infra'
     runs-on: ubuntu-latest
