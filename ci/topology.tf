@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-efurrax-front"
+    key            = "global/s3/terraform.tfstate"
+    region         = "eu-west-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
+
 resource "aws_vpc" "my_vpc" {
   cidr_block = "10.0.0.0/16"
 }
@@ -58,11 +68,35 @@ resource "aws_security_group" "my_security_group" {
   }
 }
 
-
 resource "aws_key_pair" "mykey" {
   key_name   = "mykey"
-  // public_key = file("ssh-keys/id_rsa_aws.pub")
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXrf5+hEhiNz1wSRMbL597O4cigEkdkdKPBPxAeha0bN5x20LEDKhQRr70TzofAq9tqZKSNs+b92QhjHT1rcM8B7om0o82o7Rsovjg06nWpv/kYrtuMpqKvuYxfeyOu+qh5uZBcYtKowdbZnFXQzEgw95xpLIJZMPJUbfAfyzjXoHn33VBhKdw6OYSL5HsY0aPsXasTwteHToaHbwWyAxP18loNqMLii/z/x8/B2cZQpkoKw+ZvCWk/ef1HfNyyZCJ7otDoRqUNSVG6BKHyjGhMs8vZgvas0qnp+12cK5hPUlXIgw+VakMrJ8kHsbXAoZMkT/jxehQfxYzD6PhQLeu0erSJRinFXg5aD7kDo+vPbdBL6Wsirwtdmk/TRhBZUQotm4uGhPlzCvnUH5YGkLYKOXH9weSPg2XMJ062AJzI8+z+HV7Op+4VZR23cWfaykWRG4AJnhhgEliUwwgIrfydwVtVe0bf9hAcnojHUhoBpOtaARPplyXAyUidRRTTSE= scorpiz@DESKTOP-21S920H"
+  public_key = file(".ssh/id_rsa_aws.pub")
+}
+
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "terraform-state-efurrax-front"
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_dynamodb_table" "terraform_locks" {
+  name         = "terraform-locks"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
 }
 
 resource "aws_instance" "web" {
