@@ -3,30 +3,46 @@
   become: true
 
   vars:
-    repo: vue
-    account: e-furrax
-    server_name: "{{ ansible_default_ipv4.address }}"
+    server_name: "{{ groups['app_server'][0] }}"
     document_root: /var/www/html
-    app_root: app
+    app_root: vue/dist
 
   tasks:
   - name: Install Packages
     apt:
-      name: ['nodejs', 'npm', 'git', 'nginx']
+      name: ['nginx', 'unzip']
       update_cache: yes
       state: latest
 
-  - name: Git Clone Repo
-    git:
-      repo: "https://github.com/{{ account }}/{{ repo }}.git"
-      dest: "{{ document_root }}/vue"
-      clone: yes
-      update: yes
-    register: git_finished
+  - name: Get artifact url
+    uri:
+      url: "https://api.github.com/repos/e-furrax/vue/actions/artifacts?per_page=1"
+      return_content: yes
+    register: github_actions
 
+  - name: Download artifact
+    get_url:
+      url: "{{ (github_actions.content|from_json).artifacts[0].archive_download_url }}"
+      url_username: "{{ username }}"
+      url_password: "{{ access_token }}"
+      force_basic_auth: yes
+      dest: "{{ document_root }}/vue/dist.zip"
+      mode: 0750
+
+  - name: Create app directory
+    file:
+      path: "{{ document_root }}/{{ app_root }}"
+      state: directory
+      
+  - name: Unzip artifact
+    unarchive:
+      dest: "{{ document_root }}/{{ app_root }}"
+      src: "{{ document_root }}/vue/dist.zip"
+      remote_src: yes
+      
   - name: Apply Nginx template
     template:
-      src: "{{ document_root }}/vue/ci/20_ansible/nginx/nginx.conf"
+      src: nginx/nginx.conf.j2
       dest: /etc/nginx/sites-available/default
     notify: Restart Nginx
 
@@ -36,12 +52,6 @@
       dest: /etc/nginx/sites-enabled/default
       state: link
     notify: Restart Nginx
-
-  - name: Running NPM install
-    npm:
-      path: "{{ document_root }}/vue"
-    register: npm_finished
-    when: git_finished.changed
 
   handlers:
   - name: Restart Nginx

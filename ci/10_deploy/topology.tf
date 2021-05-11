@@ -51,7 +51,7 @@ resource "aws_security_group" "my_security_group" {
 }
 
 resource "aws_key_pair" "mykey" {
-  key_name   = "mykey"
+  key_name   = "newkey"
   public_key = file("../.ssh/id_rsa_aws.pub")
 }
 
@@ -62,4 +62,13 @@ resource "aws_instance" "web" {
   vpc_security_group_ids      = [aws_security_group.my_security_group.id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.mykey.key_name
+}
+
+resource "local_file" "hosts" {
+  content = templatefile("${path.module}/templates/hosts.tpl",
+    {
+      web = aws_instance.web.public_ip
+    }
+  )
+  filename = "../20_ansible/inventories/hosts.cfg"
 }
