@@ -65,7 +65,7 @@
             <section class="lg:mt-20 pt-4 px-4">
               <h4 class="font-bold uppercase">Games</h4>
               <div class="grid gap-2 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
-                <GameRank background="/images/backgrounds/lowres/rocket-league.jpg">
+                <GameRank background="/images/backgrounds/lowres/rl.jpg">
                   <template v-slot:image>
                     <img src="/images/ranks/rocket-league/c3.png" width="60" />
                   </template>
@@ -81,7 +81,7 @@
                   <template v-slot:mode>Competitive 5v5</template>
                   <template v-slot:rank>Supreme Master</template>
                 </GameRank>
-                <GameRank background="/images/backgrounds/lowres/valorant.png">
+                <GameRank background="/images/backgrounds/lowres/valorant.jpg">
                   <template v-slot:image>
                     <img src="/images/ranks/valorant/radiant.png" width="50" />
                   </template>
@@ -89,7 +89,7 @@
                   <template v-slot:mode>Competitive 5v5</template>
                   <template v-slot:rank>Radiant</template>
                 </GameRank>
-                <GameRank background="/images/backgrounds/lowres/league-of-legends.jpg">
+                <GameRank background="/images/backgrounds/lowres/lol.jpg">
                   <template v-slot:image>
                     <img src="/images/ranks/lol/master.png" width="60" />
                   </template>
@@ -153,6 +153,7 @@
   <div
     class="hidden absolute top-0 left-0 w-full h-full flex items-center justify-center"
     id="play-modal"
+    v-if="user"
   >
     <div class="w-full z-10 h-full bg-black bg-opacity-50 absolute" @click="handleModal"></div>
     <div class="w-96 bg-purple-1100 shadow-xl z-20 text-white rounded-sm relative">
