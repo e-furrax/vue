@@ -13,6 +13,11 @@
       name: ['nginx', 'unzip']
       update_cache: yes
       state: latest
+      
+  - name: Create app directory
+    file:
+      path: "{{ document_root }}/{{ app_root }}"
+      state: directory
 
   - name: Get artifact url
     uri:
@@ -28,11 +33,6 @@
       force_basic_auth: yes
       dest: "{{ document_root }}/vue/dist.zip"
       mode: 0750
-
-  - name: Create app directory
-    file:
-      path: "{{ document_root }}/{{ app_root }}"
-      state: directory
       
   - name: Unzip artifact
     unarchive:

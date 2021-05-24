@@ -11,6 +11,7 @@ on:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: 'Deploy application to production'
     runs-on: ubuntu-latest
 
@@ -26,8 +27,6 @@ jobs:
           name: dist
           path: dist
 
-      - name: test
-        run: ls dist
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -38,7 +37,13 @@ jobs:
         working-directory: ./ci
         run: |
           mkdir .ssh
-          ssh-keygen -t rsa -f .ssh/id_rsa_aws
+          cd .ssh
+          echo "$AWS_PRIVATE_KEY" > id_rsa_aws
+          echo "$AWS_PUBLIC_KEY" > id_rsa_aws.pub
+          chmod 600 *
+        env:
+          AWS_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
+          AWS_PUBLIC_KEY: ${{ secrets.AWS_PUBLIC_KEY  }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
       - name: terraform init
@@ -52,5 +57,10 @@ jobs:
         run: terraform plan
       - name: terraform apply
         working-directory: ./ci/10_deploy
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'workflow_run' }}
         run: terraform apply --auto-approve
+      - name: Ansible playbook
+        working-directory: ./ci/20_ansible
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'workflow_run' }}
+        run: ansible-playbook install.yml --extra-vars="username=e-furrax access_token=${{ secrets.GITHUB_TOKEN }}" --private-key ../.ssh/id_rsa_aws
+      
