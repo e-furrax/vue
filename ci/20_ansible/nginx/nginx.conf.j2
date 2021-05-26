@@ -7,7 +7,7 @@ server {
   server_name {{ server_name }};
 
   location / {
-   default_type "text/html";
-   try_files $uri.html $uri $uri/ =404;
+    default_type "text/html";
+    try_files $uri $uri/ /index.html;
   }
 }
