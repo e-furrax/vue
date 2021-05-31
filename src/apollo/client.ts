@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { setContext } from 'apollo-link-context';
 import { createUploadLink } from 'apollo-upload-client';
 
+console.log(process.env);
 const terminatingLink = createUploadLink({
-  uri: 'http://localhost:3000/graphql'
+  uri: `${process.env.VUE_APP_BACKEND_URL || 'http://localhost:3000'}/graphql`
 });
 
 const authLink = setContext((_, { headers }) => {

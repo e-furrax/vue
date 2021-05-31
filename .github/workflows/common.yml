@@ -12,6 +12,13 @@ jobs:
       - name: Install modules
         run: yarn
 
+      - name: .env
+        shell: bash
+        env:
+          VUE_APP_BACKEND_URL: ${{ secrets.VUE_APP_BACKEND_URL }}
+        run: |
+          echo "VUE_APP_BACKEND_URL=$VUE_APP_BACKEND_URL" > .env
+
       - name: Run ESLint
         run: yarn run lint
 

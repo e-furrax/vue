@@ -4,57 +4,125 @@
 
   vars:
     server_name: "{{ groups['app_server'][0] }}"
+    postgres_endpoint: "{{ groups['db_endpoints'][0] }}"
     document_root: /var/www/html
     app_root: vue/dist
+    backend_root: backend/app
+    certbot_create_if_missing: false
+    certbot_create_method: standalone
+    certbot_admin_email: tomdelie78@gmail.com
+    certbot_create_standalone_stop_services:
+      - nginx
+    apache_vhosts:
+      - { servername: "e-furrax.com" }
+      - { servername: "www.e-furrax.com" }
+      - { servername: "api.e-furrax.com" }
 
   tasks:
   - name: Install Packages
     apt:
-      name: ['nginx', 'unzip']
+      name: ['nginx', 'unzip', 'nodejs', 'npm', 'python3-certbot-nginx']
       update_cache: yes
       state: latest
+
+  - name: Install pm2
+    npm:
+      global: true
+      name: pm2
+
+  - name: Stop all pm2 process
+    shell: pm2 delete all 2> /dev/null || true
       
-  - name: Create app directory
+  - name: Create front end directory
     file:
       path: "{{ document_root }}/{{ app_root }}"
       state: directory
 
-  - name: Get artifact url
+  - name: Create back end directory
+    file:
+      path: "/home/{{ backend_root }}"
+      state: directory
+
+  - name: Get front end artifact url
     uri:
       url: "https://api.github.com/repos/e-furrax/vue/actions/artifacts?per_page=1"
       return_content: yes
-    register: github_actions
+    register: frontend
 
-  - name: Download artifact
+  - name: Download front end artifact
     get_url:
-      url: "{{ (github_actions.content|from_json).artifacts[0].archive_download_url }}"
+      url: "{{ (frontend.content|from_json).artifacts[0].archive_download_url }}"
       url_username: "{{ username }}"
       url_password: "{{ access_token }}"
       force_basic_auth: yes
       dest: "{{ document_root }}/vue/dist.zip"
       mode: 0750
       
-  - name: Unzip artifact
+  - name: Unzip frontend artifact
     unarchive:
       dest: "{{ document_root }}/{{ app_root }}"
       src: "{{ document_root }}/vue/dist.zip"
       remote_src: yes
-      
+
+  - name: Get back end artifact url
+    uri:
+      url: "https://api.github.com/repos/e-furrax/backend/actions/artifacts?per_page=1"
+      return_content: yes
+    register: backend
+
+  - name: Download back end artifact
+    get_url:
+      url: "{{ (backend.content|from_json).artifacts[0].archive_download_url }}"
+      url_username: "{{ username }}"
+      url_password: "{{ access_token }}"
+      force_basic_auth: yes
+      dest: "/home/backend/artifact.zip"
+      mode: 0750
+
+  - name: Unzip backend artifact
+    unarchive:
+      dest: "/home/{{ backend_root }}"
+      src: "/home/backend/artifact.zip"
+      remote_src: yes
+
+  - name: Install dependencies
+    shell: cd /home/{{ backend_root }} && npm install
+
+  - name: Start pm2 backend process
+    shell: "cd /home/{{ backend_root }} && POSTGRES_DATABASE_URL=postgres://furrax:{{ postgres_password }}@{{ postgres_endpoint }}/furrax pm2 start dist/index.js"
+  
+  # CERTBOT ========================================================
+  - name: Check if certificate already exists.
+    stat:
+      path: /etc/letsencrypt/live/e-furrax.com/fullchain.pem
+    register: letsencrypt_cert
+
+  - name: Stop services to allow certbot to generate a cert.
+    service:
+      name: "{{ item }}"
+      state: stopped
+    with_items:
+      -  "{{ certbot_create_standalone_stop_services }}"
+
+  - name: Generate new certificate if one doesn't exist.
+    shell: "certbot certonly --non-interactive --standalone --agree-tos --email {{ certbot_admin_email }} --cert-name e-furrax.com -d e-furrax.com -d www.e-furrax.com -d api.e-furrax.com"
+    when: letsencrypt_cert.stat.exists == False
+
+  # NGINX ==========================================================
   - name: Apply Nginx template
     template:
       src: nginx/nginx.conf.j2
       dest: /etc/nginx/sites-available/default
-    notify: Restart Nginx
 
   - name: Enable new site
     file:
       src: /etc/nginx/sites-available/default
       dest: /etc/nginx/sites-enabled/default
       state: link
-    notify: Restart Nginx
 
-  handlers:
-  - name: Restart Nginx
+  - name: Start services
     service:
-      name: nginx
-      state: restarted
+      name: "{{ item }}"
+      state: started
+    with_items:
+      -  "{{ certbot_create_standalone_stop_services }}"

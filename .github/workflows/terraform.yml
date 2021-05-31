@@ -54,13 +54,13 @@ jobs:
         run: terraform fmt
       - name: terraform plan
         working-directory: ./ci/10_deploy
-        run: terraform plan
+        run: terraform plan -var="postgres_password=${{ secrets.POSTGRES_PASSWORD }}"
       - name: terraform apply
         working-directory: ./ci/10_deploy
         if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'workflow_run' }}
-        run: terraform apply --auto-approve
+        run: terraform apply --auto-approve -var="postgres_password=${{ secrets.POSTGRES_PASSWORD }}"
       - name: Ansible playbook
         working-directory: ./ci/20_ansible
         if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'workflow_run' }}
-        run: ansible-playbook install.yml --extra-vars="username=e-furrax access_token=${{ secrets.GITHUB_TOKEN }}" --private-key ../.ssh/id_rsa_aws
+        run: ansible-playbook install.yml --verbose --extra-vars="username=e-furrax access_token=${{ secrets.GITHUB_TOKEN }} postgres_password=${{ secrets.POSTGRES_PASSWORD }}" --private-key ../.ssh/id_rsa_aws
       
