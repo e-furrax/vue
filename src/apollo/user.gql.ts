@@ -20,6 +20,7 @@ export const getUser = gql`
       id
       username
       email
+      description
     }
   }
 `;

@@ -102,22 +102,7 @@
             <section class="pt-4 px-4">
               <h4 class="font-bold uppercase">About me</h4>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
-                blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
-                quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Corrupti cumque ad veritatis similique molestias doloribus
-                adipisci ut nulla porro quisquam dolorum voluptatibus, explicabo et est dicta id
-                itaque quia saepe!
-              </p>
-            </section>
-            <section class="px-4 bg-purple-925">
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet officiis reprehenderit
-                blanditiis omnis voluptas, commodi quia nisi in impedit alias placeat non nobis quo
-                quas illo iste illum reiciendis id? Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Corrupti cumque ad veritatis similique molestias doloribus
-                adipisci ut nulla porro quisquam dolorum voluptatibus, explicabo et est dicta id
-                itaque quia saepe!
+                {{ user.description }}
               </p>
             </section>
           </div>
