@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { registerMutation } from '@/apollo/user.gql';
-import { useStep } from '@/composables/signUpStepper';
+import { useStep } from '@/composables/stepper';
 import { useMutation } from '@vue/apollo-composable';
 import { Field, Form } from 'vee-validate';
 import { defineComponent } from 'vue';
@@ -94,10 +94,9 @@ export default defineComponent({
   },
   methods: {
     onSubmit(values: FirstStepForm) {
-      this.setStep(2);
-      //   this.register({ data: values }).then(() => {
-      //     this.setStep(2);
-      //   });
+      this.register({ data: values }).then(() => {
+        this.setStep(2);
+      });
     }
   }
 });

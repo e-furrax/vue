@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStep } from '@/composables/signUpStepper';
+import { useStep } from '@/composables/stepper';
 import FirstStep from '@/components/sign-up/FirstStep.vue';
 import SecondStep from '@/components/sign-up/SecondStep.vue';
 import ThirdStep from '@/components/sign-up/ThirdStep.vue';

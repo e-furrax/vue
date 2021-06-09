@@ -1,12 +1,10 @@
 <template>
   <h1 class="text-3xl font-semibold mb-6 text-white">Email Verification</h1>
-  <p class="text-white">Fill in the boxes below with the code that was sent to</p>
+  <p class="text-white">Fill in the box below with the code that was sent to</p>
   <span class="text-white">xxxx@xxx.com</span>
-  <Form class="flex flex-col justify-center" @submit="onSubmit" :validation-schema="schema">
+  <form class="flex flex-col justify-center" @submit.prevent="verify">
     <div class="inline-flex">
-      <Field :name="'code-' + n" v-for="n in 5" :key="n" v-slot="{ field }">
-        <input type="number" v-bind="field" class="w-8 mx-1 h-14 text-center" maxlength="1" />
-      </Field>
+      <input type="text" class="w-72 mx-1 h-14 text-center" maxlength="5" v-model="code" />
     </div>
 
     <div class="flex justify-evenly">
@@ -17,25 +15,27 @@
       </button>
       <button
         class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 w-1/4"
+        type="submit"
       >
         Verify
       </button>
     </div>
-  </Form>
+  </form>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Field, Form } from 'vee-validate';
-import { object, string, number } from 'yup';
+import { useField, useForm } from 'vee-validate';
+import { object, number } from 'yup';
+import { confirmUserMutation } from '@/apollo/user.gql';
+import { useMutation } from '@vue/apollo-composable';
+import { useStep } from '@/composables/stepper';
 
 export default defineComponent({
   name: 'SignUpFirstStep',
-  components: {
-    Field,
-    Form
-  },
   setup() {
+    const { mutate } = useMutation(confirmUserMutation);
+    const { setStep } = useStep();
     const schema = object({
       'code-1': number().required(),
       'code-2': number().required(),
@@ -43,8 +43,17 @@ export default defineComponent({
       'code-4': number().required(),
       'code-5': number().required()
     });
+    const { handleSubmit } = useForm({ validationSchema: schema });
+    const { value: code } = useField<number>('code');
+
+    const verify = handleSubmit(values => {
+      mutate(values).then(() => setStep(3));
+    });
+
     return {
-      schema
+      schema,
+      code,
+      verify
     };
   }
 });
