@@ -8,7 +8,7 @@ import SignUp from '../views/SignUp.vue';
 
 import Search from '../views/Search.vue';
 import UserProfile from '../views/UserProfile.vue';
-import { myProfileRoutes } from './myProfile';
+import { myProfileRoutes } from '../library/myProfile';
 
 import BackOffice from '../views/back-office/index.vue';
 import BackOfficeProfiles from '../views/back-office/profile/index.vue';

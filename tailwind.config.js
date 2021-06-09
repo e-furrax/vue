@@ -2,8 +2,8 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
+  purge: ['./src/**/*.html', './src/**/*.js', './src/**/*.vue'],
+  darkMode: false,
   theme: {
     extend: {
       keyframes: {
@@ -44,7 +44,9 @@ module.exports = {
     }
   },
   variants: {
-    extend: {}
+    extend: {
+      backgroundColor: ['even']
+    }
   },
   plugins: []
 };

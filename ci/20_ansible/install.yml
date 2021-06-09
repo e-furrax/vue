@@ -1,0 +1,50 @@
+- hosts: app_server
+  gather_facts: false
+  become: true
+
+  vars:
+    repo: vue
+    account: e-furrax
+    server_name: "{{ ansible_default_ipv4.address }}"
+    document_root: /var/www/html
+    app_root: app
+
+  tasks:
+  - name: Install Packages
+    apt:
+      name: ['nodejs', 'npm', 'git', 'nginx']
+      update_cache: yes
+      state: latest
+
+  - name: Git Clone Repo
+    git:
+      repo: "https://github.com/{{ account }}/{{ repo }}.git"
+      dest: "{{ document_root }}/vue"
+      clone: yes
+      update: yes
+    register: git_finished
+
+  - name: Apply Nginx template
+    template:
+      src: "{{ document_root }}/vue/ci/20_ansible/nginx/nginx.conf"
+      dest: /etc/nginx/sites-available/default
+    notify: Restart Nginx
+
+  - name: Enable new site
+    file:
+      src: /etc/nginx/sites-available/default
+      dest: /etc/nginx/sites-enabled/default
+      state: link
+    notify: Restart Nginx
+
+  - name: Running NPM install
+    npm:
+      path: "{{ document_root }}/vue"
+    register: npm_finished
+    when: git_finished.changed
+
+  handlers:
+  - name: Restart Nginx
+    service:
+      name: nginx
+      state: restarted
