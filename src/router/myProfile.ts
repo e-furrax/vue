@@ -28,13 +28,16 @@ export const myProfileRoutes: RouteRecordRaw = {
           path: 'account',
           name: 'Account',
           component: Account,
-          meta: { additionalInformations: 'Personal informations, Email', icon: 'ICON' }
+          meta: {
+            additionalInformations: 'Personal informations, Email',
+            icon: 'manage_accounts.svg'
+          }
         },
         {
           path: 'security',
           name: 'Security',
           component: Security,
-          meta: { additionalInformations: 'Change Password', icon: 'ICON' }
+          meta: { additionalInformations: 'Change Password', icon: 'policy.svg' }
         }
       ]
     },

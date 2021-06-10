@@ -1,21 +1,19 @@
 <template>
-  <div class="space-y-12 my-16">
-    <h1 class="font-bold text-2xl">Account Settings</h1>
-    <hr class="border-white opacity-20" />
-    <h2 class="font-semibold text-xl">Personal Informations</h2>
-    <form class="space-y-16" @submit.prevent="saveChanges" v-if="result">
-      <div class="space-y-5">
-        <div class="flex flex-col space-y-1 max-w-lg">
+  <div class="flex flex-col items-start">
+    <h2 class="font-semibold border-b-2 border-purple-800 mb-6">Personal Informations</h2>
+    <form class="w-full md:w-96" @submit.prevent="saveChanges">
+      <div class="">
+        <div class="flex flex-col py-2 w-full">
           <label for="name" class="text-sm font-semibold">Name</label>
           <input type="text" id="name" class="h-10 p-4" v-model="username" />
           <Alert :message="usernameError" alert-type="danger" v-if="usernameError" />
         </div>
-        <div class="flex flex-col space-y-1 max-w-lg">
+        <div class="flex flex-col py-2 w-full">
           <label for="email" class="text-sm font-semibold">Email Address</label>
           <input type="text" id="email" class="h-10 p-4" v-model="email" />
           <Alert :message="emailError" alert-type="danger" v-if="emailError" />
         </div>
-        <div class="flex flex-col space-y-1 max-w-lg">
+        <div class="flex flex-col py-2 w-full">
           <label for="bio" class="text-sm font-semibold" maxlength="200">Bio</label>
           <textarea
             id="bio"
@@ -27,16 +25,13 @@
           <Alert :message="bioError" alert-type="danger" v-if="bioError" />
         </div>
       </div>
-      <hr class="border-white opacity-20" />
-      <div class="max-w-lg flex justify-between">
-        <button>Discard Changes</button>
+      <div class="w-full flex flex-col items-start">
         <button
-          type="submit"
-          class="bg-purple-700 rounded-full py-2 px-12 hover:bg-purple-600 transition-all duration-200 flex justify-between relative"
+          class="w-full mt-2 border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
         >
           Save Changes
-          <span class="absolute right-5" v-if="saveChangesLoading">🤯</span>
         </button>
+        <button class="mt-2">Discard Changes</button>
       </div>
     </form>
   </div>

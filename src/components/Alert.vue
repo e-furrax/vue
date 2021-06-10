@@ -1,18 +1,14 @@
 <template>
-  <div
-    class="py-3 px-5 mb-4 text-sm rounded-md border flex items-center"
-    :class="alertType"
-    role="alert"
-  >
-    <div class="w-4 mr-2">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        v-html="iconHtml"
-      ></svg>
-    </div>
+  <div class="mt-1 text-sm rounded-md flex items-center" :class="alertType" role="alert">
+    <svg
+      class="w-5 mr-2"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+    </svg>
     <span>{{ message }}</span>
   </div>
 </template>
@@ -42,24 +38,24 @@ export default defineComponent({
 
 <style lang="postcss" scoped>
 .primary {
-  @apply bg-blue-200 text-blue-900 border-blue-300;
+  @apply text-blue-500;
 }
 .secondary {
-  @apply bg-gray-200 text-gray-900 border-gray-300;
+  @apply text-gray-500;
 }
 .success {
-  @apply bg-green-200 text-green-900 border-green-300;
+  @apply text-green-500;
 }
 .warning {
-  @apply bg-yellow-200 text-yellow-900 border-yellow-300;
+  @apply text-yellow-500;
 }
 .danger {
-  @apply bg-red-200 text-red-900 border-red-300;
+  @apply text-red-500;
 }
 .info {
-  @apply bg-purple-200 text-purple-900  border-purple-300;
+  @apply text-purple-500;
 }
 .dark {
-  @apply bg-gray-300 text-gray-900 border-gray-400;
+  @apply text-gray-500;
 }
 </style>

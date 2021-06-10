@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col lg:w-80 sm:w-24 bg-purple-1100">
+  <div class="flex flex-col bg-purple-1100 w-30 lg:w-72">
     <div class="flex flex-row items-center my-6 ml-6" v-if="profile">
       <img
         v-if="profile?.profileImage"
@@ -24,8 +24,7 @@
       />
       <span class="text-white mx-4 hidden lg:block">{{ profile.username }}</span>
     </div>
-    <span class="text-blueGray-custom ml-6 text-sm font-semibold mt-2">Menu</span>
-    <ul class="flex flex-col py-4">
+    <ul class="flex flex-col py-6">
       <div v-for="route in myProfileRoutes.children" :key="route.path">
         <router-link
           :to="`/profile/${route.path}`"
@@ -39,13 +38,14 @@
             <a
               :href="href"
               @click="navigate"
-              class="flex flex-row items-center h-16 text-blueGray-custom ml-6"
+              class="flex flex-row items-center h-16 text-white px-4 md:px-6"
             >
-              <span
-                class="inline-flex items-center justify-center bg-purple-500 rounded-xl h-10 w-10 text-xs text-white lg:mr-4"
-                ><i>ICON</i></span
-              >
-              <span class="text-sm font-semibold hidden lg:block">{{ route.name }}</span>
+              <img
+                :src="`/images/${route.meta.icon}`"
+                class="opacity-100"
+                style="width: 24px; max-width: inherit"
+              />
+              <span class="ml-4 text-sm font-semibold hidden lg:block">{{ route.name }}</span>
             </a>
           </li>
         </router-link>

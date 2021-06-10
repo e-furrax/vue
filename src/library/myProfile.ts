@@ -23,25 +23,30 @@ export const myProfileRoutes: RouteRecordRaw = {
       name: 'Settings',
       component: Settings,
       redirect: '/profile/settings/account',
+      meta: { icon: 'settings.svg' },
       children: [
         {
           path: 'account',
           name: 'Account',
           component: Account,
-          meta: { additionalInformations: 'Personal informations, Email', icon: 'ICON' }
+          meta: {
+            additionalInformations: 'Personal informations, Email',
+            icon: 'manage_accounts.svg'
+          }
         },
         {
           path: 'security',
           name: 'Security',
           component: Security,
-          meta: { additionalInformations: 'Change Password', icon: 'ICON' }
+          meta: { additionalInformations: 'Change Password', icon: 'policy.svg' }
         }
       ]
     },
     {
       path: 'history',
       name: 'History Transactions',
-      component: HistoryTransactions
+      component: HistoryTransactions,
+      meta: { icon: 'receipt_long.svg' }
     }
   ]
 };

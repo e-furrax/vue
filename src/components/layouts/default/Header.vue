@@ -10,7 +10,8 @@
             @click="handleBurger"
           />
           <router-link to="/" class="text-lg flex items-center">
-            <img src="/images/e-furrax.svg" width="24" /><span class="ml-3 text-base"
+            <img src="/images/e-furrax.svg" width="24" /><span
+              class="hidden sm:block ml-3 text-base"
               >E-FURRAX</span
             >
           </router-link>
