@@ -1,10 +1,5 @@
 <template>
   <div class="comment py-2 px-3 w-full rounded-sm bg-purple-1100 text-white relative">
-    <router-link
-      to="/report"
-      class="report hidden absolute hover:underline text-gray-300 top-2 right-3 text-xs"
-      >Report</router-link
-    >
     <div class="flex items-start">
       <img
         src="/images/avatar1.png"
@@ -37,8 +32,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.comment:hover .report {
-  display: block;
-}
-</style>
+<style scoped></style>

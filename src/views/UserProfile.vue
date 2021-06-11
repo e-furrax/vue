@@ -99,11 +99,38 @@
                 </GameRank>
               </div>
             </section>
-            <section class="pt-4 px-4">
+            <section class="pt-4 px-4 relative">
+              <img
+                src="/images/icons/edit.svg"
+                class="absolute top-4 right-4 cursor-pointer"
+                width="20"
+                @click="handleEditingDescription"
+                v-if="!editingDescription"
+              />
               <h4 class="font-bold uppercase">About me</h4>
-              <p>
+              <p v-if="!editingDescription">
                 {{ user.description }}
               </p>
+              <div class="flex flex-col" v-else>
+                <textarea
+                  class="h-32 text-white bg-purple-1100 p-2 w-full"
+                  v-model="user.description"
+                ></textarea>
+                <div class="mt-2 flex items-center justify-end">
+                  <button
+                    @click="handleEditingDescription"
+                    class="px-4 mr-2 outline-none font-bold text-white uppercase rounded border border-purple-800 text-sm leading-8 py-1 hover:border-purple-700 transition-all ease-in duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    @click="handleEditingDescription"
+                    class="px-4  outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
             </section>
           </div>
           <div
@@ -112,15 +139,6 @@
             <div class="p-4 text-left">
               <h4 class="font-bold uppercase">Comments ({{ comments.length }})</h4>
               <Comment v-for="com in comments" :key="com.id" :comment="com" class="mt-2"></Comment>
-              <div class="flex items-center cursor-pointer w-full pt-6">
-                <hr class="w-full border-1 border-purple-800" />
-                <p
-                  class="text-xs text-purple-300 hover:underline hover:text-purple-200 uppercase flex-no-wrap w-1/3 px-2 text-center"
-                >
-                  Load more comments
-                </p>
-                <hr class="w-full border-1 border-purple-800" />
-              </div>
             </div>
           </div>
         </div>
@@ -257,11 +275,15 @@ export default defineComponent({
     },
     handleGameChange(event: { target: HTMLInputElement }) {
       this.demandGame = event.target.value;
+    },
+    handleEditingDescription() {
+      this.editingDescription = this.editingDescription ? false : true;
     }
   },
   data() {
     return {
       loaded: false,
+      editingDescription: false,
       totalPrice: '4.50',
       demandGame: 'lol',
       comments: [
