@@ -1,6 +1,8 @@
 <template>
   <Loader v-if="loading" />
-  <div v-else-if="error">Error: {{ error.message }}</div>
+  <div v-else-if="error" class="mt-10 container mx-auto">
+    <Error :message="error.message"></Error>
+  </div>
   <div class="relative text-white" v-if="user">
     <div
       :style="
@@ -241,6 +243,7 @@ import { useQuery, useResult } from '@vue/apollo-composable';
 import { getUser } from '@/apollo/user.gql';
 
 import Comment from '@/components/Comment.vue';
+import Error from '@/components/Error.vue';
 import Loader from '@/components/Loader.vue';
 import GameRank from '@/components/GameRank.vue';
 import Availability from '@/components/Availability.vue';
@@ -262,7 +265,7 @@ export default defineComponent({
     };
   },
   name: 'UserProfile',
-  components: { Comment, Loader, GameRank, Availability },
+  components: { Comment, Loader, GameRank, Availability, Error },
   methods: {
     handleModal() {
       const playModal = document.getElementById('play-modal') as HTMLDivElement;
