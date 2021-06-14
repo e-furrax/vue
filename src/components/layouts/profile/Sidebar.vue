@@ -26,11 +26,7 @@
     </div>
     <ul class="flex flex-col py-6">
       <div v-for="route in myProfileRoutes.children" :key="route.path">
-        <router-link
-          :to="`/profile/${route.path}`"
-          v-slot="{ href, route, navigate, isActive }"
-          custom
-        >
+        <router-link :to="`/profile/${route.path}`" v-slot="{ href, navigate, isActive }" custom>
           <li
             :class="[isActive && 'router-link-active']"
             class="hover:bg-purple-950 transition-colors duration-100"
