@@ -1,6 +1,4 @@
-import { useQuery } from '@vue/apollo-composable';
-import { reactive, toRefs, watch } from 'vue';
-import { me } from '../apollo/user.gql';
+import { reactive, toRefs } from 'vue';
 
 const AUTH_KEY = 'furrax_token';
 export const AUTH_TOKEN = 'accessToken';
