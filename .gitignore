@@ -2,6 +2,7 @@
 node_modules
 /dist
 ci/.terraform/
+**/.terraform*
 
 
 # local env files
