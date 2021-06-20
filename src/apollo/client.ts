@@ -3,7 +3,6 @@ dotenv.config();
 import { from, ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client/core';
 import { createUploadLink } from 'apollo-upload-client';
 
-console.log(process.env);
 const terminatingLink = createUploadLink({
   uri: `${process.env.VUE_APP_BACKEND_URL || 'http://localhost:3000'}/graphql`
 });

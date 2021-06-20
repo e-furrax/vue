@@ -16,15 +16,38 @@
             >
           </router-link>
           <ul class="hidden lg:flex h-full ml-8 items-center">
-            <li
-              class="h-full mr-8 flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
-            >
-              <router-link to="/search">Find your teammate</router-link>
+            <li class="h-full">
+              <router-link
+                to="/search"
+                class="
+                  h-full
+                  mr-8
+                  flex
+                  items-center
+                  hover:text-purple-500
+                  cursor-pointer
+                  border-b-2 border-transparent
+                  hover:border-purple-500
+                  transition
+                "
+                >Find your teammate</router-link
+              >
             </li>
-            <li
-              class="h-full flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
-            >
-              <router-link to="/profile">Profile</router-link>
+            <li class="h-full">
+              <router-link
+                class="
+                  h-full
+                  flex
+                  items-center
+                  hover:text-purple-500
+                  cursor-pointer
+                  border-b-2 border-transparent
+                  hover:border-purple-500
+                  transition
+                "
+                to="/profile"
+                >Profile</router-link
+              >
             </li>
           </ul>
         </div>
@@ -32,13 +55,38 @@
           <SearchBar class="lg:mr-4" />
           <router-link
             to="/sign-up"
-            class="hidden lg:block px-3 py-1 mx-2 bg-orange-600 rounded hover:bg-orange-700 transition duration-300"
+            class="
+              hidden
+              lg:block
+              px-3
+              py-1
+              mx-2
+              bg-orange-600
+              rounded
+              hover:bg-orange-700
+              transition
+              duration-300
+            "
           >
             Sign Up
           </router-link>
           <router-link
             to="/sign-in"
-            class="hidden lg:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+            class="
+              hidden
+              lg:block
+              px-3
+              py-1
+              mx-2
+              rounded
+              bg-transparent
+              border border-purple-400
+              text-purple-400
+              hover:border-purple-300
+              hover:text-purple-300
+              transition
+              duration-300
+            "
             >Log In</router-link
           >
         </div>
