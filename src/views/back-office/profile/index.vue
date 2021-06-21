@@ -36,7 +36,6 @@ export default defineComponent({
   computed: {},
   methods: {
     handleChangePage(n: string) {
-      console.log(n);
       this.currentPage = parseInt(n);
     }
   }

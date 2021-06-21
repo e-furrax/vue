@@ -5,7 +5,13 @@ export const addRatingMutation = gql`
     addRating(data: $data) {
       rating
       comments
-      toUser
+      createdAt
+      fromUser {
+        username
+      }
+      toUser {
+        username
+      }
     }
   }
 `;

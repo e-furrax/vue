@@ -6,4 +6,5 @@ export default interface RatingModel {
   comments: string;
   fromUser: UserModel;
   toUser: UserModel;
+  createdAt: string;
 }
