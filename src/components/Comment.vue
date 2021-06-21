@@ -9,25 +9,57 @@
       />
       <div class="ml-2">
         <div class="flex items-center">
-          <span class="font-bold mr-1">{{ comment.author }}</span>
-          <img v-for="index of Array(5)" :key="index" src="/images/icons/star.svg" width="14" />
+          <span class="font-bold mr-2">{{ comment.fromUser.username }}</span>
+          <div class="flex items-center">
+            <img src="/images/icons/star.svg" width="14" />
+            <span class="text-sm ml-1">
+              {{ comment.rating }}
+            </span>
+          </div>
         </div>
-        <div class="text-gray-300 text-xs mb-2">2 hours ago</div>
+        <div class="text-gray-300 text-xs mb-2">
+          {{ timeDifference(Date.now(), new Date(comment.createdAt).getTime()) }}
+        </div>
       </div>
     </div>
     <p class="description text-sm">
-      {{ comment.message }}
+      {{ comment.comments }}
     </p>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Comment',
   props: {
     comment: Object
+  },
+  methods: {
+    timeDifference(current: number, previous: number) {
+      const msPerMinute = 60 * 1000;
+      const msPerHour = msPerMinute * 60;
+      const msPerDay = msPerHour * 24;
+      const msPerMonth = msPerDay * 30;
+      const msPerYear = msPerDay * 365;
+
+      const elapsed = current - previous;
+
+      if (elapsed < msPerMinute) {
+        return 'just now';
+      } else if (elapsed < msPerHour) {
+        return `${Math.round(elapsed / msPerMinute)} minutes ago`;
+      } else if (elapsed < msPerDay) {
+        return `${Math.round(elapsed / msPerHour)} hours ago`;
+      } else if (elapsed < msPerMonth) {
+        return `${Math.round(elapsed / msPerDay)} days ago`;
+      } else if (elapsed < msPerYear) {
+        return `${Math.round(elapsed / msPerMonth)} months ago`;
+      } else {
+        return `${Math.round(elapsed / msPerYear)} years ago`;
+      }
+    }
   }
 });
 </script>

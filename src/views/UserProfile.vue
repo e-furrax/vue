@@ -16,26 +16,71 @@
     <div class="mt-8 lg:mt-40">
       <div class="container mx-auto w-full flex justify-center lg:justify-end">
         <button
-          class="font-bold uppercase rounded bg-orange-600 text-sm py-2 px-6 hover:bg-orange-700 transition-all ease-in duration-200"
+          class="
+            font-bold
+            uppercase
+            rounded
+            bg-orange-600
+            text-sm
+            py-2
+            px-6
+            hover:bg-orange-700
+            transition-all
+            ease-in
+            duration-200
+          "
           @click="handleModal"
         >
           Play together
         </button>
       </div>
       <div class="container mx-auto mt-4 flex flex-col items-center lg:flex-row lg:items-start">
-        <div class="lg:mb-10 mb-4 lg:mr-4">
+        <div class="lg:mb-10 mb-4 w-full lg:mr-4">
           <div
-            class="bg-purple-925 bg-opacity-70 w-full sm:rounded-sm border border-purple-custom relative mb-4 pb-3"
+            class="
+              bg-purple-925 bg-opacity-70
+              w-full
+              sm:rounded-sm
+              border border-purple-custom
+              relative
+              mb-4
+              pb-3
+            "
           >
             <div
-              class="profile-card mt-4 lg:mt-0 lg:absolute lg:transform lg:-translate-y-1/2 flex items-center px-4"
+              class="
+                profile-card
+                mt-4
+                lg:mt-0
+                lg:absolute
+                lg:transform
+                lg:-translate-y-1/2
+                flex
+                items-center
+                px-4
+              "
             >
               <img
                 src="/images/avatar1.png"
                 class="rounded-full border-2 border-yellow-800 z-20 w-32 lg:w-40"
               />
               <div
-                class="flex flex-col lg:bg-purple-1000 ml-4 lg:pl-16 lg:pr-16 w-full lg:w-auto lg:py-2 lg:z-10 lg:border border-purple-custom lg:transform lg:-translate-x-12 rounded-sm"
+                class="
+                  flex flex-col
+                  lg:bg-purple-1000
+                  ml-4
+                  lg:pl-16
+                  lg:pr-16
+                  w-full
+                  lg:w-auto
+                  lg:py-2
+                  lg:z-10
+                  lg:border
+                  border-purple-custom
+                  lg:transform
+                  lg:-translate-x-12
+                  rounded-sm
+                "
               >
                 <div class="flex items-center">
                   <h2 class="text-xl lg:text-2xl mr-2">{{ user.username }}</h2>
@@ -53,15 +98,10 @@
                 <img src="/images/icons/local_atm.svg" class="mr-1" height="20" />
                 <span class="text-lg">4.50<span class="text-sm">/Match</span></span>
               </div>
-              <div class="flex items-center">
-                <img
-                  v-for="index of [1, 2, 3, 4]"
-                  :key="index"
-                  src="/images/icons/star.svg"
-                  width="18"
-                />
-                <img src="/images/icons/star_half.svg" width="18" />
-                <span class="ml-2 text-sm">(12)</span>
+              <div v-if="computedAverageRating !== '0'" class="flex items-center">
+                <img src="/images/icons/star.svg" width="18" />
+                <span class="ml-1" ref="computedAverageRatingRef">{{ computedAverageRating }}</span>
+                <span class="ml-2 text-sm">({{ computedReceivedRatings.length }})</span>
               </div>
             </div>
             <section class="lg:mt-20 pt-4 px-4">
@@ -121,13 +161,44 @@
                 <div class="mt-2 flex items-center justify-end">
                   <button
                     @click="handleEditingDescription"
-                    class="px-4 mr-2 outline-none font-bold text-white uppercase rounded border border-purple-800 text-sm leading-8 py-1 hover:border-purple-700 transition-all ease-in duration-200"
+                    class="
+                      px-4
+                      mr-2
+                      outline-none
+                      font-bold
+                      text-white
+                      uppercase
+                      rounded
+                      border border-purple-800
+                      text-sm
+                      leading-8
+                      py-1
+                      hover:border-purple-700
+                      transition-all
+                      ease-in
+                      duration-200
+                    "
                   >
                     Cancel
                   </button>
                   <button
                     @click="handleEditingDescription"
-                    class="px-4  outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+                    class="
+                      px-4
+                      outline-none
+                      font-bold
+                      text-white
+                      uppercase
+                      rounded
+                      bg-purple-800
+                      text-sm
+                      leading-8
+                      py-1
+                      hover:bg-purple-700
+                      transition-all
+                      ease-in
+                      duration-200
+                    "
                   >
                     Save
                   </button>
@@ -139,13 +210,75 @@
             class="bg-purple-925 sm:bg-opacity-70 w-full lg:rounded-sm border border-purple-custom"
           >
             <div class="p-4 text-left">
-              <h4 class="font-bold uppercase">Comments ({{ comments.length }})</h4>
-              <Comment v-for="com in comments" :key="com.id" :comment="com" class="mt-2"></Comment>
+              <h4 class="font-bold uppercase mb-2">Comments ({{ user.receivedRatings.length }})</h4>
+              <Form
+                :validation-schema="schema"
+                class="flex flex-col items-start"
+                @submit="onSubmit"
+              >
+                <label for="rating">Rating<span class="text-red-500">*</span></label>
+                <Field
+                  class="w-20 mb-1 p-2 text-white bg-purple-1100"
+                  type="number"
+                  name="rating"
+                  min="1"
+                  max="5"
+                  step="0.1"
+                  v-model="rating"
+                />
+                <ErrorMessage name="rating" class="text-red-500 mb-2" />
+                <label for="comment">Comment</label>
+                <Field
+                  class="h-32 mb-1 text-white bg-purple-1100 p-2 w-full"
+                  name="comments"
+                  v-model="comments"
+                  as="textarea"
+                ></Field>
+                <ErrorMessage name="password" class="text-red-500 mb-2" />
+                <button
+                  class="
+                    px-4
+                    outline-none
+                    font-bold
+                    text-white
+                    uppercase
+                    rounded
+                    bg-purple-800
+                    text-sm
+                    leading-8
+                    py-1
+                    hover:bg-purple-700
+                    transition-all
+                    ease-in
+                    duration-200
+                    self-end
+                  "
+                >
+                  Envoyer
+                </button>
+              </Form>
+              <div id="commentsDOM">
+                <Comment
+                  v-for="com in computedReceivedRatings"
+                  :key="com.id"
+                  :comment="com"
+                  class="mt-2"
+                ></Comment>
+              </div>
             </div>
           </div>
         </div>
         <div
-          class="bg-purple-925 bg-opacity-70 sm:rounded-sm border bg-purple-925 border-purple-custom lg:max-w-sm mb-10 lg:mb-0"
+          class="
+            bg-purple-925 bg-opacity-70
+            sm:rounded-sm
+            border
+            bg-purple-925
+            border-purple-custom
+            lg:max-w-sm
+            mb-10
+            lg:mb-0
+          "
         >
           <section class="pt-4 p-4">
             <h4 class="font-bold uppercase mb-2">Availability</h4>
@@ -222,13 +355,38 @@
       </div>
       <div class="p-4 bg-purple-1200 flex items-center justify-between">
         <button
-          class="font-bold uppercase rounded bg-transparent border border-purple-custom text-sm py-2 px-6 hover:bg-purple-1200 transition-all ease-in duration-200"
+          class="
+            font-bold
+            uppercase
+            rounded
+            bg-transparent
+            border border-purple-custom
+            text-sm
+            py-2
+            px-6
+            hover:bg-purple-1200
+            transition-all
+            ease-in
+            duration-200
+          "
           @click="handleModal"
         >
           Cancel
         </button>
         <button
-          class="font-bold uppercase rounded bg-orange-600 text-sm py-2 px-6 hover:bg-orange-700 transition-all ease-in duration-200"
+          class="
+            font-bold
+            uppercase
+            rounded
+            bg-orange-600
+            text-sm
+            py-2
+            px-6
+            hover:bg-orange-700
+            transition-all
+            ease-in
+            duration-200
+          "
         >
           Confirm
         </button>
@@ -238,15 +396,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useQuery, useResult } from '@vue/apollo-composable';
+import { addRatingMutation } from '@/apollo/rating.gql';
+import { defineComponent, ref } from 'vue';
+import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import { getUser } from '@/apollo/user.gql';
+import * as yup from 'yup';
+import { Field, Form, ErrorMessage } from 'vee-validate';
+import RatingModel from '@/models/rating.model';
 
 import Comment from '@/components/Comment.vue';
 import Error from '@/components/Error.vue';
 import Loader from '@/components/Loader.vue';
 import GameRank from '@/components/GameRank.vue';
 import Availability from '@/components/Availability.vue';
+import { useToast } from 'vue-toastification';
+
+interface RatingForm {
+  rating: string;
+  comments?: string;
+}
+
+interface AddRatingVariables {
+  data: {
+    rating: string;
+    comments?: string;
+    toUser: {
+      id: number;
+    };
+  };
+}
 
 export default defineComponent({
   props: {
@@ -256,17 +434,87 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const computedAverageRatingRef = ref();
     const { result, loading, error } = useQuery(getUser, { data: { id: parseInt(props.userId) } });
     const user = useResult(result, null, data => data.getUser);
+
+    const { mutate: addRating } = useMutation<Partial<RatingModel>, AddRatingVariables>(
+      addRatingMutation
+    );
+
+    const schema = yup.object({
+      rating: yup
+        .string()
+        .required()
+        .min(1)
+        .max(5),
+      comments: yup.string().max(500),
+      toUser: yup.object().shape({
+        id: yup.number()
+      })
+    });
+
+    const toast = useToast();
+
     return {
+      toast,
+      computedAverageRatingRef,
+      schema,
+      addRating,
       user,
       loading,
       error
     };
   },
+  computed: {
+    computedReceivedRatings(): RatingModel[] {
+      return this.orderRatings(this.user.receivedRatings);
+    },
+    computedAverageRating(): string {
+      return this.calculateAverageRating(this.user.receivedRatings);
+    }
+  },
   name: 'UserProfile',
-  components: { Comment, Loader, GameRank, Availability, Error },
+  components: { Field, ErrorMessage, Form, Comment, Loader, GameRank, Availability, Error },
   methods: {
+    calculateAverageRating(ratings: RatingModel[]): string {
+      const sum = ratings.reduce((acc: number, rating: RatingModel) => acc + +rating.rating, 0);
+      return sum ? (sum / ratings.length).toFixed(2) : '0';
+    },
+    orderRatings(ratings: RatingModel[]) {
+      const orderedRatings = JSON.parse(JSON.stringify(ratings));
+      orderedRatings.sort((r1: RatingModel, r2: RatingModel) => {
+        return new Date(r2.createdAt).getTime() - new Date(r1.createdAt).getTime();
+      });
+      return orderedRatings;
+    },
+    onSubmit(values: RatingForm, { resetForm }: any) {
+      if (values.rating) {
+        this.addRating({
+          data: {
+            rating: values.rating,
+            comments: values.comments,
+            toUser: { id: +this.userId }
+          }
+        })
+          .then(res => {
+            if (res) {
+              const newRating = res.data as { addRating: RatingModel };
+              this.computedReceivedRatings.unshift(newRating.addRating);
+              this.computedAverageRatingRef.textContent = this.calculateAverageRating(
+                this.computedReceivedRatings
+              );
+              this.$forceUpdate();
+              this.toast.success('Rating sent successfully.');
+              resetForm();
+            }
+          })
+          .catch(err => {
+            this.toast.error('Oops, something went wrong, we could not send your comment.');
+            console.error(err);
+          });
+      }
+    },
     handleModal() {
       const playModal = document.getElementById('play-modal') as HTMLDivElement;
       playModal.classList.toggle('hidden');
@@ -288,27 +536,7 @@ export default defineComponent({
       loaded: false,
       editingDescription: false,
       totalPrice: '4.50',
-      demandGame: 'lol',
-      comments: [
-        {
-          id: 1,
-          author: 'Thomas',
-          message:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
-        },
-        {
-          id: 2,
-          author: 'Pierre',
-          message:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
-        },
-        {
-          id: 3,
-          author: 'Basile',
-          message:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec elit venenatis, malesuada est laoreet, aliquet nulla. Donec eu mattis lectus. Morbi fringilla elementum augue, ut tempus libero tempor quis. Mauris consectetur nisi quam, commodo tincidunt.'
-        }
-      ]
+      demandGame: 'lol'
     };
   }
 });
