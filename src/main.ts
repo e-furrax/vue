@@ -9,6 +9,8 @@ import { DefaultApolloClient } from '@vue/apollo-composable';
 import { apolloClient } from './apollo/client';
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+import VTooltip from 'v-tooltip';
+import 'v-tooltip/dist/v-tooltip.css';
 
 createApp({
   setup() {
@@ -22,4 +24,5 @@ createApp({
   .use(store)
   .use(router)
   .use(Toast)
+  .use(VTooltip)
   .mount('#app');

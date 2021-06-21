@@ -1,7 +1,7 @@
 <template>
   <h1 class="text-3xl font-semibold mb-6 text-white">Register</h1>
-  <Form class="form-grid" @submit="onSubmit" :validation-schema="schema">
-    <div class="input-grid">
+  <Form class="form-grid" @submit="onSubmit" :validation-schema="schema" v-slot="{ errors }">
+    <div class="input-grid" :class="errors.email && 'border-error'">
       <div class="icons">
         <svg width="16px" height="16px" viewBox="0 0 511.626 511.626" fill="currentColor">
           <path
@@ -20,8 +20,24 @@
         autocomplete="current-email"
         name="email"
       />
+      <ErrorMessage name="email" v-slot="{ message }" as="div">
+        <svg
+          width="16"
+          height="14"
+          viewBox="0 0 16 14"
+          class="error-icon"
+          v-tooltip.right-end="message"
+        >
+          <path
+            fill="currentColor"
+            fill-rule="evenodd"
+            d="M15.882 12.702L8.754.432a.874.874 0 00-1.508 0L.118 12.703A.865.865 0 00.872 14h14.256c.67 0 1.09-.721.754-1.298zm-7.92-8.255c.49-.023.9.39.855.871L8.444 9.29a.432.432 0 01-.432.39.44.44 0 01-.439-.39l-.37-3.947a.814.814 0 01.758-.896zm.037 7.361a.817.817 0 01-.82-.814c0-.45.367-.814.82-.814.452 0 .82.364.82.814 0 .45-.368.814-.82.814z"
+          ></path>
+        </svg>
+      </ErrorMessage>
     </div>
-    <div class="input-grid">
+
+    <div class="input-grid" :class="errors.username && 'border-error'">
       <div class="icons">
         <svg width="12px" height="17px" viewBox="0 0 12 17">
           <path
@@ -41,8 +57,23 @@
         placeholder="Username"
         name="username"
       />
+      <ErrorMessage name="username" v-slot="{ message }" as="div">
+        <svg
+          width="16"
+          height="14"
+          viewBox="0 0 16 14"
+          class="error-icon"
+          v-tooltip.right-end="message"
+        >
+          <path
+            fill="currentColor"
+            fill-rule="evenodd"
+            d="M15.882 12.702L8.754.432a.874.874 0 00-1.508 0L.118 12.703A.865.865 0 00.872 14h14.256c.67 0 1.09-.721.754-1.298zm-7.92-8.255c.49-.023.9.39.855.871L8.444 9.29a.432.432 0 01-.432.39.44.44 0 01-.439-.39l-.37-3.947a.814.814 0 01.758-.896zm.037 7.361a.817.817 0 01-.82-.814c0-.45.367-.814.82-.814.452 0 .82.364.82.814 0 .45-.368.814-.82.814z"
+          ></path>
+        </svg>
+      </ErrorMessage>
     </div>
-    <div class="input-grid">
+    <div class="input-grid" :class="errors.password && 'border-error'">
       <div class="icons">
         <svg width="12px" height="17px" viewBox="0 0 12 17">
           <path
@@ -62,8 +93,23 @@
         autocomplete="current-password"
         name="password"
       />
+      <ErrorMessage name="password" v-slot="{ message }" as="div">
+        <svg
+          width="16"
+          height="14"
+          viewBox="0 0 16 14"
+          class="error-icon"
+          v-tooltip.right-end="message"
+        >
+          <path
+            fill="currentColor"
+            fill-rule="evenodd"
+            d="M15.882 12.702L8.754.432a.874.874 0 00-1.508 0L.118 12.703A.865.865 0 00.872 14h14.256c.67 0 1.09-.721.754-1.298zm-7.92-8.255c.49-.023.9.39.855.871L8.444 9.29a.432.432 0 01-.432.39.44.44 0 01-.439-.39l-.37-3.947a.814.814 0 01.758-.896zm.037 7.361a.817.817 0 01-.82-.814c0-.45.367-.814.82-.814.452 0 .82.364.82.814 0 .45-.368.814-.82.814z"
+          ></path>
+        </svg>
+      </ErrorMessage>
     </div>
-    <div class="input-grid">
+    <div class="input-grid" :class="errors.gender && 'border-error'">
       <div class="icons">
         <svg width="12px" height="17px" viewBox="0 0 12 17">
           <path
@@ -80,26 +126,37 @@
         <option value="male">Male</option>
         <option value="female">Female</option>
       </Field>
+      <ErrorMessage name="gender" v-slot="{ message }" as="div">
+        <svg
+          width="16"
+          height="14"
+          viewBox="0 0 16 14"
+          class="error-icon"
+          v-tooltip.right-end="message"
+        >
+          <path
+            fill="currentColor"
+            fill-rule="evenodd"
+            d="M15.882 12.702L8.754.432a.874.874 0 00-1.508 0L.118 12.703A.865.865 0 00.872 14h14.256c.67 0 1.09-.721.754-1.298zm-7.92-8.255c.49-.023.9.39.855.871L8.444 9.29a.432.432 0 01-.432.39.44.44 0 01-.439-.39l-.37-3.947a.814.814 0 01.758-.896zm.037 7.361a.817.817 0 01-.82-.814c0-.45.367-.814.82-.814.452 0 .82.364.82.814 0 .45-.368.814-.82.814z"
+          ></path>
+        </svg>
+      </ErrorMessage>
     </div>
     <button
-      :disabled="true"
-      class="relative border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 disabled:opacity-70"
+      :disabled="loading"
+      class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 disabled:opacity-70"
     >
       Sign up
     </button>
-    <div>
-      <MiniLoader v-if="true" />
-    </div>
   </Form>
 </template>
 
 <script lang="ts">
-import MiniLoader from '@/components/MiniLoader.vue';
 import { registerMutation } from '@/apollo/user.gql';
 import { useRegisteredInfo } from '@/composables/registration';
 import { useStep } from '@/composables/stepper';
 import { useMutation } from '@vue/apollo-composable';
-import { Field, Form } from 'vee-validate';
+import { Field, Form, ErrorMessage } from 'vee-validate';
 import { defineComponent } from 'vue';
 import { object, string } from 'yup';
 
@@ -122,7 +179,7 @@ export default defineComponent({
   components: {
     Field,
     Form,
-    MiniLoader
+    ErrorMessage
   },
   setup() {
     const { mutate: register, loading } = useMutation<RegisterMutationResponse>(registerMutation);
@@ -169,6 +226,14 @@ export default defineComponent({
 </script>
 
 <style lang="postcss" scoped>
+.error-icon {
+  color: rgb(224, 18, 115);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translate(0px, -50%);
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 100%;
@@ -216,5 +281,9 @@ export default defineComponent({
 .icons {
   color: rgb(136, 138, 180);
   @apply absolute left-3 top-1/2 w-8 text-center transform translate-x-0 -translate-y-2/4;
+}
+
+.border-error {
+  border: 1px solid rgb(224, 18, 115);
 }
 </style>

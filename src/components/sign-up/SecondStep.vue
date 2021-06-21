@@ -1,15 +1,22 @@
 <template>
   <h1 class="text-3xl font-semibold mb-6 text-white">Email Verification</h1>
   <p class="text-white">Fill in the box below with the code that was sent to</p>
-  <span class="text-white">{{ email }}</span>
-  <form class="flex flex-col justify-center" @submit.prevent="verify">
-    <div class="inline-flex">
-      <input type="text" class="w-72 mx-1 h-14 text-center" maxlength="5" v-model="code" />
+  <span class="text-orange-500">{{ email }}</span>
+  <form class="flex flex-col justify-center space-y-4 mt-4" @submit.prevent="verify">
+    <input
+      type="text"
+      class="w-72 mx-1 h-14 text-center"
+      maxlength="5"
+      v-model="code"
+      :class="error && 'border-error'"
+    />
+    <div class="text-red-500 flex justify-center">
+      {{ error }}
     </div>
-
     <div class="flex justify-evenly">
       <button
         class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 w-1/4"
+        @click="sendNewCode"
       >
         Resend
       </button>
@@ -31,28 +38,30 @@ import { confirmUserMutation } from '@/apollo/user.gql';
 import { useMutation } from '@vue/apollo-composable';
 import { useRegisteredInfo } from '@/composables/registration';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 
+interface ConfirmUserMutationResponse {
+  confirmUser: boolean;
+}
 export default defineComponent({
   name: 'SignUpFirstStep',
   setup() {
-    const { mutate } = useMutation(confirmUserMutation);
+    const { mutate, error } = useMutation<ConfirmUserMutationResponse>(confirmUserMutation);
     const router = useRouter();
+    const toast = useToast();
     const {
       state: { email }
     } = useRegisteredInfo();
     const schema = object({
-      'code-1': number().required(),
-      'code-2': number().required(),
-      'code-3': number().required(),
-      'code-4': number().required(),
-      'code-5': number().required()
+      code: number().required()
     });
     const { handleSubmit } = useForm({ validationSchema: schema });
     const { value: code } = useField<number>('code');
 
     const verify = handleSubmit(values => {
       mutate(values).then(() => {
-        router.push('Home');
+        toast.success('Welcome !');
+        router.push({ name: 'Home' });
       });
     });
 
@@ -60,8 +69,14 @@ export default defineComponent({
       schema,
       code,
       verify,
-      email
+      email,
+      error
     };
+  },
+  methods: {
+    sendNewCode() {
+      console.log('TODO send new code');
+    }
   }
 });
 </script>
@@ -91,28 +106,7 @@ export default defineComponent({
   opacity: 1;
 }
 
-.input-fillable {
-  grid-area: input / input / input / input;
-  text-align: center;
-  background: none;
-  border: none;
-  outline: none;
-  font-size: 14px;
-  line-height: 20px;
-  white-space: nowrap;
-  margin: 0px;
-  width: 100%;
-  padding: 0px;
-  color: rgb(26, 18, 63);
-  font-weight: 500;
-}
-
-.input-fillable::placeholder {
-  font-style: italic;
-}
-
-.icons {
-  color: rgb(136, 138, 180);
-  @apply absolute left-3 top-1/2 w-8 text-center transform translate-x-0 -translate-y-2/4;
+.border-error {
+  border: 1px solid rgb(224, 18, 115);
 }
 </style>
