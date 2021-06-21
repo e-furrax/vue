@@ -9,7 +9,6 @@
       <div class="w-96 flex flex-col items-center">
         <FirstStep v-if="step === 1" />
         <SecondStep v-if="step === 2" />
-        <ThirdStep v-if="step === 3" />
         <div class="absolute bottom-12 flex flex-col items-center">
           <p class="text-white leading-8">
             Already have an account?
@@ -28,14 +27,12 @@ import { defineComponent } from 'vue';
 import { useStep } from '@/composables/stepper';
 import FirstStep from '@/components/sign-up/FirstStep.vue';
 import SecondStep from '@/components/sign-up/SecondStep.vue';
-import ThirdStep from '@/components/sign-up/ThirdStep.vue';
 
 export default defineComponent({
   name: 'SignUp',
   components: {
     FirstStep,
-    SecondStep,
-    ThirdStep
+    SecondStep
   },
   setup() {
     const { step } = useStep();

@@ -61,6 +61,7 @@ export const registerMutation = gql`
     register(data: $data) {
       username
       email
+      gender
     }
   }
 `;

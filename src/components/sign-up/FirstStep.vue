@@ -36,23 +36,67 @@
       </div>
       <Field
         class="border m-2 input-fillable"
-        aria-label="Password"
+        aria-label="Username"
+        type="text"
+        placeholder="Username"
+        name="username"
+      />
+    </div>
+    <div class="input-grid">
+      <div class="icons">
+        <svg width="12px" height="17px" viewBox="0 0 12 17">
+          <path
+            d="M172.875 85.667c-.27-.038-.485-.237-.485-.51v-1.576c0-2.407-1.855-4.507-4.262-4.579a4.397 4.397 0 00-4.531 4.395v1.758c0 .275-.22.474-.49.511A1.279 1.279 0 00162 86.933v7.16c0 .707.573 1.28 1.279 1.28h9.442c.706 0 1.279-.573 1.279-1.28v-7.16c0-.644-.5-1.177-1.125-1.266zm-7.168-2.315a2.274 2.274 0 012.397-2.271c1.23.063 2.152 1.168 2.152 2.4v1.616c0 .308-.25.557-.556.557h-3.436a.557.557 0 01-.557-.557v-1.745z"
+            transform="translate(-786 -415) translate(96 136) translate(528) translate(0 200)"
+            fill="currentColor"
+            stroke="none"
+            stroke-width="1"
+            fill-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
+      <Field
+        class="border m-2 input-fillable"
         type="password"
         placeholder="Password"
         autocomplete="current-password"
         name="password"
       />
     </div>
+    <div class="input-grid">
+      <div class="icons">
+        <svg width="12px" height="17px" viewBox="0 0 12 17">
+          <path
+            d="M172.875 85.667c-.27-.038-.485-.237-.485-.51v-1.576c0-2.407-1.855-4.507-4.262-4.579a4.397 4.397 0 00-4.531 4.395v1.758c0 .275-.22.474-.49.511A1.279 1.279 0 00162 86.933v7.16c0 .707.573 1.28 1.279 1.28h9.442c.706 0 1.279-.573 1.279-1.28v-7.16c0-.644-.5-1.177-1.125-1.266zm-7.168-2.315a2.274 2.274 0 012.397-2.271c1.23.063 2.152 1.168 2.152 2.4v1.616c0 .308-.25.557-.556.557h-3.436a.557.557 0 01-.557-.557v-1.745z"
+            transform="translate(-786 -415) translate(96 136) translate(528) translate(0 200)"
+            fill="currentColor"
+            stroke="none"
+            stroke-width="1"
+            fill-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
+      <Field class="cursor-pointer" as="select" name="gender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </Field>
+    </div>
     <button
-      class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+      :disabled="true"
+      class="relative border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 disabled:opacity-70"
     >
       Sign up
     </button>
+    <div>
+      <MiniLoader v-if="true" />
+    </div>
   </Form>
 </template>
 
 <script lang="ts">
+import MiniLoader from '@/components/MiniLoader.vue';
 import { registerMutation } from '@/apollo/user.gql';
+import { useRegisteredInfo } from '@/composables/registration';
 import { useStep } from '@/composables/stepper';
 import { useMutation } from '@vue/apollo-composable';
 import { Field, Form } from 'vee-validate';
@@ -62,21 +106,34 @@ import { object, string } from 'yup';
 interface FirstStepForm {
   email: string;
   password: string;
+  gender: string;
+}
+
+interface RegisterMutationResponse {
+  register: {
+    email: string;
+    username: string;
+    gender: string;
+  };
 }
 
 export default defineComponent({
   name: 'SignUpFirstStep',
   components: {
     Field,
-    Form
+    Form,
+    MiniLoader
   },
   setup() {
-    const { mutate: register } = useMutation(registerMutation);
+    const { mutate: register, loading } = useMutation<RegisterMutationResponse>(registerMutation);
     const { setStep } = useStep();
+    const { setRegisteredInfo } = useRegisteredInfo();
 
     return {
       setStep,
-      register
+      register,
+      setRegisteredInfo,
+      loading
     };
   },
   data() {
@@ -86,7 +143,11 @@ export default defineComponent({
         .email(),
       password: string()
         .required()
-        .min(8)
+        .min(8),
+      username: string()
+        .required()
+        .min(2),
+      gender: string().required()
     });
     return {
       schema
@@ -94,8 +155,13 @@ export default defineComponent({
   },
   methods: {
     onSubmit(values: FirstStepForm) {
-      this.register({ data: values }).then(() => {
-        this.setStep(2);
+      console.log(values);
+      this.register({ data: values }).then(({ data }) => {
+        if (data) {
+          const { email } = data.register;
+          this.setRegisteredInfo({ email });
+          this.setStep(2);
+        }
       });
     }
   }

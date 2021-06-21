@@ -46,7 +46,10 @@ module.exports = {
   variants: {
     extend: {
       backgroundColor: ['even']
-    }
+    },
+    opacity: ({ after }) => after(['disabled']),
+    backgroundColor: ({ after }) => after(['disabled']),
+    cursor: ({ after }) => after(['disabled'])
   },
   plugins: []
 };

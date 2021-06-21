@@ -1,7 +1,7 @@
 <template>
   <h1 class="text-3xl font-semibold mb-6 text-white">Email Verification</h1>
   <p class="text-white">Fill in the box below with the code that was sent to</p>
-  <span class="text-white">xxxx@xxx.com</span>
+  <span class="text-white">{{ email }}</span>
   <form class="flex flex-col justify-center" @submit.prevent="verify">
     <div class="inline-flex">
       <input type="text" class="w-72 mx-1 h-14 text-center" maxlength="5" v-model="code" />
@@ -29,13 +29,17 @@ import { useField, useForm } from 'vee-validate';
 import { object, number } from 'yup';
 import { confirmUserMutation } from '@/apollo/user.gql';
 import { useMutation } from '@vue/apollo-composable';
-import { useStep } from '@/composables/stepper';
+import { useRegisteredInfo } from '@/composables/registration';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'SignUpFirstStep',
   setup() {
     const { mutate } = useMutation(confirmUserMutation);
-    const { setStep } = useStep();
+    const router = useRouter();
+    const {
+      state: { email }
+    } = useRegisteredInfo();
     const schema = object({
       'code-1': number().required(),
       'code-2': number().required(),
@@ -47,13 +51,16 @@ export default defineComponent({
     const { value: code } = useField<number>('code');
 
     const verify = handleSubmit(values => {
-      mutate(values).then(() => setStep(3));
+      mutate(values).then(() => {
+        router.push('Home');
+      });
     });
 
     return {
       schema,
       code,
-      verify
+      verify,
+      email
     };
   }
 });
