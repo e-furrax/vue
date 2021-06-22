@@ -298,7 +298,7 @@
         >
           <section class="pt-4 p-4">
             <h4 class="font-bold uppercase mb-2">Availability</h4>
-            <Availability />
+            <Availability :userId="userId" />
           </section>
         </div>
       </div>
@@ -598,7 +598,6 @@ export default defineComponent({
   },
   data() {
     return {
-      loaded: false,
       editingDescription: false,
       totalPrice: '4.50',
       demandGame: 'lol'

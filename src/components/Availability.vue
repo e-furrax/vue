@@ -1,15 +1,16 @@
 <template>
-  <div class="availability relative">
+  <Loader class="relative" v-if="loading" />
+  <div v-else class="availability relative">
     <img
       src="/images/icons/edit.svg"
       class="absolute right-0 cursor-pointer"
-      style="top: -2rem;"
+      style="top: -2rem"
       width="20"
       @click="handleEditing"
       v-if="!editing"
     />
     <div
-      v-for="day in week"
+      v-for="day in availability"
       :key="day"
       class="p-2 bg-opacity-70 bg-purple-1100 even:bg-purple-1200"
     >
@@ -28,13 +29,44 @@
     <div class="mt-2 flex items-center justify-end" v-if="editing">
       <button
         @click="handleEditing"
-        class="px-4 mr-2 outline-none font-bold text-white uppercase rounded border border-purple-800 text-sm leading-8 py-1 hover:border-purple-700 transition-all ease-in duration-200"
+        class="
+          px-4
+          mr-2
+          outline-none
+          font-bold
+          text-white
+          uppercase
+          rounded
+          border border-purple-800
+          text-sm
+          leading-8
+          py-1
+          hover:border-purple-700
+          transition-all
+          ease-in
+          duration-200
+        "
       >
         Cancel
       </button>
       <button
         @click="handleEditing"
-        class="px-4 outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+        class="
+          px-4
+          outline-none
+          font-bold
+          text-white
+          uppercase
+          rounded
+          bg-purple-800
+          text-sm
+          leading-8
+          py-1
+          hover:bg-purple-700
+          transition-all
+          ease-in
+          duration-200
+        "
       >
         Save
       </button>
@@ -42,14 +74,38 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 import InputToggle from './InputToggle.vue';
+import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
+
+import Loader from '@/components/Loader.vue';
+import { getAvailability, updateAvailability } from '@/apollo/availability.gql';
+import AvailabilityModel from '@/models/availability.model';
 
 export default defineComponent({
   name: 'Availability',
-  components: { InputToggle },
-  props: {},
+  components: { InputToggle, Loader },
+  props: {
+    userId: {
+      type: String,
+      required: true
+    }
+  },
+  setup(props) {
+    console.log(props);
+    const { result, loading, error } = useQuery(getAvailability, {
+      user: { id: parseInt(props.userId) }
+    });
+    const availability = useResult(result, null, data => data.getAvailability);
+    console.log(availability);
+
+    return {
+      availability,
+      loading,
+      error
+    };
+  },
   methods: {
     handleEditing() {
       this.editing = this.editing ? false : true;
