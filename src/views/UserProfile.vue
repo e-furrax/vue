@@ -98,7 +98,7 @@
                 <img src="/images/icons/local_atm.svg" class="mr-1" height="20" />
                 <span class="text-lg">4.50<span class="text-sm">/Match</span></span>
               </div>
-              <div v-if="computedAverageRating !== '0'" class="flex items-center">
+              <div v-show="computedAverageRating !== '0'" class="flex items-center">
                 <img src="/images/icons/star.svg" width="18" />
                 <span class="ml-1" ref="computedAverageRatingRef">{{ computedAverageRating }}</span>
                 <span class="ml-2 text-sm">({{ computedReceivedRatings.length }})</span>
@@ -150,20 +150,28 @@
                 v-if="!editingDescription"
               />
               <h4 class="font-bold uppercase">About me</h4>
-              <p v-if="!editingDescription">
+              <p ref="descriptionRef" v-show="!editingDescription">
                 {{ user.description }}
               </p>
-              <div class="flex flex-col" v-else>
-                <textarea
+              <Form
+                class="flex flex-col"
+                v-show="editingDescription"
+                :validation-schema="descriptionSchema"
+                @submit="handleDescription"
+              >
+                <Field
                   class="h-32 text-white bg-purple-1100 p-2 w-full"
-                  v-model="user.description"
-                ></textarea>
+                  name="description"
+                  as="textarea"
+                  :value="user.description"
+                ></Field>
                 <div class="mt-2 flex items-center justify-end">
                   <button
-                    @click="handleEditingDescription"
+                    @click.prevent="handleEditingDescription"
                     class="
                       px-4
                       mr-2
+                      cursor-pointer
                       outline-none
                       font-bold
                       text-white
@@ -182,7 +190,7 @@
                     Cancel
                   </button>
                   <button
-                    @click="handleEditingDescription"
+                    type="submit"
                     class="
                       px-4
                       outline-none
@@ -203,7 +211,7 @@
                     Save
                   </button>
                 </div>
-              </div>
+              </Form>
             </section>
           </div>
           <div
@@ -214,7 +222,7 @@
               <Form
                 :validation-schema="schema"
                 class="flex flex-col items-start"
-                @submit="onSubmit"
+                @submit="handleRating"
               >
                 <label for="rating">Rating<span class="text-red-500">*</span></label>
                 <Field
@@ -236,6 +244,7 @@
                 ></Field>
                 <ErrorMessage name="password" class="text-red-500 mb-2" />
                 <button
+                  type="submit"
                   class="
                     px-4
                     outline-none
@@ -399,10 +408,11 @@
 import { addRatingMutation } from '@/apollo/rating.gql';
 import { defineComponent, ref } from 'vue';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
-import { getUser } from '@/apollo/user.gql';
+import { getUser, updateDescriptionMutation } from '@/apollo/user.gql';
 import * as yup from 'yup';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import RatingModel from '@/models/rating.model';
+import UserModel from '@/models/user.model';
 
 import Comment from '@/components/Comment.vue';
 import Error from '@/components/Error.vue';
@@ -414,6 +424,14 @@ import { useToast } from 'vue-toastification';
 interface RatingForm {
   rating: string;
   comments?: string;
+}
+
+interface DescriptionForm {
+  description: string;
+}
+
+interface UpdateDescriptionVariables {
+  description: string;
 }
 
 interface AddRatingVariables {
@@ -435,12 +453,18 @@ export default defineComponent({
   },
   setup(props) {
     const computedAverageRatingRef = ref();
+    const descriptionRef = ref();
     const { result, loading, error } = useQuery(getUser, { data: { id: parseInt(props.userId) } });
     const user = useResult(result, null, data => data.getUser);
 
     const { mutate: addRating } = useMutation<Partial<RatingModel>, AddRatingVariables>(
       addRatingMutation
     );
+
+    const { mutate: updateDescription } = useMutation<
+      Partial<UserModel>,
+      UpdateDescriptionVariables
+    >(updateDescriptionMutation);
 
     const schema = yup.object({
       rating: yup
@@ -454,13 +478,24 @@ export default defineComponent({
       })
     });
 
+    const descriptionSchema = yup.object({
+      description: yup
+        .string()
+        .required()
+        .min(0)
+        .max(2000)
+    });
+
     const toast = useToast();
 
     return {
       toast,
       computedAverageRatingRef,
+      descriptionRef,
       schema,
+      descriptionSchema,
       addRating,
+      updateDescription,
       user,
       loading,
       error
@@ -488,7 +523,28 @@ export default defineComponent({
       });
       return orderedRatings;
     },
-    onSubmit(values: RatingForm, { resetForm }: any) {
+    handleDescription(values: DescriptionForm) {
+      if (values.description) {
+        this.updateDescription({
+          description: values.description
+        })
+          .then(res => {
+            if (res) {
+              const newDescription = res.data as { updateDescription: string };
+              this.descriptionRef.textContent = newDescription.updateDescription;
+              this.toast.success('Description edited successfully.');
+              this.handleEditingDescription();
+            }
+          })
+          .catch(err => {
+            const errorMessage =
+              err.message || 'Oops, something went wrong, we could not send your comment.';
+            this.toast.error(errorMessage);
+            console.error(err);
+          });
+      }
+    },
+    handleRating(values: RatingForm, { resetForm }: any) {
       if (values.rating) {
         this.addRating({
           data: {
@@ -510,7 +566,9 @@ export default defineComponent({
             }
           })
           .catch(err => {
-            this.toast.error('Oops, something went wrong, we could not send your comment.');
+            const errorMessage =
+              err.message || 'Oops, something went wrong, we could not send your comment.';
+            this.toast.error(errorMessage);
             console.error(err);
           });
       }
