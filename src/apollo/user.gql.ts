@@ -95,6 +95,12 @@ export const updateProfileMutation = gql`
   }
 `;
 
+export const updateDescriptionMutation = gql`
+  mutation updateDescription($description: String!) {
+    updateDescription(description: $description)
+  }
+`;
+
 export const updatePasswordMutation = gql`
   mutation updatePassword($initialPassword: String!, $newPassword: String!) {
     updatePassword(initialPassword: $initialPassword, newPassword: $newPassword)
