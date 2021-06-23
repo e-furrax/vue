@@ -10,7 +10,6 @@ import Search from '../views/Search.vue';
 import UserProfile from '../views/UserProfile.vue';
 import { myProfileRoutes } from './myProfile';
 import { backOfficeRoutes } from './backOffice';
-import { authGuard } from '@/guards/authGuard';
 
 const routes: Array<RouteRecordRaw> = [
   {
