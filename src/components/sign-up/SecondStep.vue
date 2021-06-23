@@ -2,12 +2,16 @@
   <h1 class="text-3xl font-semibold mb-6 text-white">Email Verification</h1>
   <p class="text-white">Fill in the box below with the code that was sent to</p>
   <span class="text-orange-500">{{ email }}</span>
-  <form class="flex flex-col justify-center space-y-4 mt-4" @submit.prevent="verify">
-    <input
+  <Form
+    class="flex flex-col justify-center space-y-4 mt-4"
+    @submit="verify"
+    :validation-schema="schema"
+  >
+    <Field
       type="text"
       class="w-72 mx-1 h-14 text-center"
       maxlength="5"
-      v-model="code"
+      name="code"
       :class="error && 'border-error'"
     />
     <div class="text-red-500 flex justify-center">
@@ -16,6 +20,7 @@
     <div class="flex justify-evenly">
       <button
         class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 w-1/4"
+        type="button"
         @click="sendNewCode"
       >
         Resend
@@ -27,24 +32,28 @@
         Verify
       </button>
     </div>
-  </form>
+  </Form>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useField, useForm } from 'vee-validate';
+import { Form, Field } from 'vee-validate';
 import { object, number } from 'yup';
 import { confirmUserMutation } from '@/apollo/user.gql';
 import { useMutation } from '@vue/apollo-composable';
 import { useRegisteredInfo } from '@/composables/registration';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import { ConfirmUserMutationResponse } from '@/models/user.model';
+import { useAuth } from '@/composables/auth';
+import { useStep } from '@/composables/stepper';
 
-interface ConfirmUserMutationResponse {
-  confirmUser: boolean;
-}
 export default defineComponent({
   name: 'SignUpFirstStep',
+  components: {
+    Form,
+    Field
+  },
   setup() {
     const { mutate, error } = useMutation<ConfirmUserMutationResponse>(confirmUserMutation);
     const router = useRouter();
@@ -52,25 +61,29 @@ export default defineComponent({
     const {
       state: { email }
     } = useRegisteredInfo();
+    const { setUser } = useAuth();
+    const { setStep } = useStep();
     const schema = object({
       code: number().required()
     });
-    const { handleSubmit } = useForm({ validationSchema: schema });
-    const { value: code } = useField<number>('code');
 
-    const verify = handleSubmit(values => {
-      mutate(values).then(() => {
-        toast.success('Welcome !');
-        router.push({ name: 'Home' });
+    const verify = (values: { code: string }) => {
+      mutate(values).then(({ data }) => {
+        if (data) {
+          setUser(data.confirmUser);
+          toast.success('Welcome !');
+          router.push({ name: 'Home' });
+          setStep(1);
+        }
       });
-    });
+    };
 
     return {
       schema,
-      code,
       verify,
       email,
-      error
+      error,
+      mutate
     };
   },
   methods: {

@@ -29,7 +29,7 @@
       </div>
       <hr class="border-white opacity-20" />
       <div class="max-w-lg flex justify-between">
-        <button>Discard Changes</button>
+        <button type="button">Discard Changes</button>
         <button
           type="submit"
           class="bg-purple-700 rounded-full py-2 px-12 hover:bg-purple-600 transition-all duration-200 flex justify-between relative"

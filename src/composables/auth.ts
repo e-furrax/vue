@@ -22,11 +22,9 @@ const state = reactive<UserState>({
 });
 
 const token = window.localStorage.getItem(AUTH_KEY);
-console.log('token', token);
 
 if (token) {
   state.authenticating = true;
-
   const { result, loading, error } = useQuery(me);
 
   watch([loading], () => {

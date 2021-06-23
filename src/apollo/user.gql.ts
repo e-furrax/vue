@@ -86,6 +86,8 @@ export const updateProfilePicMutation = gql`
 `;
 export const confirmUserMutation = gql`
   mutation confirmUser($code: String!) {
-    confirmUser(code: $code)
+    confirmUser(code: $code) {
+      accessToken
+    }
   }
 `;

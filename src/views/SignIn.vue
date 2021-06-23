@@ -78,19 +78,11 @@
 <script lang="ts">
 import { useMutation } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
-import { useAuth, User } from '../composables/auth';
+import { useAuth } from '../composables/auth';
 import { loginMutation } from '@/apollo/user.gql';
 import { Form, Field } from 'vee-validate';
 import { object, string } from 'yup';
-
-interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-interface LoginResponse {
-  login: User;
-}
+import { LoginMutationResponse, LoginPayload } from '@/models/user.model';
 
 export default defineComponent({
   components: {
@@ -99,7 +91,7 @@ export default defineComponent({
   },
   setup() {
     const { setUser } = useAuth();
-    const { mutate: login } = useMutation<LoginResponse>(loginMutation);
+    const { mutate: login } = useMutation<LoginMutationResponse>(loginMutation);
 
     return {
       setUser,

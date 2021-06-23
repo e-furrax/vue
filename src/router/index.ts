@@ -15,6 +15,7 @@ import BackOfficeProfiles from '../views/back-office/profile/index.vue';
 import BackOfficeProfileId from '../views/back-office/profile/id.vue';
 import BackOfficeAppointement from '../views/back-office/appointement/index.vue';
 import BackOfficeTransaction from '../views/back-office/transaction/index.vue';
+import authGuard from '@/guards/authGuard';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -34,7 +35,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/sign-up',
     name: 'SignUp',
-    component: SignUp
+    component: SignUp,
+    beforeEnter: [authGuard]
   },
   {
     path: '/search',

@@ -212,7 +212,6 @@ export default defineComponent({
   },
   methods: {
     onSubmit(values: FirstStepForm) {
-      console.log(values);
       this.register({ data: values }).then(({ data }) => {
         if (data) {
           const { email } = data.register;

@@ -32,14 +32,23 @@
           <router-link
             to="/sign-up"
             class="hidden md:block px-3 py-1 mx-2 bg-orange-600 rounded hover:bg-orange-700 transition duration-300"
+            v-if="!user"
           >
             Sign Up
           </router-link>
           <router-link
             to="/sign-in"
             class="hidden md:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+            v-if="!user"
             >Log In</router-link
           >
+          <button
+            v-else
+            class="hidden md:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+            @click="handleLogout"
+          >
+            Log Out
+          </button>
         </div>
       </div>
     </nav>
@@ -47,13 +56,30 @@
 </template>
 
 <script lang="ts">
+import { useAuth } from '@/composables/auth';
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 import SearchBar from '../../SearchBar.vue';
 import HeaderBurger from './HeaderBurger.vue';
 
 export default defineComponent({
   components: { SearchBar, HeaderBurger },
   name: 'Header',
+  setup() {
+    const { user, logout } = useAuth();
+    const router = useRouter();
+
+    const handleLogout = () => {
+      logout().then(() => {
+        router.push({ name: 'Home' });
+      });
+    };
+
+    return {
+      user,
+      handleLogout
+    };
+  },
   data() {
     return {
       burgerClosing: false
