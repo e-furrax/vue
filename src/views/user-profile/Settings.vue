@@ -1,29 +1,31 @@
 <template>
   <div class="flex text-white h-full">
-    <section class="flex flex-col w-1/3 border-r-2 border-opacity-20">
-      <div class="m-16">
-        <h1 class="font-bold text-2xl">Settings</h1>
-        <ul class="my-10">
+    <section class="flex flex-col border-r-2 border-opacity-20 md:w-84">
+      <div class="py-6">
+        <ul class="">
           <div v-for="route in settingsRouteChildren" :key="route.path">
             <router-link
               :to="`/profile/settings/${route.path}`"
               v-slot="{ href, route, navigate, isActive }"
               custom
             >
-              <li :class="[isActive && 'router-settings-link-active']">
+              <li :class="[isActive && 'border-y router-settings-link-active']">
                 <a
                   :href="href"
                   @click="navigate"
-                  class="grid-container items-center text-gray-400 transition-colors duration-100"
+                  class="flex h-16 px-4 md:px-6 items-center text-gray-400 transition-colors duration-100 hover:bg-purple-925"
                 >
-                  <span
-                    class="rounded-xl h-10 w-10 bg-green-500 grid-area-icon flex items-center justify-center active-icon opacity-50"
-                    ><i class="text-xs">{{ route.meta.icon }}</i></span
-                  >
-                  <span class="font-semibold grid-area-header text-lg">{{ route.name }}</span>
-                  <span class="grid-area-chevron text-2xl">></span>
-                  <span class="grid-area-info">{{ route.meta.additionalInformations }}</span>
-                  <hr class="grid-area-hr mt-4 border-opacity-20" />
+                  <img
+                    :src="`/images/${route.meta.icon}`"
+                    class="opacity-50"
+                    style="width: 24px; max-width: inherit"
+                  />
+                  <div class="ml-2 md:flex hidden flex-col">
+                    <h3 class="font-semibold text-sm">{{ route.name }}</h3>
+                    <span class="text-xs text-gray-400">
+                      {{ route.meta.additionalInformations }}
+                    </span>
+                  </div>
                 </a>
               </li>
             </router-link>
@@ -31,8 +33,8 @@
         </ul>
       </div>
     </section>
-    <section class="flex flex-col w-2/3">
-      <div class="mx-16">
+    <section class="flex flex-col mt-6 w-full">
+      <div class="mx-6">
         <router-view></router-view>
       </div>
     </section>
@@ -58,42 +60,18 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.grid-container {
-  display: grid;
-  grid-template-columns: 15% 70% 5% 10%;
-  grid-template-rows: auto;
-  grid-template-areas:
-    'icon header chevron .'
-    '. info info .'
-    '. hr hr hr';
-  &:hover {
-    color: rgba(255, 255, 255, 1);
-  }
-}
-.grid-area-icon {
-  grid-area: icon;
-}
-.grid-area-header {
-  grid-area: header;
-}
-.grid-area-chevron {
-  grid-area: chevron;
-}
-.grid-area-info {
-  grid-area: info;
-}
-.grid-area-hr {
-  grid-area: hr;
-}
 .border-opacity-20 {
   border-color: rgba(255, 255, 255, 0.2);
 }
 .router-settings-link-active {
-  a {
+  img {
+    @apply opacity-100;
+  }
+  h3 {
     @apply text-white;
-    .active-icon {
-      opacity: 100;
-    }
+  }
+  span {
+    @apply text-gray-200;
   }
 }
 </style>

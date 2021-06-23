@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen-minus-header flex flex-row max-w-full">
     <Sidebar />
-    <section class="flex flex-col rounded-l-3xl w-full bg-purple-950">
+    <section class="flex flex-col w-full bg-purple-950">
       <router-view></router-view>
     </section>
   </div>

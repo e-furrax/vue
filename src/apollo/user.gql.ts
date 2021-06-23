@@ -18,8 +18,28 @@ export const getUser = gql`
   query getUser($data: UserInput!) {
     getUser(data: $data) {
       id
-      username
       email
+      username
+      description
+      gender
+      receivedRatings {
+        id
+        comments
+        rating
+        fromUser {
+          username
+        }
+        createdAt
+      }
+      givenRatings {
+        id
+        comments
+        rating
+        toUser {
+          username
+        }
+        createdAt
+      }
     }
   }
 `;
@@ -65,6 +85,7 @@ export const registerMutation = gql`
     }
   }
 `;
+
 export const updateProfileMutation = gql`
   mutation updateProfile($data: UpdateProfileInput!) {
     updateProfile(data: $data) {
@@ -74,6 +95,13 @@ export const updateProfileMutation = gql`
     }
   }
 `;
+
+export const updateDescriptionMutation = gql`
+  mutation updateDescription($description: String!) {
+    updateDescription(description: $description)
+  }
+`;
+
 export const updatePasswordMutation = gql`
   mutation updatePassword($initialPassword: String!, $newPassword: String!) {
     updatePassword(initialPassword: $initialPassword, newPassword: $newPassword)

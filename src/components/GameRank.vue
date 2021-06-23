@@ -3,7 +3,7 @@
     class="game-rank flex items-center py-3 px-6 border border-purple-custom hover:border-purple-900 transition duration-200 rounded-sm"
     :style="
       `
-        background-image: linear-gradient(90deg, rgba(27, 21, 61, 1) 55%, rgba(27, 21, 61, 0.4) 100%),
+        background-image: linear-gradient(to left, rgba(27, 21, 61, 0.5) 100px, rgba(27, 21, 61, 1) 140px),
     url('${background}');
     `
     "

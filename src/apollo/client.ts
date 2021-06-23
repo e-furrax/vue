@@ -1,24 +1,28 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
-import { setContext } from 'apollo-link-context';
+import dotenv from 'dotenv';
+dotenv.config();
+import { from, ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client/core';
 import { createUploadLink } from 'apollo-upload-client';
 
 const terminatingLink = createUploadLink({
-  uri: 'http://localhost:3000/graphql'
+  uri: `${process.env.VUE_APP_BACKEND_URL || 'http://localhost:3000'}/graphql`
 });
 
-const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
+const auth = new ApolloLink((op, fw) => {
   const token = localStorage.getItem('furrax_token');
-  // return the headers to the context so httpLink can read them
-  return {
+  op.setContext(({ headers }: Record<string, any>) => ({
     headers: {
       ...headers,
       ...(token && { authorization: `Bearer ${token}` })
     }
-  };
+  }));
+  return fw(op);
+});
+export const postgresClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: from([auth, terminatingLink])
 });
 
-export const apolloClient = new ApolloClient({
+export const mongoClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: authLink.concat(terminatingLink as any) as any
+  link: from([auth, new HttpLink({ uri: 'http://localhost:4000/graphql' })])
 });

@@ -1,12 +1,12 @@
+import { me } from '@/apollo/user.gql';
 import { provideApolloClient, useQuery } from '@vue/apollo-composable';
 import { reactive, toRefs, watch } from 'vue';
-import { apolloClient } from '../apollo/client';
-import { me } from '../apollo/user.gql';
+import { postgresClient } from '../apollo/client';
 
 const AUTH_KEY = 'furrax_token';
 export const AUTH_TOKEN = 'accessToken';
 
-provideApolloClient(apolloClient);
+provideApolloClient(postgresClient);
 export interface User {
   [AUTH_TOKEN]: string;
 }

@@ -9,12 +9,7 @@ import SignUp from '../views/SignUp.vue';
 import Search from '../views/Search.vue';
 import UserProfile from '../views/UserProfile.vue';
 import { myProfileRoutes } from './myProfile';
-
-import BackOffice from '../views/back-office/index.vue';
-import BackOfficeProfiles from '../views/back-office/profile/index.vue';
-import BackOfficeProfileId from '../views/back-office/profile/id.vue';
-import BackOfficeAppointement from '../views/back-office/appointement/index.vue';
-import BackOfficeTransaction from '../views/back-office/transaction/index.vue';
+import { backOfficeRoutes } from './backOffice';
 import { authGuard } from '@/guards/authGuard';
 
 const routes: Array<RouteRecordRaw> = [
@@ -40,7 +35,6 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/search',
     name: 'Search',
-    beforeEnter: authGuard,
     components: {
       default: Search,
       header: Header,
@@ -58,43 +52,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   myProfileRoutes,
-  {
-    path: '/back-office',
-    name: 'BackOffice',
-    components: {
-      header: Header,
-      default: BackOffice,
-      footer: Footer
-    },
-    children: [
-      {
-        path: 'profiles',
-        name: 'Profiles',
-        component: BackOfficeProfiles
-      },
-      {
-        path: 'profile/:userId',
-        name: 'Profile',
-        props: true,
-        component: BackOfficeProfileId
-      },
-      {
-        path: 'appointements',
-        name: 'Appointement',
-        component: BackOfficeAppointement
-      },
-      {
-        path: 'transactions',
-        name: 'Transactions',
-        component: BackOfficeTransaction
-      }
-      // {
-      //   path: 'transaction/:id',
-      //   name: "Transaction",
-      //   component: BackOfficeTransactionView
-      // },
-    ]
-  }
+  ...backOfficeRoutes
 ];
 
 const router = createRouter({

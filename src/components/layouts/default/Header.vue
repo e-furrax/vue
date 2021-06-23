@@ -6,19 +6,32 @@
         <div class="flex h-full items-center">
           <img
             src="/images/icons/menu.svg"
-            class="block md:hidden mr-6 cursor-pointer"
+            class="block lg:hidden mr-6 cursor-pointer"
             @click="handleBurger"
           />
           <router-link to="/" class="text-lg flex items-center">
-            <img src="/images/e-furrax.svg" width="24" /><span class="ml-3 text-base"
+            <img src="/images/e-furrax.svg" width="24" /><span
+              class="hidden sm:block ml-3 text-base"
               >E-FURRAX</span
             >
           </router-link>
-          <ul class="hidden md:flex h-full ml-8 items-center">
-            <li
-              class="h-full mr-8 flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
-            >
-              <router-link to="/search">Find your teammate</router-link>
+          <ul class="hidden lg:flex h-full ml-8 items-center">
+            <li class="h-full">
+              <router-link
+                to="/search"
+                class="
+                  h-full
+                  mr-8
+                  flex
+                  items-center
+                  hover:text-purple-500
+                  cursor-pointer
+                  border-b-2 border-transparent
+                  hover:border-purple-500
+                  transition
+                "
+                >Find your teammate</router-link
+              >
             </li>
             <li
               class="h-full flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
@@ -28,23 +41,23 @@
           </ul>
         </div>
         <div class="flex items-center">
-          <SearchBar class="mr-4" />
+          <SearchBar class="lg:mr-4" />
           <router-link
             to="/sign-up"
-            class="hidden md:block px-3 py-1 mx-2 bg-orange-600 rounded hover:bg-orange-700 transition duration-300"
+            class="hidden lg:block px-3 py-1 mx-2 bg-orange-600 rounded hover:bg-orange-700 transition duration-300"
             v-if="!user"
           >
             Sign Up
           </router-link>
           <router-link
             to="/sign-in"
-            class="hidden md:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+            class="hidden lg:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
             v-if="!user"
             >Log In</router-link
           >
           <button
             v-else
-            class="hidden md:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+            class="hidden lg:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
             @click="handleLogout"
           >
             Log Out

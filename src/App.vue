@@ -14,7 +14,9 @@ export default defineComponent({
   name: 'App',
   components: {},
   setup() {
-    onMounted(() => useAuth());
+    onMounted(() => {
+      useAuth();
+    });
   }
 });
 </script>

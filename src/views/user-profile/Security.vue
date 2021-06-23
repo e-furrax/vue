@@ -1,18 +1,16 @@
 <template>
-  <div class="space-y-14 my-16">
-    <h1 class="font-bold text-2xl">Security Settings</h1>
-    <hr class="border-white opacity-20" />
-    <h2 class="font-semibold text-xl">Change Password</h2>
-    <form class="space-y-16" @submit.prevent="changePassword">
-      <div class="space-y-5">
-        <div class="flex flex-col space-y-1 max-w-lg">
+  <div class="flex flex-col items-start">
+    <h2 class="font-semibold border-b-2 border-purple-800 mb-6">Change Password</h2>
+    <form class="w-full md:w-96" @submit.prevent="changePassword">
+      <div>
+        <div class="flex flex-col py-2 w-full">
           <label for="password-old" class="text-sm font-semibold"
             >Initial Password<span class="text-red-500 ml-1">*</span></label
           >
           <input type="password" id="password-old" class="h-10 p-4" v-model="initialPassword" />
           <Alert :message="initialPasswordError" alert-type="danger" v-if="initialPasswordError" />
         </div>
-        <div class="flex flex-col space-y-1 max-w-lg">
+        <div class="flex flex-col py-2 w-full">
           <label for="password-new" class="text-sm font-semibold"
             >New Password<span class="text-red-500 ml-1">*</span></label
           >
@@ -20,14 +18,11 @@
           <Alert :message="newPasswordError" alert-type="danger" v-if="newPasswordError" />
         </div>
       </div>
-      <div class="max-w-lg flex justify-end">
-        <button
-          class="bg-purple-700 rounded-full py-2 px-12 hover:bg-purple-600 transition-all duration-200"
-        >
-          Change Password
-        </button>
-      </div>
-      <hr class="border-white opacity-20" />
+      <button
+        class="w-full mt-2 border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+      >
+        Change Password
+      </button>
     </form>
   </div>
 </template>

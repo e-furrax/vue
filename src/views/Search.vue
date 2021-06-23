@@ -1,5 +1,8 @@
 <template>
-  <div class="container mx-auto px-2 pb-14">
+  <div v-if="error" class="mt-10 container mx-auto">
+    <Error :message="error.message"></Error>
+  </div>
+  <div v-else class="container mx-auto px-2 pb-14">
     <div class="py-10 text-5xl text-white">Players List</div>
     <div class="flex text-white text-xs mb-5 items-center">
       <div class="mr-2">Filter</div>
@@ -50,18 +53,19 @@ import { getUsers } from '@/apollo/user.gql';
 import { useQuery, useResult } from '@vue/apollo-composable';
 
 import SearchCard from '@/components/SearchCard.vue';
+import Error from '@/components/Error.vue';
 import Loader from '@/components/Loader.vue';
 
 export default defineComponent({
   name: 'Search',
   components: {
     SearchCard,
-    Loader
+    Loader,
+    Error
   },
   setup() {
     const { result, loading, error } = useQuery(getUsers);
     const users = useResult(result, null, data => data.getUsers);
-    console.log(users);
 
     return { users, loading, error };
   }

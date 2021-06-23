@@ -70,8 +70,8 @@
           </template>
           <template v-slot:title> Player Profile </template>
           <template v-slot:description>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque earum deserunt illum esse
-            ad eligendi dolorem inventore ut! Dolore nihil provident porro tempore deleniti.
+            Create your own personalized profile. Customize your bio, avatar and connect your
+            favorite games to build your online identity.
           </template>
         </FeatureCard>
         <FeatureCard class="lg:w-1/3 lg:px-12 lg:py-0 py-12">
@@ -80,8 +80,8 @@
           </template>
           <template v-slot:title> Find a Teammate </template>
           <template v-slot:description>
-            Optio veniam distinctio ipsam voluptatum a, neque earum deserunt provident porro tempore
-            deleniti.
+            Anyone can create a profile, from casual to competitive players. Navigate throw all the
+            profiles and choose the one that fits your needs.
           </template>
         </FeatureCard>
         <FeatureCard class="lg:w-1/3">
@@ -90,8 +90,7 @@
           </template>
           <template v-slot:title> Play together </template>
           <template v-slot:description>
-            Dolor sit amet ipsam voluptatum a, neque earum deseruntdolorem inventore ut! Dolore
-            nihil provident porro tempore deleniti.
+            Book a schedule, chat, play, start over. No beating around the bush.
           </template>
         </FeatureCard>
       </div>

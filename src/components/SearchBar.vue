@@ -1,9 +1,9 @@
 <template>
-  <div class="relative">
+  <div class="relative z-30" :class="[isActive ? 'w-72' : 'w-52']" search-bar-default>
     <div
       id="search-bar"
-      class="p-1 text-xs rounded-full bg-gray-900 search-bar transition duration-300 border"
-      :class="[isActive ? 'border-purple-800' : 'search-bar-default w-28']"
+      class="p-1 text-xs w-full border-default bg-purple-1000 transition duration-300 border"
+      :class="[isActive ? 'rounded-t border-b-0' : 'rounded-sm']"
       @click="isActive = !isActive ? !isActive : isActive"
       v-click-outside="onClickOutside"
     >
@@ -25,7 +25,7 @@
     <div
       :class="[
         isActive
-          ? 'absolute bg-purple-1200 w-full max-h-80 overflow-hidden overflow-y-scroll rounded scrollbar py-2'
+          ? 'absolute shadow-xl bg-purple-950 w-full max-h-62 overflow-hidden overflow-y-scroll border border-default rounded-b scrollbar py-2 border-t-0'
           : 'hidden'
       ]"
     >
@@ -43,20 +43,24 @@
           </div>
         </li>
       </ul>
-      <ul class="mt-3" v-if="results && results.users">
-        <li v-for="user of results.users" :key="user.id">
-          <div class="mt-1 mx-3 text-sm text-violet-300">Furrax</div>
-          <div
-            class="cursor-pointer mx-2 hover:bg-trueGray-800 rounded transition-colors duration-200"
-          >
-            <div class="h-20 px-2 flex items-center">
-              <img class="w-12 h-12 rounded-lg mr-2" src="/images/lol.jpg" alt="player image" />
-              <span>{{ user.username }}</span>
-            </div>
+      <h3 class="px-4 mb-2 font-bold text-gray-400">Profiles</h3>
+      <ul v-if="results && results.users">
+        <li
+          -for="user of results.users"
+          :key="user.id"
+          class="cursor-pointer hover:bg-purple-1000 px-4 py-2"
+        >
+          <div class="flex items-center">
+            <img
+              class="w-8 h-8 border-2 border-yellow-600 rounded-full mr-2"
+              src="/images/lol.jpg"
+              alt="player image"
+            />
+            <span>{{ user.username }}</span>
           </div>
         </li>
       </ul>
-      <div v-if="!totalLength">no results found</div>
+      <div v-if="!totalLength" class="px-4">No results found...</div>
     </div>
   </div>
 </template>
@@ -145,11 +149,7 @@ export default defineComponent({
   fill: rgb(137, 145, 182);
 }
 
-.search-bar {
-  background-color: rgb(35, 28, 67);
-}
-
-.search-bar-default {
+.border-default {
   border-color: rgb(55, 43, 96);
 }
 
