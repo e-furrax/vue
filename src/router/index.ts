@@ -16,7 +16,6 @@ import BackOfficeProfileId from '../views/back-office/profile/id.vue';
 import BackOfficeAppointement from '../views/back-office/appointement/index.vue';
 import BackOfficeTransaction from '../views/back-office/transaction/index.vue';
 import { authGuard } from '@/guards/authGuard';
-import { useAuth } from '@/composables/auth';
 
 const routes: Array<RouteRecordRaw> = [
   {
