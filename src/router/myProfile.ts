@@ -7,10 +7,14 @@ import Security from '@/views/user-profile/Security.vue';
 
 import Header from '@/components/layouts/default/Header.vue';
 import Footer from '@/components/layouts/default/Footer.vue';
+import { authGuard } from '@/guards/authGuard';
 
 export const myProfileRoutes: RouteRecordRaw = {
   path: '/profile',
   name: 'MyProfile',
+  beforeEnter: (to, from, next) => {
+    authGuard(to, from, next);
+  },
   redirect: '/profile/settings',
   components: {
     default: MyProfile,

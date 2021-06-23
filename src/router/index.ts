@@ -8,14 +8,15 @@ import SignUp from '../views/SignUp.vue';
 
 import Search from '../views/Search.vue';
 import UserProfile from '../views/UserProfile.vue';
-import { myProfileRoutes } from '../library/myProfile';
+import { myProfileRoutes } from './myProfile';
 
 import BackOffice from '../views/back-office/index.vue';
 import BackOfficeProfiles from '../views/back-office/profile/index.vue';
 import BackOfficeProfileId from '../views/back-office/profile/id.vue';
 import BackOfficeAppointement from '../views/back-office/appointement/index.vue';
 import BackOfficeTransaction from '../views/back-office/transaction/index.vue';
-import authGuard from '@/guards/authGuard';
+import { authGuard } from '@/guards/authGuard';
+import { useAuth } from '@/composables/auth';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -35,12 +36,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/sign-up',
     name: 'SignUp',
-    component: SignUp,
-    beforeEnter: [authGuard]
+    component: SignUp
   },
   {
     path: '/search',
     name: 'Search',
+    beforeEnter: authGuard,
     components: {
       default: Search,
       header: Header,

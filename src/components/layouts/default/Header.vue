@@ -23,7 +23,7 @@
             <li
               class="h-full flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
             >
-              <router-link to="/profile">Profile</router-link>
+              <router-link to="/profile" v-if="user">Profile</router-link>
             </li>
           </ul>
         </div>

@@ -1,9 +1,11 @@
 import { useAuth } from '@/composables/auth';
+import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 
-export default (): boolean => {
+export const authGuard = (
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  next: NavigationGuardNext
+): void => {
   const { user } = useAuth();
-  if (user) {
-    return true;
-  }
-  return false;
+  user?.value ? next() : next({ name: 'SignIn' });
 };
