@@ -8,8 +8,10 @@ export const getAvailability = gql`
   }
 `;
 
-export const updateAvailability = gql`
+export const updateAvailabilityMutation = gql`
   mutation updateAvailability($value: String!) {
-    updateAvailability(value: $value)
+    updateAvailability(value: $value) {
+      value
+    }
   }
 `;
