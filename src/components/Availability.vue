@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <Form :validation-schema="schema" @submit="handleAvailability">
+    <Form v-show="editing" :validation-schema="schema" @submit="handleAvailability">
       <div
         v-for="(day, index) in computedAvailabilityValue"
         :key="index"
@@ -32,14 +32,14 @@
           class="bg-purple-925 px-1 rounded-sm text-white"
           :name="`start${index + 1}`"
           type="time"
-          v-model="day.start"
+          :value="day.start"
         />
         <span class="mx-2">-</span>
         <Field
           class="bg-purple-925 px-1 rounded-sm text-white"
           :name="`end${index + 1}`"
           type="time"
-          v-model="day.end"
+          :value="day.end"
         />
         <div>
           <Field
@@ -118,34 +118,43 @@ import Loader from '@/components/Loader.vue';
 import { getAvailability, updateAvailabilityMutation } from '@/apollo/availability.gql';
 import AvailabilityModel from '@/models/availability.model';
 
+interface DayAvailability {
+  name: string;
+  start: string;
+  end: string;
+  enabled: boolean;
+}
+
 interface AvailibilityForm {
+  [key: string]: string | boolean | undefined;
+
   start1: string;
   end1: string;
-  enabled1: string;
+  enabled1: boolean | undefined;
 
   start2: string;
   end2: string;
-  enabled2: string;
+  enabled2: boolean | undefined;
 
   start3: string;
   end3: string;
-  enabled3: string;
+  enabled3: boolean | undefined;
 
   start4: string;
   end4: string;
-  enabled4: string;
+  enabled4: boolean | undefined;
 
   start5: string;
   end5: string;
-  enabled5: string;
+  enabled5: boolean | undefined;
 
   start6: string;
   end6: string;
-  enabled6: string;
+  enabled6: boolean | undefined;
 
   start7: string;
   end7: string;
-  enabled7: string;
+  enabled7: boolean | undefined;
 }
 
 interface UpdateAvailabilityVariables {
@@ -175,25 +184,31 @@ export default defineComponent({
     const schema = yup.object({
       start1: yup.string().required(),
       end1: yup.string().required(),
-      enabled1: yup.string().required(),
+      enabled1: yup.string(),
+
       start2: yup.string().required(),
       end2: yup.string().required(),
-      enabled2: yup.string().required(),
+      enabled2: yup.string(),
+
       start3: yup.string().required(),
       end3: yup.string().required(),
-      enabled3: yup.string().required(),
+      enabled3: yup.string(),
+
       start4: yup.string().required(),
       end4: yup.string().required(),
-      enabled4: yup.string().required(),
+      enabled4: yup.string(),
+
       start5: yup.string().required(),
       end5: yup.string().required(),
-      enabled5: yup.string().required(),
+      enabled5: yup.string(),
+
       start6: yup.string().required(),
       end6: yup.string().required(),
-      enabled6: yup.string().required(),
+      enabled6: yup.string(),
+
       start7: yup.string().required(),
       end7: yup.string().required(),
-      enabled7: yup.string().required()
+      enabled7: yup.string()
     });
 
     const toast = useToast();
@@ -227,7 +242,33 @@ export default defineComponent({
       }
     },
     handleAvailability(values: AvailibilityForm) {
-      console.log(values);
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday', 'Sunday'];
+
+      const data = days.map((day, index) => {
+        return {
+          name: day,
+          start: values[`start${index + 1}`],
+          end: values[`end${index + 1}`],
+          enabled: values[`enabled${index + 1}`] === false ? true : false
+        };
+      });
+
+      this.updateAvailability({
+        value: JSON.stringify(data)
+      }).then(res => {
+        if (res) {
+          const newAvailability = res.data as { updateAvailability: AvailabilityModel };
+          console.log(
+            this.computedAvailabilityValue,
+            JSON.parse(newAvailability.updateAvailability.value)
+          );
+          this.computedAvailabilityValue = JSON.parse(newAvailability.updateAvailability.value);
+          console.log(this.computedAvailabilityValue);
+          this.toast.success('Availability updated successfully.');
+          this.handleEditing();
+          this.$forceUpdate();
+        }
+      });
     },
     handleEditing() {
       this.editing = this.editing ? false : true;

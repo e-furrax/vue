@@ -158,7 +158,7 @@
               />
               <h4 class="font-bold uppercase">About me</h4>
               <p ref="descriptionRef" v-show="!editingDescription">
-                {{ user.description }}
+                {{ user.description || 'This user has no description.' }}
               </p>
               <Form
                 class="flex flex-col"
