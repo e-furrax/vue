@@ -161,6 +161,10 @@ interface UpdateAvailabilityVariables {
   value: string;
 }
 
+interface AvailabilityQuery {
+  getAvailability: DayAvailability[];
+}
+
 export default defineComponent({
   name: 'Availability',
   components: { Field, Form, InputToggle, Loader },
@@ -174,12 +178,25 @@ export default defineComponent({
     const { result, loading, error } = useQuery(getAvailability, {
       user: { id: parseInt(props.userId) }
     });
+
     const availability = useResult(result, null, data => data.getAvailability);
 
     const { mutate: updateAvailability } = useMutation<
       Partial<AvailabilityModel>,
       UpdateAvailabilityVariables
-    >(updateAvailabilityMutation);
+    >(updateAvailabilityMutation, {
+      update: (cache, { data }) => {
+        const availabilityInCache = cache.readQuery<AvailabilityQuery>({ query: getAvailability });
+        console.log(data);
+        const newAvailability = {
+          getAvailability: {
+            ...availabilityInCache?.getAvailability,
+            ...data
+          }
+        };
+        cache.writeQuery({ query: getAvailability, data: newAvailability });
+      }
+    });
 
     const schema = yup.object({
       start1: yup.string().required(),
@@ -229,6 +246,10 @@ export default defineComponent({
     }
   },
   methods: {
+    parsedAvailabilityValue(availability: AvailabilityModel) {
+      const values = JSON.parse(availability ? availability.value : this.availability.value);
+      return values;
+    },
     handleToggle(event: { target: HTMLElement }) {
       if (event.target.nodeName === 'SPAN') {
         const dataName = (event.target.parentNode as HTMLElement).dataset.name;
@@ -258,12 +279,7 @@ export default defineComponent({
       }).then(res => {
         if (res) {
           const newAvailability = res.data as { updateAvailability: AvailabilityModel };
-          console.log(
-            this.computedAvailabilityValue,
-            JSON.parse(newAvailability.updateAvailability.value)
-          );
-          this.computedAvailabilityValue = JSON.parse(newAvailability.updateAvailability.value);
-          console.log(this.computedAvailabilityValue);
+          // this.reactObj.availability.value = newAvailability.updateAvailability.value;
           this.toast.success('Availability updated successfully.');
           this.handleEditing();
           this.$forceUpdate();
