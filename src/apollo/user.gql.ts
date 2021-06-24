@@ -43,7 +43,7 @@ export const getUser = gql`
     }
   }
 `;
-export const getProfile = gql`
+export const getProfileQuery = gql`
   query getProfile {
     getProfile {
       id
@@ -81,6 +81,7 @@ export const registerMutation = gql`
     register(data: $data) {
       username
       email
+      gender
     }
   }
 `;
@@ -109,5 +110,12 @@ export const updatePasswordMutation = gql`
 export const updateProfilePicMutation = gql`
   mutation updateProfilePic($picture: Upload!) {
     updateProfilePic(picture: $picture)
+  }
+`;
+export const confirmUserMutation = gql`
+  mutation confirmUser($code: String!) {
+    confirmUser(code: $code) {
+      accessToken
+    }
   }
 `;

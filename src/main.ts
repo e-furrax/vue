@@ -7,6 +7,8 @@ import { ApolloClients } from '@vue/apollo-composable';
 import { postgresClient, mongoClient } from './apollo/client';
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+import VTooltip from 'v-tooltip';
+import 'v-tooltip/dist/v-tooltip.css';
 import './index.css';
 import './assets/css/main.css';
 
@@ -25,4 +27,5 @@ createApp({
   .directive('click-outside', clickOutside)
   .use(router)
   .use(Toast)
+  .use(VTooltip)
   .mount('#app');

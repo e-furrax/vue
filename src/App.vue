@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue';
-import { useAuth } from './modules/auth';
+import { useAuth } from './composables/auth';
 
 export default defineComponent({
   name: 'App',

@@ -8,7 +8,7 @@
     <div class="h-full w-full flex justify-center items-center">
       <div class="w-96 flex flex-col items-center">
         <h1 class="text-3xl font-semibold mb-6 text-white">Sign In</h1>
-        <form class="form-grid" @submit.prevent="submit">
+        <Form class="form-grid" @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }">
           <div class="input-grid">
             <div class="icons">
               <svg width="16px" height="16px" viewBox="0 0 511.626 511.626" fill="currentColor">
@@ -20,13 +20,13 @@
                 ></path>
               </svg>
             </div>
-            <input
+            <Field
               class="border m-2 input-fillable"
               aria-label="Email address"
               type="email"
               placeholder="Email address"
               autocomplete="current-email"
-              v-model="email"
+              name="email"
             />
           </div>
           <div class="input-grid">
@@ -42,22 +42,23 @@
                 ></path>
               </svg>
             </div>
-            <input
+            <Field
               class="border m-2 input-fillable"
               aria-label="Password"
               type="password"
               placeholder="Password"
               autocomplete="current-password"
-              v-model="password"
+              name="password"
             />
           </div>
           <button
-            type="submit"
+            ref="submitLogin"
             class="border-none outline-none font-bold text-white uppercase rounded bg-purple-900 text-sm leading-8 py-1 hover:bg-purple-800 transition-all ease-in duration-200"
+            @click="checkIfFormValid(meta.valid)"
           >
             Sign In
           </button>
-        </form>
+        </Form>
         <div class="absolute bottom-12 flex flex-col items-center">
           <p class="text-purple-300 hover:underline leading-8 cursor-pointer">
             Forgot your password?
@@ -76,38 +77,56 @@
 
 <script lang="ts">
 import { useMutation } from '@vue/apollo-composable';
-import { defineComponent, reactive, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuth } from '../modules/auth';
+import { defineComponent } from 'vue';
+import { useAuth } from '../composables/auth';
 import { loginMutation } from '@/apollo/user.gql';
-
-interface LoginPayload {
-  email: string | undefined;
-  password: string | undefined;
-}
+import { Form, Field } from 'vee-validate';
+import { object, string } from 'yup';
+import { LoginMutationResponse, LoginPayload } from '@/models/user.model';
 
 export default defineComponent({
+  components: {
+    Form,
+    Field
+  },
   setup() {
     const { setUser } = useAuth();
-    const router = useRouter();
-    const { mutate: login } = useMutation(loginMutation);
-
-    const payload = reactive<LoginPayload>({
-      email: undefined,
-      password: undefined
-    });
-
-    const submit = () => {
-      login(payload).then(({ data }) => {
-        setUser(data.login);
-        router.push({ name: 'Home' });
-      });
-    };
+    const { mutate: login } = useMutation<LoginMutationResponse>(loginMutation);
 
     return {
-      submit,
-      ...toRefs(payload)
+      setUser,
+      login
     };
+  },
+  data() {
+    const schema = object({
+      email: string()
+        .required()
+        .email(),
+      password: string().required()
+    });
+    return {
+      schema
+    };
+  },
+  methods: {
+    onSubmit(values: LoginPayload) {
+      this.login(values).then(({ data }) => {
+        if (data) {
+          this.setUser(data.login);
+          this.$router.push({ name: 'Home' });
+        }
+      });
+    },
+    checkIfFormValid(valid: boolean) {
+      if (!valid) {
+        const submitEl = this.$refs.submitLogin as HTMLElement;
+        submitEl.classList.add('animate-shake-x');
+        setTimeout(() => {
+          submitEl.classList.remove('animate-shake-x');
+        }, 1000);
+      }
+    }
   }
 });
 </script>
