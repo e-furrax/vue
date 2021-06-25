@@ -52,3 +52,11 @@ export const getAppointmentbyUser = gql`
     }
   }
 `;
+
+export const deleteAppointment = gql`
+  mutation deleteAppointment($appointment: [String!]!) {
+    deleteAppointment(appointment: $appointment) {
+      _id
+    }
+  }
+`;

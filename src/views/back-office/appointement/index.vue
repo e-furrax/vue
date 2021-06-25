@@ -1,9 +1,10 @@
-<template>
+,<template>
   <div class="grid grid-cols-12 gap-6 my-5">
     <remove-action-popup
       v-if="isOpen"
       @on-close="isOpen = false"
       :data="selectedAppointment"
+      :handler="useRemoveAppointment"
       name="Appointment"
     />
 
@@ -20,10 +21,7 @@
           />
         </div>
         <button
-          class="
-          flex justify-center border-red-500 border-2 outline-none 
-          font-bold text-white uppercase rounded 
-          bg-purple-800 text-sm py-1 w-1/12"
+          class="flex justify-center border-red-500 border-2 outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm py-1 w-1/12"
           :class="{
             'bg-purple-700 transition-all ease-in duration-200': selectedAppointment.size
           }"
@@ -76,20 +74,12 @@
                   'text-theme-9': Math.random(0, 4) === 0
                 }"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
+                <img
+                  :src="`/images/${appointment.status.toLowerCase()}.svg`"
+                  :alt="`${appointment.status}`"
                   class="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clip-rule="evenodd"
-                  />
-                  <!-- TODO: in gql request only get the last transaction, get all the transactions when getting the details -->
-                </svg>
-                Pending
+                />
+                {{ appointment.status }}
               </div>
             </td>
             <td class="table-report__action w-56 rounded-r-lg">
@@ -104,7 +94,7 @@
                   src="/images/trash.svg"
                   alt="trash"
                   class="flex items-center cursor-pointer"
-                  @click="isOpen = true"
+                  @click="handleRemove"
                 />
               </div>
             </td>
@@ -117,11 +107,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import { getAppointments } from '@/apollo/appointment.gql';
+import { getAppointments, deleteAppointment } from '@/apollo/appointment.gql';
 import { getUsers } from '@/apollo/user.gql';
-import { useQuery, useResult, useQueryLoading } from '@vue/apollo-composable';
+import { useQuery, useResult, useQueryLoading, useMutation } from '@vue/apollo-composable';
 import Loader from '@/components/Loader.vue';
-import RemoveActionPopup from '@/components/back-office/RemoveActionPopup.vue';
+import RemoveActionPopup from '@/components/back-office/ActionWarningPopup.vue';
 
 interface User {
   id: string;
@@ -133,7 +123,6 @@ interface Transaction {
   price: number;
   status: string;
 }
-
 interface Appointment {
   _id: string;
   _createdAt: string;
@@ -159,6 +148,18 @@ export default defineComponent({
     const selectAll = ref(false);
     const selectedAppointment = ref(new Map());
 
+    const useRemoveAppointment = (appointments: string[]) => {
+      const { loading, onDone, error } = useMutation(deleteAppointment, () => ({
+        variables: { appointments },
+        update: (cache, { data: { mutate } }) => {
+          const data: any = cache.readQuery({ query: getAppointments });
+          data.getAppointments.push(mutate);
+          cache.writeQuery({ query: getAppointments, data });
+        }
+      }));
+      return { loading, onDone, error };
+    };
+
     watch(selectAll, value => {
       if (!value) {
         selectedAppointment.value.clear();
@@ -178,6 +179,7 @@ export default defineComponent({
       error,
       selectAll,
       selectedAppointment,
+      useRemoveAppointment,
       isOpen: ref(false)
     };
   },
