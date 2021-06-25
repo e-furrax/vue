@@ -41,21 +41,25 @@
             name="Rocket League"
             src="/images/rl.jpg"
             background="/images/backgrounds/rl.jpg"
+            url="/search"
           />
           <GamePreview
             name="League of Legends"
             src="/images/lol.jpg"
             background="/images/backgrounds/lol.jpg"
+            url="/search"
           />
           <GamePreview
             name="Valorant"
             src="/images/valorant.jpg"
             background="/images/backgrounds/valorant.jpg"
+            url="/search"
           />
           <GamePreview
             name="CS:GO"
             src="/images/csgo.png"
             background="/images/backgrounds/csgo.jpg"
+            url="/search"
           />
         </div>
       </div>
