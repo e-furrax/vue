@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input :name="name" type="checkbox" :checked="enabled === 'on' ? true : false" />
+    <input :name="name" type="checkbox" :checked="enabled" />
     <span class="slider round"></span>
   </label>
 </template>
@@ -19,7 +19,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  setup() {
     return {};
   }
 });

@@ -46,7 +46,7 @@
             class="hidden"
             :name="`enabled${index + 1}`"
             type="checkbox"
-            :value="day.enabled"
+            :value="day.enabled ? undefined : false"
           />
           <InputToggle
             @click="handleToggle"
@@ -118,13 +118,6 @@ import Loader from '@/components/Loader.vue';
 import { getAvailability, updateAvailabilityMutation } from '@/apollo/availability.gql';
 import AvailabilityModel from '@/models/availability.model';
 
-interface DayAvailability {
-  name: string;
-  start: string;
-  end: string;
-  enabled: boolean;
-}
-
 interface AvailibilityForm {
   [key: string]: string | boolean | undefined;
 
@@ -162,7 +155,11 @@ interface UpdateAvailabilityVariables {
 }
 
 interface AvailabilityQuery {
-  getAvailability: DayAvailability[];
+  getAvailability: UpdateAvailabilityVariables;
+}
+
+interface AvailabilityMutation {
+  updateAvailability: UpdateAvailabilityVariables;
 }
 
 export default defineComponent({
@@ -182,19 +179,12 @@ export default defineComponent({
     const availability = useResult(result, null, data => data.getAvailability);
 
     const { mutate: updateAvailability } = useMutation<
-      Partial<AvailabilityModel>,
+      AvailabilityMutation,
       UpdateAvailabilityVariables
     >(updateAvailabilityMutation, {
       update: (cache, { data }) => {
-        const availabilityInCache = cache.readQuery<AvailabilityQuery>({ query: getAvailability });
-        console.log(data);
-        const newAvailability = {
-          getAvailability: {
-            ...availabilityInCache?.getAvailability,
-            ...data
-          }
-        };
-        cache.writeQuery({ query: getAvailability, data: newAvailability });
+        // console.log(data?.updateAvailability);
+        cache.writeQuery({ query: getAvailability, data: data?.updateAvailability });
       }
     });
 
@@ -242,6 +232,7 @@ export default defineComponent({
   computed: {
     computedAvailabilityValue(): {} {
       const values = JSON.parse(this.availability.value);
+      // console.log(values);
       return values;
     }
   },
@@ -274,11 +265,14 @@ export default defineComponent({
         };
       });
 
+      // console.log(data);
+
       this.updateAvailability({
         value: JSON.stringify(data)
       }).then(res => {
         if (res) {
-          const newAvailability = res.data as { updateAvailability: AvailabilityModel };
+          // console.log(res);
+          // const newAvailability = res.data as { updateAvailability: AvailabilityModel };
           // this.reactObj.availability.value = newAvailability.updateAvailability.value;
           this.toast.success('Availability updated successfully.');
           this.handleEditing();
