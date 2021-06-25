@@ -84,20 +84,27 @@
               >
                 <div class="flex items-center">
                   <h2 class="text-xl lg:text-2xl mr-2">{{ user.username }}</h2>
-                  <img src="/images/icons/verified.svg" title="Verified user" width="18" />
                 </div>
                 <div class="flex flex-col mt-2 text-sm">
-                  <span>French, English</span>
-                  <span>22 y.o</span>
+                  <div class="flex items-center flex-wrap mb-1">
+                    <div v-for="language of user.languages" :key="language.id" class="z-20 mr-1">
+                      <img
+                        width="28"
+                        :src="`/images/icons/countries/${language.name}.png`"
+                        :title="language.name"
+                      />
+                    </div>
+                  </div>
+                  <span>22 years old</span>
                   <span>Joined 1 year ago</span>
                 </div>
               </div>
             </div>
             <div class="flex flex-col justify-center items-end absolute top-8 lg:top-4 right-4">
-              <div class="flex items-center">
+              <!-- <div class="flex items-center">
                 <img src="/images/icons/local_atm.svg" class="mr-1" height="20" />
                 <span class="text-lg">4.50<span class="text-sm">/Match</span></span>
-              </div>
+              </div> -->
               <div v-show="computedAverageRating !== '0'" class="flex items-center">
                 <img src="/images/icons/star.svg" width="18" />
                 <span class="ml-1" ref="computedAverageRatingRef">{{ computedAverageRating }}</span>

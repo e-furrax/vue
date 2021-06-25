@@ -6,11 +6,22 @@ export const me = gql`
   }
 `;
 export const getUsers = gql`
-  {
-    getUsers {
+  query($data: FilterInput) {
+    getUsers(data: $data) {
       id
-      username
       email
+      username
+      description
+      gender
+      languages {
+        name
+      }
+      games {
+        name
+      }
+      receivedRatings {
+        rating
+      }
     }
   }
 `;
@@ -39,6 +50,14 @@ export const getUser = gql`
           username
         }
         createdAt
+      }
+      languages {
+        id
+        name
+      }
+      games {
+        id
+        name
       }
     }
   }

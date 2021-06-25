@@ -29,8 +29,7 @@
           : 'hidden'
       ]"
     >
-      <Loader v-if="loading" />
-      <ul class="mt-3" v-if="results && results.games">
+      <!-- <ul class="mt-3" v-if="results && results.games">
         <li v-for="game of results.games" :key="game.id">
           <div class="mt-1 mx-3 text-sm text-violet-300">Games</div>
           <div
@@ -42,23 +41,22 @@
             </div>
           </div>
         </li>
-      </ul>
+      </ul> -->
       <h3 class="px-4 mb-2 font-bold text-gray-400">Profiles</h3>
+      <Loader v-if="loading" class="ml-2" />
       <ul v-if="results && results.users">
-        <li
-          -for="user of results.users"
-          :key="user.id"
-          class="cursor-pointer hover:bg-purple-1000 px-4 py-2"
-        >
-          <div class="flex items-center">
-            <img
-              class="w-8 h-8 border-2 border-yellow-600 rounded-full mr-2"
-              src="/images/lol.jpg"
-              alt="player image"
-            />
-            <span>{{ user.username }}</span>
-          </div>
-        </li>
+        <router-link :to="`/user/${user.id}`" v-for="user of results.users" :key="user.id">
+          <li class="cursor-pointer hover:bg-purple-1000 px-4 py-2">
+            <div class="flex items-center">
+              <img
+                class="w-8 h-8 border-2 border-yellow-600 rounded-full mr-2"
+                src="/images/lol.jpg"
+                alt="player image"
+              />
+              <span>{{ user.username }}</span>
+            </div>
+          </li>
+        </router-link>
       </ul>
       <div v-if="!totalLength" class="px-4">No results found...</div>
     </div>

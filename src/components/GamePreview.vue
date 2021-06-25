@@ -28,7 +28,7 @@
       style="bottom: 2rem"
     >
       <div class="w-full bg-orange-600" style="height: 2px"></div>
-      <div class="flex-shrink-0 mx-4">Find a mate</div>
+      <router-link :to="url" class="flex-shrink-0 mx-4 hover:underline">Find a mate</router-link>
       <div class="w-full bg-orange-600" style="height: 2px"></div>
     </div>
   </div>
@@ -42,7 +42,8 @@ export default defineComponent({
   props: {
     src: String,
     name: String,
-    background: String
+    background: String,
+    url: String
   },
   methods: {
     handleMouseOver() {
