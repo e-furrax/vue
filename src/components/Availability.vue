@@ -7,7 +7,7 @@
       style="top: -2rem"
       width="20"
       @click="handleEditing"
-      v-if="!editing"
+      v-if="!editing && user"
     />
     <div v-show="!editing">
       <div
@@ -99,6 +99,7 @@ import { defineComponent, computed } from 'vue';
 import { Field, Form } from 'vee-validate';
 import * as yup from 'yup';
 import { useToast } from 'vue-toastification';
+import { useAuth } from '@/composables/auth';
 
 import InputToggle from './InputToggle.vue';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
@@ -164,6 +165,8 @@ export default defineComponent({
       user: { id: parseInt(props.userId) }
     });
 
+    const { user } = useAuth();
+
     const availabilityResult = useResult(result, null, data => data.getAvailability);
 
     const { mutate: updateAvailability } = useMutation<
@@ -212,7 +215,8 @@ export default defineComponent({
       loading,
       error,
       refetch,
-      updateAvailability
+      updateAvailability,
+      user
     };
   },
   methods: {

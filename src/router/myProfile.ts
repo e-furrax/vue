@@ -5,6 +5,7 @@ import HistoryTransactions from '@/views/user-profile/HistoryTransactions.vue';
 import Account from '@/views/user-profile/Account.vue';
 import Security from '@/views/user-profile/Security.vue';
 import Connections from '@/views/user-profile/Connections.vue';
+import Messages from '@/views/user-profile/Messages.vue';
 
 import Header from '@/components/layouts/default/Header.vue';
 import Footer from '@/components/layouts/default/Footer.vue';
@@ -19,10 +20,21 @@ export const myProfileRoutes: RouteRecordRaw = {
   redirect: '/profile/settings',
   components: {
     default: MyProfile,
-    header: Header,
-    footer: Footer
+    header: Header
   },
   children: [
+    {
+      path: 'messages',
+      name: 'Messages',
+      component: Messages,
+      meta: { icon: 'icons/email.svg' }
+    },
+    {
+      path: 'history',
+      name: 'History Transactions',
+      component: HistoryTransactions,
+      meta: { icon: 'receipt_long.svg' }
+    },
     {
       path: 'settings',
       name: 'Settings',
@@ -55,12 +67,6 @@ export const myProfileRoutes: RouteRecordRaw = {
           }
         }
       ]
-    },
-    {
-      path: 'history',
-      name: 'History Transactions',
-      component: HistoryTransactions,
-      meta: { icon: 'receipt_long.svg' }
     }
   ]
 };

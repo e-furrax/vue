@@ -2,22 +2,14 @@ import { gql } from '@apollo/client/core';
 
 export const sendMessageMutation = gql`
   mutation sendMessage($data: MessageInput!) {
-    sendMessage(data: $data) {
-      content
-      createdAt
-      fromUser {
-        username
-      }
-      toUser {
-        username
-      }
-    }
+    sendMessage(data: $data)
   }
 `;
 
 export const getConversation = gql`
-  query getConversation {
-    getConversation {
+  query getConversation($toUser: UserInput!) {
+    getConversation(toUser: $toUser) {
+      id
       content
       toUser {
         id
@@ -28,6 +20,15 @@ export const getConversation = gql`
         username
       }
       createdAt
+    }
+  }
+`;
+
+export const getConversations = gql`
+  query getConversations {
+    getConversations {
+      id
+      username
     }
   }
 `;

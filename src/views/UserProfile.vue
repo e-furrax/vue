@@ -154,7 +154,7 @@
                 class="absolute top-4 right-4 cursor-pointer"
                 width="20"
                 @click="handleEditingDescription"
-                v-if="!editingDescription"
+                v-if="!editingDescription && userAuth"
               />
               <h4 class="font-bold uppercase">About me</h4>
               <p ref="descriptionRef" v-show="!editingDescription">
@@ -229,6 +229,7 @@
               <Form
                 :validation-schema="schema"
                 class="flex flex-col items-start"
+                v-if="userAuth"
                 @submit="handleRating"
               >
                 <label for="rating">Rating<span class="text-red-500">*</span></label>
@@ -273,7 +274,7 @@
                   Envoyer
                 </button>
               </Form>
-              <div id="commentsDOM">
+              <div v-if="computedReceivedRatings.length" id="commentsDOM">
                 <Comment
                   v-for="com in computedReceivedRatings"
                   :key="com.id"
@@ -281,6 +282,7 @@
                   class="mt-2"
                 ></Comment>
               </div>
+              <div v-else>This user did not receive any comments yet.</div>
             </div>
           </div>
         </div>
@@ -413,6 +415,7 @@
 
 <script lang="ts">
 import { addRatingMutation } from '@/apollo/rating.gql';
+import { useAuth } from '@/composables/auth';
 import { defineComponent, ref } from 'vue';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import { getUser, updateDescriptionMutation } from '@/apollo/user.gql';
@@ -459,6 +462,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const { user: userAuth } = useAuth();
     const computedAverageRatingRef = ref();
     const descriptionRef = ref();
     const { result, loading, error, refetch: refetchUser } = useQuery(getUser, {
@@ -508,7 +512,8 @@ export default defineComponent({
       user,
       loading,
       error,
-      refetchUser
+      refetchUser,
+      userAuth
     };
   },
   computed: {
