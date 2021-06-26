@@ -85,9 +85,12 @@
       <div v-if="user.receivedRatings.length" class="text-sm flex items-start">
         <img src="/images/star-rate.svg" class="h-4" />
         <span class="pl-1 text-white"
-          >{{ user.receivedRatings.reduce((a, v) => a + +v.rating, 0).toFixed(2) }} ({{
-            user.receivedRatings.length
-          }})</span
+          >{{
+            (
+              user.receivedRatings.reduce((a, v) => a + +v.rating, 0) / user.receivedRatings.length
+            ).toFixed(2)
+          }}
+          ({{ user.receivedRatings.length }})</span
         >
       </div>
     </div>
