@@ -461,7 +461,9 @@ export default defineComponent({
   setup(props) {
     const computedAverageRatingRef = ref();
     const descriptionRef = ref();
-    const { result, loading, error } = useQuery(getUser, { data: { id: parseInt(props.userId) } });
+    const { result, loading, error, refetch: refetchUser } = useQuery(getUser, {
+      data: { id: parseInt(props.userId) }
+    });
     const user = useResult(result, null, data => data.getUser);
 
     const { mutate: addRating } = useMutation<Partial<RatingModel>, AddRatingVariables>(
@@ -505,7 +507,8 @@ export default defineComponent({
       updateDescription,
       user,
       loading,
-      error
+      error,
+      refetchUser
     };
   },
   computed: {
@@ -535,13 +538,10 @@ export default defineComponent({
         this.updateDescription({
           description: values.description
         })
-          .then(res => {
-            if (res) {
-              const newDescription = res.data as { updateDescription: string };
-              this.descriptionRef.textContent = newDescription.updateDescription;
-              this.toast.success('Description edited successfully.');
-              this.handleEditingDescription();
-            }
+          .then(() => {
+            this.refetchUser();
+            this.toast.success('Description edited successfully.');
+            this.handleEditingDescription();
           })
           .catch(err => {
             const errorMessage =
@@ -560,17 +560,10 @@ export default defineComponent({
             toUser: { id: +this.userId }
           }
         })
-          .then(res => {
-            if (res) {
-              const newRating = res.data as { addRating: RatingModel };
-              this.computedReceivedRatings.unshift(newRating.addRating);
-              this.computedAverageRatingRef.textContent = this.calculateAverageRating(
-                this.computedReceivedRatings
-              );
-              this.$forceUpdate();
-              this.toast.success('Rating sent successfully.');
-              resetForm();
-            }
+          .then(() => {
+            this.refetchUser();
+            this.toast.success('Rating sent successfully.');
+            resetForm();
           })
           .catch(err => {
             const errorMessage =

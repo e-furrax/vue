@@ -11,7 +11,7 @@
     />
     <div v-show="!editing">
       <div
-        v-for="day in computedAvailabilityValue"
+        v-for="day in availability"
         :key="day"
         class="p-2 bg-opacity-70 bg-purple-1100 even:bg-purple-1200"
       >
@@ -24,7 +24,7 @@
     </div>
     <Form v-show="editing" :validation-schema="schema" @submit="handleAvailability">
       <div
-        v-for="(day, index) in computedAvailabilityValue"
+        v-for="(day, index) in availability"
         :key="index"
         class="flex p-2 bg-opacity-70 bg-purple-1100 even:bg-purple-1200"
       >
@@ -42,19 +42,7 @@
           :value="day.end"
         />
         <div>
-          <Field
-            class="hidden"
-            :name="`enabled${index + 1}`"
-            type="checkbox"
-            :value="day.enabled ? undefined : false"
-          />
-          <InputToggle
-            @click="handleToggle"
-            :enabled="day.enabled"
-            :name="`enabled${index + 1}`"
-            :data-name="`enabled${index + 1}`"
-            class="ml-2"
-          />
+          <InputToggle :enabled="day.enabled" :name="`enabled${index + 1}`" class="ml-2" />
         </div>
       </div>
       <div class="mt-2 flex items-center justify-end">
@@ -107,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { Field, Form } from 'vee-validate';
 import * as yup from 'yup';
 import { useToast } from 'vue-toastification';
@@ -172,21 +160,16 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { result, loading, error } = useQuery(getAvailability, {
+    const { result, loading, error, refetch } = useQuery(getAvailability, {
       user: { id: parseInt(props.userId) }
     });
 
-    const availability = useResult(result, null, data => data.getAvailability);
+    const availabilityResult = useResult(result, null, data => data.getAvailability);
 
     const { mutate: updateAvailability } = useMutation<
       AvailabilityMutation,
       UpdateAvailabilityVariables
-    >(updateAvailabilityMutation, {
-      update: (cache, { data }) => {
-        // console.log(data?.updateAvailability);
-        cache.writeQuery({ query: getAvailability, data: data?.updateAvailability });
-      }
-    });
+    >(updateAvailabilityMutation);
 
     const schema = yup.object({
       start1: yup.string().required(),
@@ -220,63 +203,46 @@ export default defineComponent({
 
     const toast = useToast();
 
+    const availability = computed(() => JSON.parse(availabilityResult.value.value));
+
     return {
       toast,
       availability,
       schema,
       loading,
       error,
+      refetch,
       updateAvailability
     };
-  },
-  computed: {
-    computedAvailabilityValue(): {} {
-      const values = JSON.parse(this.availability.value);
-      // console.log(values);
-      return values;
-    }
   },
   methods: {
     parsedAvailabilityValue(availability: AvailabilityModel) {
       const values = JSON.parse(availability ? availability.value : this.availability.value);
       return values;
     },
-    handleToggle(event: { target: HTMLElement }) {
-      if (event.target.nodeName === 'SPAN') {
-        const dataName = (event.target.parentNode as HTMLElement).dataset.name;
-        const associedField = document.querySelector(`input[name='${dataName}']`) as
-          | HTMLElement
-          | undefined;
-
-        if (associedField) {
-          associedField.click();
-        }
-      }
-    },
     handleAvailability(values: AvailibilityForm) {
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday', 'Sunday'];
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
       const data = days.map((day, index) => {
+        const currentInput = document.querySelector(
+          `input[name="enabled${index + 1}"]`
+        ) as HTMLInputElement;
+
         return {
           name: day,
           start: values[`start${index + 1}`],
           end: values[`end${index + 1}`],
-          enabled: values[`enabled${index + 1}`] === false ? true : false
+          enabled: currentInput.checked
         };
       });
-
-      // console.log(data);
 
       this.updateAvailability({
         value: JSON.stringify(data)
       }).then(res => {
         if (res) {
-          // console.log(res);
-          // const newAvailability = res.data as { updateAvailability: AvailabilityModel };
-          // this.reactObj.availability.value = newAvailability.updateAvailability.value;
+          this.refetch();
           this.toast.success('Availability updated successfully.');
           this.handleEditing();
-          this.$forceUpdate();
         }
       });
     },
