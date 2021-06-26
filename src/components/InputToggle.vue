@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input type="checkbox" :checked="enabled" />
+    <input :name="name" type="checkbox" :checked="enabled" />
     <span class="slider round"></span>
   </label>
 </template>
@@ -10,10 +10,17 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
+    name: {
+      type: String,
+      required: true
+    },
     enabled: {
       type: Boolean,
       required: true
     }
+  },
+  setup() {
+    return {};
   }
 });
 </script>
