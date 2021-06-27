@@ -2,10 +2,10 @@
   <div class="flex text-white h-full">
     <section class="flex flex-col border-r-2 border-opacity-20 md:w-84">
       <div class="flex flex-col items-start py-6">
-        <h2 class="font-semibold border-b-2 border-purple-800 mb-6 mx-4 md:mx-6">Messages</h2>
+        <h2 class="font-semibold border-b-2 border-purple-800 mb-6 mx-4 md:mx-6">Conversations</h2>
         <ul v-if="!loading" class="w-full">
           <li
-            v-for="(conversation, index) in conversations"
+            v-for="conversation in conversations"
             :key="conversation"
             :data-user-id="conversation.id"
             @click="setConversationId"
@@ -24,7 +24,6 @@
               hover:opacity-100
               cursor-pointer
             "
-            :class="index === 0 ? 'active-conversation' : ''"
           >
             <img
               src="/images/avatar1.png"
@@ -41,6 +40,32 @@
               <span class="text-xs text-gray-400">today</span>
             </div>
           </li>
+          <div
+            v-if="!conversations || !conversations.length"
+            class="md:px-6 px-4 opacity-75 font-normal"
+          >
+            No conversations.
+          </div>
+          <button
+            class="
+              md:mx-6
+              mx-4
+              mt-6
+              px-3
+              py-1
+              mx-2
+              rounded
+              bg-transparent
+              border border-purple-400
+              text-purple-400
+              hover:border-purple-300
+              hover:text-purple-300
+              transition
+              duration-200
+            "
+          >
+            New message
+          </button>
         </ul>
         <div class="mx-4 md:mx-6" v-else>
           <Loader />
@@ -48,8 +73,12 @@
       </div>
     </section>
     <section class="flex flex-col items-start mt-6 w-full">
-      <h2 class="font-semibold border-purple-800 mb-4 ml-6">Conversation</h2>
-      <div ref="displayedConversationDOM" class="overflow-y-scroll w-full flex flex-col h-full">
+      <h2 class="font-semibold border-purple-800 mb-4 ml-6">Messages</h2>
+      <div
+        v-if="selectedConversationToUserId"
+        ref="displayedConversationDOM"
+        class="overflow-y-scroll w-full flex flex-col h-full"
+      >
         <div
           class="my-1.5 py-1.5 px-6 w-full flex items-start hover:bg-purple-1000"
           v-for="message of displayedConversation"
@@ -74,6 +103,7 @@
         </div>
       </div>
       <Form
+        v-if="selectedConversationToUserId"
         class="w-full flex items-center px-6 my-2 py-1"
         :validation-schema="schema"
         @submit="handleSendMessage"
@@ -88,16 +118,46 @@
           <img src="/images/icons/send.svg" width="26" />
         </button>
       </Form>
+      <div
+        class="flex flex-col items-center justify-center w-full h-full"
+        v-if="!selectedConversationToUserId"
+      >
+        <h3 class="text-xl">You don't have a conversation selected</h3>
+        <p class="mt-1">Choose one from your existing conversations, or start a new one.</p>
+        <button
+          class="
+            mt-4
+            font-bold
+            uppercase
+            rounded
+            bg-orange-600
+            text-sm
+            py-2
+            px-6
+            hover:bg-orange-700
+            transition-all
+            ease-in
+            duration-200
+          "
+        >
+          New message
+        </button>
+      </div>
     </section>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
+import { useMutation, useQuery, useResult, useSubscription } from '@vue/apollo-composable';
 import { Field, Form } from 'vee-validate';
 import * as yup from 'yup';
-import { getConversation, getConversations, sendMessageMutation } from '@/apollo/message.gql';
+import {
+  getConversation,
+  getConversations,
+  sendMessageMutation,
+  newMessageSubscription
+} from '@/apollo/message.gql';
 import dayjs from 'dayjs';
 import Loader from '@/components/Loader.vue';
 import MessageModel from '@/models/message.model';
@@ -117,6 +177,7 @@ interface SendMessageVariables {
 
 export default defineComponent({
   name: 'Messages',
+  inject: ['newMessageReceived'],
   data() {
     return {
       selectedConversationToUserId: 0
@@ -129,12 +190,14 @@ export default defineComponent({
   },
   setup() {
     const displayedConversationDOM = ref();
-    const { result: conversationsResult, loading, error } = useQuery(getConversations);
+
+    const { result: conversationsResult, loading, error, refetch: refetchConversations } = useQuery(
+      getConversations
+    );
     const conversations = useResult(conversationsResult, null, data => data.getConversations);
 
-    const toUserId = conversations && conversations.value ? +conversations.value[0].id : 0;
     const { result: conversationResult } = useQuery(getConversation, {
-      toUser: { id: toUserId }
+      toUser: { id: 0 }
     });
 
     const displayedConversation = useResult(conversationResult, null, data => data.getConversation);
@@ -151,19 +214,24 @@ export default defineComponent({
         .max(2000)
     });
 
+    const { result: newMessageSubResult } = useSubscription(newMessageSubscription);
+
     return {
+      newMessageSubResult,
       schema,
       conversations,
       loading,
       displayedConversation,
       error,
       sendMessage,
-      displayedConversationDOM
+      displayedConversationDOM,
+      refetchConversations
     };
   },
   watch: {
-    conversations() {
-      this.selectedConversationToUserId = +this.conversations[0].id;
+    newMessageSubResult(value: MessageModel) {
+      this.refetchConversations();
+      console.log('triggered', value);
     },
     selectedConversationToUserId(value) {
       this.setActiveConversation(value);
@@ -213,7 +281,7 @@ export default defineComponent({
         data: {
           content: values.content,
           toUser: {
-            id: 1
+            id: this.selectedConversationToUserId
           }
         }
       }).then(() => {
