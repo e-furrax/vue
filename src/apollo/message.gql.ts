@@ -4,8 +4,13 @@ export const newMessageSubscription = gql`
   subscription newMessage {
     newMessage {
       id
+      conversationId
       content
       fromUser {
+        id
+        username
+      }
+      toUser {
         id
         username
       }
@@ -21,8 +26,8 @@ export const sendMessageMutation = gql`
 `;
 
 export const getConversation = gql`
-  query getConversation($toUser: UserInput!) {
-    getConversation(toUser: $toUser) {
+  query getConversation($conversationId: Float!) {
+    getConversation(conversationId: $conversationId) {
       id
       content
       toUser {
@@ -42,7 +47,17 @@ export const getConversations = gql`
   query getConversations {
     getConversations {
       id
-      username
+      conversationId
+      content
+      toUser {
+        id
+        username
+      }
+      fromUser {
+        id
+        username
+      }
+      createdAt
     }
   }
 `;

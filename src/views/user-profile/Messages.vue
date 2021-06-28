@@ -7,7 +7,12 @@
           <li
             v-for="conversation in conversations"
             :key="conversation"
-            :data-user-id="conversation.id"
+            :data-conversation-id="conversation.conversationId"
+            :data-to-user-id="
+              conversation.fromUser.id === user.id
+                ? conversation.toUser.id
+                : conversation.fromUser.id
+            "
             @click="setConversationId"
             class="
               flex
@@ -36,8 +41,21 @@
               style="width: 50px"
             />
             <div class="pointer-events-none ml-2 md:flex hidden flex-col">
-              <h3 class="font-semibold text-sm text-white">{{ conversation.username }}</h3>
-              <span class="text-xs text-gray-400">today</span>
+              <h3 class="font-semibold flex items-center text-sm text-white">
+                <span>{{
+                  conversation.fromUser.id === user.id
+                    ? conversation.toUser.username
+                    : conversation.fromUser.username
+                }}</span>
+                <span class="mx-2 w-0.5 h-0.5 bg-gray-400 rounded-full"></span>
+                <span class="text-xs text-gray-400 font-normal">{{
+                  dayjs().to(dayjs(conversation.createdAt))
+                }}</span>
+              </h3>
+              <div class="text-xs flex items-center text-gray-400">
+                <span class="mr-1">{{ conversation.fromUser.username }}:</span>
+                <span class="mr-1">{{ conversation.content.substr(0, 17) }}...</span>
+              </div>
             </div>
           </li>
           <div
@@ -75,7 +93,7 @@
     <section class="flex flex-col items-start mt-6 w-full">
       <h2 class="font-semibold border-purple-800 mb-4 ml-6">Messages</h2>
       <div
-        v-if="selectedConversationToUserId"
+        v-if="selectedConversationId"
         ref="displayedConversationDOM"
         class="overflow-y-scroll w-full flex flex-col h-full"
       >
@@ -96,14 +114,14 @@
                 class="mr-2 text-sm text-gray-100 hover:underline"
                 >{{ message.fromUser.username }}</router-link
               >
-              <span class="text-xs text-gray-300">{{ formattedDate(message.createdAt) }}</span>
+              <span class="text-xs text-gray-300">{{ dayjs().to(dayjs(message.createdAt)) }}</span>
             </div>
             <div>{{ message.content }}</div>
           </div>
         </div>
       </div>
       <Form
-        v-if="selectedConversationToUserId"
+        v-if="selectedConversationId"
         class="w-full flex items-center px-6 my-2 py-1"
         :validation-schema="schema"
         @submit="handleSendMessage"
@@ -120,7 +138,7 @@
       </Form>
       <div
         class="flex flex-col items-center justify-center w-full h-full"
-        v-if="!selectedConversationToUserId"
+        v-if="!selectedConversationId"
       >
         <h3 class="text-xl">You don't have a conversation selected</h3>
         <p class="mt-1">Choose one from your existing conversations, or start a new one.</p>
@@ -148,7 +166,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
+import { useAuth } from '@/composables/auth';
 import { useMutation, useQuery, useResult, useSubscription } from '@vue/apollo-composable';
 import { Field, Form } from 'vee-validate';
 import * as yup from 'yup';
@@ -158,9 +177,12 @@ import {
   sendMessageMutation,
   newMessageSubscription
 } from '@/apollo/message.gql';
-import dayjs from 'dayjs';
 import Loader from '@/components/Loader.vue';
 import MessageModel from '@/models/message.model';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 interface MessageForm {
   content: string;
@@ -177,10 +199,10 @@ interface SendMessageVariables {
 
 export default defineComponent({
   name: 'Messages',
-  inject: ['newMessageReceived'],
   data() {
     return {
-      selectedConversationToUserId: 0
+      selectedConversationId: 0,
+      selectedToUserId: 0
     };
   },
   components: {
@@ -191,16 +213,12 @@ export default defineComponent({
   setup() {
     const displayedConversationDOM = ref();
 
+    const { user } = useAuth();
+
     const { result: conversationsResult, loading, error, refetch: refetchConversations } = useQuery(
       getConversations
     );
     const conversations = useResult(conversationsResult, null, data => data.getConversations);
-
-    const { result: conversationResult } = useQuery(getConversation, {
-      toUser: { id: 0 }
-    });
-
-    const displayedConversation = useResult(conversationResult, null, data => data.getConversation);
 
     const { mutate: sendMessage } = useMutation<Partial<MessageModel>, SendMessageVariables>(
       sendMessageMutation
@@ -217,11 +235,13 @@ export default defineComponent({
     const { result: newMessageSubResult } = useSubscription(newMessageSubscription);
 
     return {
+      dayjs,
       newMessageSubResult,
       schema,
       conversations,
+      user,
       loading,
-      displayedConversation,
+      displayedConversation: [] as MessageModel[],
       error,
       sendMessage,
       displayedConversationDOM,
@@ -229,14 +249,23 @@ export default defineComponent({
     };
   },
   watch: {
-    newMessageSubResult(value: MessageModel) {
+    newMessageSubResult(value: { newMessage: MessageModel }) {
       this.refetchConversations();
-      console.log('triggered', value);
+      if (this.selectedConversationId === value.newMessage.conversationId) {
+        this.displayedConversation.push(value.newMessage);
+        this.scrollToBottomOfDisplayedConversation();
+      }
     },
-    selectedConversationToUserId(value) {
+    selectedToUserId(value) {
+      this.selectedToUserId = value;
+    },
+    selectedConversationId(value) {
       this.setActiveConversation(value);
-      this.queryConversation(this.selectedConversationToUserId);
-      this.$forceUpdate();
+      this.queryConversation(this.selectedConversationId);
+    }
+  },
+  methods: {
+    scrollToBottomOfDisplayedConversation() {
       if (this.displayedConversationDOM) {
         setTimeout(
           () =>
@@ -244,22 +273,29 @@ export default defineComponent({
               top: this.displayedConversationDOM.scrollHeight,
               behavior: 'smooth'
             }),
-          1
+          100
         );
       }
-    }
-  },
-  methods: {
-    queryConversation(toUserId: number) {
-      const { result: conversationResult } = useQuery(getConversation, {
-        toUser: { id: toUserId }
-      });
+    },
+    queryConversation(conversationId: number) {
+      const { result: conversationResult, onResult } = useQuery(
+        getConversation,
+        { conversationId },
+        { fetchPolicy: 'no-cache' }
+      );
 
-      this.displayedConversation = useResult(
+      const newDisplayedConversation = useResult(
         conversationResult,
         null,
         data => data.getConversation
       );
+
+      onResult(() => {
+        const clonedConversation = JSON.parse(JSON.stringify(newDisplayedConversation.value));
+        this.displayedConversation = clonedConversation;
+        this.$forceUpdate();
+        this.scrollToBottomOfDisplayedConversation();
+      });
     },
     setActiveConversation(userId: number) {
       const lastActiveConversation = document.querySelector('.active-conversation') as
@@ -281,7 +317,7 @@ export default defineComponent({
         data: {
           content: values.content,
           toUser: {
-            id: this.selectedConversationToUserId
+            id: this.selectedToUserId
           }
         }
       }).then(() => {
@@ -289,11 +325,10 @@ export default defineComponent({
       });
     },
     setConversationId(event: { target: HTMLUListElement }) {
-      const toUserId = +(event.target.dataset.userId as string);
-      this.selectedConversationToUserId = toUserId;
-    },
-    formattedDate(date: string) {
-      return dayjs(date).format('MMMM D, YYYY h:mm A');
+      const conversationId = +(event.target.dataset.conversationId as string);
+      const toUserId = +(event.target.dataset.toUserId as string);
+      this.selectedConversationId = conversationId;
+      this.selectedToUserId = toUserId;
     }
   }
 });

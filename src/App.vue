@@ -25,26 +25,28 @@ export default defineComponent({
       const { result: newMessageSubResult } = useSubscription(newMessageSubscription);
 
       watch(newMessageSubResult, data => {
-        toast(
-          {
-            component: ChatNotification,
-            props: { message: data.newMessage }
-          },
-          {
-            toastClassName: 'my-custom-toast-class',
-            timeout: 5000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.6,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: false,
-            icon: false,
-            rtl: false
-          }
-        );
+        if (user.value && data.newMessage.toUser.id === +user.value.id) {
+          toast(
+            {
+              component: ChatNotification,
+              props: { message: data.newMessage }
+            },
+            {
+              toastClassName: 'my-custom-toast-class',
+              timeout: 5000,
+              closeOnClick: true,
+              pauseOnFocusLoss: true,
+              pauseOnHover: true,
+              draggable: true,
+              draggablePercent: 0.6,
+              showCloseButtonOnHover: false,
+              hideProgressBar: true,
+              closeButton: false,
+              icon: false,
+              rtl: false
+            }
+          );
+        }
       });
     }
 

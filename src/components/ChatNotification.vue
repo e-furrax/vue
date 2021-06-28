@@ -25,10 +25,6 @@ export default defineComponent({
 </script>
 
 <style lang="postcss" scoped>
-.Vue-Toastification__toast--default {
-  background-color: red !important;
-}
-
 .trim {
   overflow: hidden;
   display: -webkit-box;
