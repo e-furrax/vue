@@ -71,12 +71,26 @@ export default defineComponent({
 
     const { mutate, loading, onDone, onError } = useMutation(deleteAppointment, {
       variables: {
-        ids: Object.keys(formattedPayload.value)
+        payload: {
+          ids: Object.keys(formattedPayload.value)
+        }
       },
-      clientId: 'mongo'
+      clientId: 'mongo',
+      update: (cache, { data: deleteAppointment }) => {
+        const cachedAppointments = cache.readQuery({ query: getAppointments }) as any;
+        const updatedAppointments = {
+          getAppointments: cachedAppointments.getAppointments.map((appointment: any) => ({
+            ...appointment,
+            status: deleteAppointment.status,
+            transactions: deleteAppointment.transactions
+          }))
+        };
+        cache.writeQuery({ query: getAppointments, data: updatedAppointments });
+      }
     });
+
     onDone(() => (isDone.value = true));
-    onError(err => (errorMessage.value = err.name));
+    onError(err => (errorMessage.value = err.message));
     const useRemoveAppointment = () => mutate();
     return {
       isOpen,
