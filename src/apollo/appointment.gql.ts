@@ -9,24 +9,7 @@ export const getAppointments = gql`
       from
       to
       title
-      transactions {
-        _id
-        price
-        status
-      }
-    }
-  }
-`;
-
-export const getAppointmentsOverview = gql`
-  {
-    getAppointments {
-      _id
-      _createdAt
-      _updatedAt
-      from
-      to
-      title
+      status
       transactions {
         _id
         price
@@ -54,9 +37,7 @@ export const getAppointmentbyUser = gql`
 `;
 
 export const deleteAppointment = gql`
-  mutation deleteAppointment($appointment: [String!]!) {
-    deleteAppointment(appointment: $appointment) {
-      _id
-    }
+  mutation deleteAppointment($ids: AppointmentIdsInput!) {
+    deleteAppointment(ids: $ids)
   }
 `;

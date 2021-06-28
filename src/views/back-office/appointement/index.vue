@@ -1,10 +1,9 @@
 ,<template>
   <div class="grid grid-cols-12 gap-6 my-5">
-    <remove-action-popup
-      v-if="isOpen"
-      @on-close="isOpen = false"
-      :data="selectedAppointment"
-      :handler="useRemoveAppointment"
+    <action-warning-popup
+      v-if="isPopupOpen"
+      @on-close="isPopupOpen = false"
+      :payload="selectedAppointment"
       name="Appointment"
     />
 
@@ -26,7 +25,7 @@
             'bg-purple-700 transition-all ease-in duration-200': selectedAppointment.size
           }"
           :disabled="!selectedAppointment.size"
-          @click="isOpen = true"
+          @click="isPopupOpen = true"
         >
           Block all
         </button>
@@ -94,7 +93,7 @@
                   src="/images/trash.svg"
                   alt="trash"
                   class="flex items-center cursor-pointer"
-                  @click="handleRemove"
+                  @click.stop="handleRemove(appointment)"
                 />
               </div>
             </td>
@@ -107,11 +106,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import { getAppointments, deleteAppointment } from '@/apollo/appointment.gql';
+import { getAppointments } from '@/apollo/appointment.gql';
 import { getUsers } from '@/apollo/user.gql';
-import { useQuery, useResult, useQueryLoading, useMutation } from '@vue/apollo-composable';
+import { useQuery, useResult, useQueryLoading } from '@vue/apollo-composable';
 import Loader from '@/components/Loader.vue';
-import RemoveActionPopup from '@/components/back-office/ActionWarningPopup.vue';
+import ActionWarningPopup from '@/components/back-office/ActionWarningPopup.vue';
 
 interface User {
   id: string;
@@ -134,7 +133,7 @@ interface Appointment {
 }
 
 export default defineComponent({
-  components: { Loader, RemoveActionPopup },
+  components: { Loader, ActionWarningPopup },
   name: 'Appointement',
   setup() {
     const { result: appointmentsResult, error } = useQuery(getAppointments, null, {
@@ -147,18 +146,6 @@ export default defineComponent({
     const loading = useQueryLoading();
     const selectAll = ref(false);
     const selectedAppointment = ref(new Map());
-
-    const useRemoveAppointment = (appointments: string[]) => {
-      const { loading, onDone, error } = useMutation(deleteAppointment, () => ({
-        variables: { appointments },
-        update: (cache, { data: { mutate } }) => {
-          const data: any = cache.readQuery({ query: getAppointments });
-          data.getAppointments.push(mutate);
-          cache.writeQuery({ query: getAppointments, data });
-        }
-      }));
-      return { loading, onDone, error };
-    };
 
     watch(selectAll, value => {
       if (!value) {
@@ -179,8 +166,7 @@ export default defineComponent({
       error,
       selectAll,
       selectedAppointment,
-      useRemoveAppointment,
-      isOpen: ref(false)
+      isPopupOpen: ref(false)
     };
   },
   methods: {
@@ -190,13 +176,16 @@ export default defineComponent({
     getUsername(userId: number) {
       return this.users.find((user: User) => user.id === userId.toString()).username;
     },
-    removeAppointment(appointmentId: string) {
-      console.log(appointmentId);
+    handleRemove({ _id, title }: Partial<Appointment>) {
+      if (!this.selectedAppointment.has(_id)) {
+        this.selectedAppointment.set(_id, title);
+      }
+      this.isPopupOpen = true;
     },
-    select(appointment: Appointment) {
-      this.selectedAppointment.has(appointment._id)
-        ? this.selectedAppointment.delete(appointment._id)
-        : this.selectedAppointment.set(appointment._id, appointment.title);
+    select({ _id, title }: Partial<Appointment>) {
+      this.selectedAppointment.has(_id)
+        ? this.selectedAppointment.delete(_id)
+        : this.selectedAppointment.set(_id, title);
     }
   }
 });
