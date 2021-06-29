@@ -18,6 +18,7 @@ jobs:
           VUE_APP_BACKEND_URL: ${{ secrets.VUE_APP_BACKEND_URL }}
         run: |
           echo "VUE_APP_BACKEND_URL=$VUE_APP_BACKEND_URL" > .env
+          echo "VUE_APP_BACKEND_URL_WS=$VUE_APP_BACKEND_URL_WS" >> .env
 
       - name: Run ESLint
         run: npm run lint
