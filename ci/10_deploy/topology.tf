@@ -110,3 +110,46 @@ resource "aws_db_instance" "default" {
   password               = var.postgres_password # must be set with the -var command line option
   db_subnet_group_name   = aws_db_subnet_group.default.name
 }
+
+# DNS ==============================================================
+resource "aws_route53_zone" "efurrax" {
+  name     = "e-furrax.com"
+}
+
+resource "aws_route53_record" "main" {
+  zone_id = aws_route53_zone.efurrax.zone_id
+  name    = "e-furrax.com"
+  ttl     = 300
+  type    = "A"
+  records = [aws_instance.web.public_ip]
+}
+
+resource "aws_route53_record" "nameservers" {
+  allow_overwrite = true
+  name            = "e-furrax.com"
+  ttl             = 172800
+  type            = "NS"
+  zone_id         = aws_route53_zone.efurrax.zone_id    
+  records = [
+    aws_route53_zone.efurrax.name_servers[0],
+    aws_route53_zone.efurrax.name_servers[1],
+    aws_route53_zone.efurrax.name_servers[2],
+    aws_route53_zone.efurrax.name_servers[3],
+  ]
+}
+
+resource "aws_route53_record" "api" {
+  zone_id = aws_route53_zone.efurrax.zone_id
+  name    = "api.e-furrax.com"
+  ttl     = 300
+  type    = "CNAME"
+  records = ["e-furrax.com"]
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.efurrax.zone_id
+  name    = "www.e-furrax.com"
+  ttl     = 300
+  type    = "CNAME"
+  records = ["e-furrax.com"]
+}
