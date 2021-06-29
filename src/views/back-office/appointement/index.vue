@@ -1,9 +1,9 @@
 ,<template>
   <div class="grid grid-cols-12 gap-6 my-5">
     <action-warning-popup
-      v-if="isPopupOpen"
+      v-if="isPopupOpen && popupPayload.size"
       @on-close="isPopupOpen = false"
-      :payload="selectedAppointment"
+      :payload="popupPayload"
       name="Appointment"
     />
 
@@ -25,7 +25,7 @@
             'bg-purple-700 transition-all ease-in duration-200': selectedAppointment.size
           }"
           :disabled="!selectedAppointment.size"
-          @click="isPopupOpen = true"
+          @click="handleRemoveAll"
         >
           Block all
         </button>
@@ -166,6 +166,7 @@ export default defineComponent({
       error,
       selectAll,
       selectedAppointment,
+      popupPayload: new Map(),
       isPopupOpen: ref(false)
     };
   },
@@ -180,6 +181,11 @@ export default defineComponent({
       if (!this.selectedAppointment.has(_id)) {
         this.selectedAppointment.set(_id, title);
       }
+      this.popupPayload = new Map([[_id, title]]);
+      this.isPopupOpen = true;
+    },
+    handleRemoveAll() {
+      this.popupPayload = this.selectedAppointment;
       this.isPopupOpen = true;
     },
     select({ _id, title }: Partial<Appointment>) {

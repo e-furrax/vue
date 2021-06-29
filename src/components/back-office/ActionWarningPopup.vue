@@ -8,12 +8,12 @@
         error {{ errorMessage }}
       </div>
 
-      <div v-else-if="!isLoading && isDone">
+      <div v-else-if="!loading && isDone">
         <img src="/images/icons/star.svg" />
         Done
       </div>
 
-      <div v-else-if="!isLoading && !isDone">
+      <div v-else-if="!loading && !isDone">
         <div>
           Careful, you're about to delete the following {{ name }}, are you sure you want to
           proceed?

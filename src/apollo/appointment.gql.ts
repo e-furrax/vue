@@ -38,17 +38,6 @@ export const getAppointmentbyUser = gql`
 
 export const deleteAppointment = gql`
   mutation deleteAppointment($payload: AppointmentIdsInput!) {
-    deleteAppointment(payload: $payload) {
-      _id
-      status
-      transactions {
-        _id
-        _createdAt
-        _updatedAt
-        description
-        price
-        status
-      }
-    }
+    deleteAppointment(payload: $payload)
   }
 `;
