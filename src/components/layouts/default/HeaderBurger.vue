@@ -38,29 +38,90 @@
           </router-link>
         </li>
       </ul>
-      <ul class="py-3 px-4 flex flex-col items-start">
+      <ul v-if="!user" class="py-3 px-4 flex flex-col items-start">
         <li
-          class="px-3 py-1 cursor-pointer bg-orange-600 hover:bg-orange-700 transition duration-300 rounded"
+          class="
+            px-3
+            py-1
+            cursor-pointer
+            bg-orange-600
+            hover:bg-orange-700
+            transition
+            duration-300
+            rounded
+          "
           @click="handleBurger"
         >
           <router-link to="/sign-up"> Sign Up </router-link>
         </li>
         <li
           @click="handleBurger"
-          class="px-3 py-1 mt-3 cursor-pointer rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+          class="
+            px-3
+            py-1
+            mt-3
+            cursor-pointer
+            rounded
+            bg-transparent
+            border border-purple-400
+            text-purple-400
+            hover:border-purple-300
+            hover:text-purple-300
+            transition
+            duration-300
+          "
         >
           <router-link to="/sign-in"> Log In </router-link>
         </li>
       </ul>
+      <button
+        v-else
+        class="
+          my-3
+          mx-4
+          px-3
+          py-1
+          mx-2
+          rounded
+          bg-transparent
+          border border-purple-400
+          text-purple-400
+          hover:border-purple-300
+          hover:text-purple-300
+          transition
+          duration-300
+        "
+        @click="handleLogout"
+      >
+        Log Out
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useAuth } from '@/composables/auth';
+import { useRouter } from 'vue-router';
+
 export default defineComponent({
   name: 'HeaderBurger',
-  inject: ['handleBurger']
+  inject: ['handleBurger'],
+  setup() {
+    const { user, logout } = useAuth();
+    const router = useRouter();
+
+    const handleLogout = () => {
+      logout().then(() => {
+        router.push({ name: 'Home' });
+      });
+    };
+
+    return {
+      user,
+      handleLogout
+    };
+  }
 });
 </script>
 

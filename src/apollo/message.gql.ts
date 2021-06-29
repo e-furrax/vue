@@ -1,23 +1,53 @@
 import { gql } from '@apollo/client/core';
 
-export const sendMessageMutation = gql`
-  mutation sendMessage($data: MessageInput!) {
-    sendMessage(data: $data) {
+export const newMessageSubscription = gql`
+  subscription newMessage {
+    newMessage {
+      id
+      conversationId
       content
-      createdAt
       fromUser {
+        id
         username
       }
       toUser {
+        id
         username
       }
+      createdAt
     }
   }
 `;
 
+export const sendMessageMutation = gql`
+  mutation sendMessage($data: MessageInput!) {
+    sendMessage(data: $data)
+  }
+`;
+
 export const getConversation = gql`
-  query getConversation {
-    getConversation {
+  query getConversation($conversationId: Float!) {
+    getConversation(conversationId: $conversationId) {
+      id
+      content
+      toUser {
+        id
+        username
+      }
+      fromUser {
+        id
+        username
+      }
+      createdAt
+    }
+  }
+`;
+
+export const getConversations = gql`
+  query getConversations {
+    getConversations {
+      id
+      conversationId
       content
       toUser {
         id
