@@ -1,6 +1,7 @@
 import { me } from '@/apollo/user.gql';
-import { reactive, toRefs, watch, ref } from 'vue';
-import { postgresClient as client } from '../apollo/client';
+import { provideApolloClient, useQuery, useResult } from '@vue/apollo-composable';
+import { reactive, toRefs, watch } from 'vue';
+import { postgresClient } from '../apollo/client';
 
 const AUTH_KEY = 'furrax_token';
 export const AUTH_TOKEN = 'accessToken';
@@ -27,22 +28,17 @@ const token = window.localStorage.getItem(AUTH_KEY);
 const setUserData = () => {
   if (token) {
     state.authenticating = true;
-    const loading = ref(true);
-    const error = ref();
-    const result = ref();
-    // could fail if you dont go in the then part.
-    client.query({ query: me }).then(queryResult => {
-      error.value = queryResult.error || queryResult.errors;
-      result.value = queryResult.data.me;
-      loading.value = queryResult.loading;
-    });
+    const { result, loading, error } = provideApolloClient(postgresClient)(() => useQuery(me));
+
+    const userResult = provideApolloClient(postgresClient)(() =>
+      useResult(result, null, data => data.me)
+    );
 
     watch([loading], () => {
       if (error.value) {
         window.localStorage.removeItem(AUTH_KEY);
-      } else if (result.value) {
-        console.log(result);
-        state.user = result as any;
+      } else if (userResult) {
+        state.user = userResult as any;
       }
 
       state.authenticating = false;
@@ -51,7 +47,6 @@ const setUserData = () => {
 };
 
 setUserData();
-
 export const useAuth = () => {
   const setUser = (payload: User) => {
     window.localStorage.setItem(AUTH_KEY, payload[AUTH_TOKEN]);
