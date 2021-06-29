@@ -1,5 +1,4 @@
 import { me } from '@/apollo/user.gql';
-import UserModel from '@/models/user.model';
 import { provideApolloClient, useQuery, useResult } from '@vue/apollo-composable';
 import { reactive, toRefs, watch } from 'vue';
 import { postgresClient } from '../apollo/client';

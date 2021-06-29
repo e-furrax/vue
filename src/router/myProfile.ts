@@ -8,7 +8,6 @@ import Connections from '@/views/user-profile/Connections.vue';
 import Messages from '@/views/user-profile/Messages.vue';
 
 import Header from '@/components/layouts/default/Header.vue';
-import Footer from '@/components/layouts/default/Footer.vue';
 import { authGuard } from '@/guards/authGuard';
 
 export const myProfileRoutes: RouteRecordRaw = {
