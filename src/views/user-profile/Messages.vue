@@ -191,9 +191,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, Ref } from 'vue';
 import { useAuth } from '@/composables/auth';
-import { useMutation, useQuery, useResult, useSubscription } from '@vue/apollo-composable';
+import {
+  useMutation,
+  useQuery,
+  useResult,
+  useSubscription,
+  provideApolloClient
+} from '@vue/apollo-composable';
+import { postgresClient } from '@/apollo/client';
 import { Field, Form } from 'vee-validate';
 import * as yup from 'yup';
 import {
@@ -262,6 +269,14 @@ export default defineComponent({
     });
 
     const { result: newMessageSubResult } = useSubscription(newMessageSubscription);
+    const displayedConversation = ref([]) as Ref<MessageModel[]>;
+
+    const useQueryConversation = (conversationId: number) => {
+      const { onResult } = provideApolloClient(postgresClient)(() =>
+        useQuery(getConversation, { conversationId }, { fetchPolicy: 'no-cache' })
+      );
+      return onResult;
+    };
 
     return {
       dayjs,
@@ -270,10 +285,11 @@ export default defineComponent({
       conversations,
       user,
       loading,
-      displayedConversation: [] as MessageModel[],
+      displayedConversation,
       error,
       sendMessage,
       displayedConversationDOM,
+      useQueryConversation,
       refetchConversations
     };
   },
@@ -296,7 +312,11 @@ export default defineComponent({
     },
     selectedConversationId(value) {
       this.setActiveConversation(value);
-      this.queryConversation(this.selectedConversationId);
+      const onResult = this.useQueryConversation(this.selectedConversationId);
+      onResult(({ data }) => {
+        this.displayedConversation = JSON.parse(JSON.stringify(data.getConversation));
+        this.scrollToBottomOfDisplayedConversation();
+      });
     }
   },
   methods: {
@@ -344,26 +364,6 @@ export default defineComponent({
           100
         );
       }
-    },
-    queryConversation(conversationId: number) {
-      const { result: conversationResult, onResult } = useQuery(
-        getConversation,
-        { conversationId },
-        { fetchPolicy: 'no-cache' }
-      );
-
-      const newDisplayedConversation = useResult(
-        conversationResult,
-        null,
-        data => data.getConversation
-      );
-
-      onResult(() => {
-        const clonedConversation = JSON.parse(JSON.stringify(newDisplayedConversation.value));
-        this.displayedConversation = clonedConversation;
-        this.$forceUpdate();
-        this.scrollToBottomOfDisplayedConversation();
-      });
     },
     setActiveConversation(conversationId: number) {
       const lastActiveConversation = document.querySelector('.active-conversation') as

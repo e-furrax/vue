@@ -1,9 +1,9 @@
-<template>
+,<template>
   <div class="grid grid-cols-12 gap-6 my-5">
-    <remove-action-popup
-      v-if="isOpen"
-      @on-close="isOpen = false"
-      :data="selectedAppointment"
+    <action-warning-popup
+      v-if="isPopupOpen && popupPayload.size"
+      @on-close="isPopupOpen = false"
+      :payload="popupPayload"
       name="Appointment"
     />
 
@@ -20,15 +20,12 @@
           />
         </div>
         <button
-          class="
-          flex justify-center border-red-500 border-2 outline-none 
-          font-bold text-white uppercase rounded 
-          bg-purple-800 text-sm py-1 w-1/12"
+          class="flex justify-center border-red-500 border-2 outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm py-1 w-1/12"
           :class="{
             'bg-purple-700 transition-all ease-in duration-200': selectedAppointment.size
           }"
           :disabled="!selectedAppointment.size"
-          @click="isOpen = true"
+          @click="handleRemoveAll"
         >
           Block all
         </button>
@@ -76,20 +73,12 @@
                   'text-theme-9': Math.random(0, 4) === 0
                 }"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
+                <img
+                  :src="`/images/${appointment.status.toLowerCase()}.svg`"
+                  :alt="`${appointment.status}`"
                   class="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clip-rule="evenodd"
-                  />
-                  <!-- TODO: in gql request only get the last transaction, get all the transactions when getting the details -->
-                </svg>
-                Pending
+                />
+                {{ appointment.status }}
               </div>
             </td>
             <td class="table-report__action w-56 rounded-r-lg">
@@ -104,7 +93,7 @@
                   src="/images/trash.svg"
                   alt="trash"
                   class="flex items-center cursor-pointer"
-                  @click="isOpen = true"
+                  @click.stop="handleRemove(appointment)"
                 />
               </div>
             </td>
@@ -121,7 +110,7 @@ import { getAppointments } from '@/apollo/appointment.gql';
 import { getUsers } from '@/apollo/user.gql';
 import { useQuery, useResult, useQueryLoading } from '@vue/apollo-composable';
 import Loader from '@/components/Loader.vue';
-import RemoveActionPopup from '@/components/back-office/RemoveActionPopup.vue';
+import ActionWarningPopup from '@/components/back-office/ActionWarningPopup.vue';
 
 interface User {
   id: string;
@@ -133,7 +122,6 @@ interface Transaction {
   price: number;
   status: string;
 }
-
 interface Appointment {
   _id: string;
   _createdAt: string;
@@ -145,7 +133,7 @@ interface Appointment {
 }
 
 export default defineComponent({
-  components: { Loader, RemoveActionPopup },
+  components: { Loader, ActionWarningPopup },
   name: 'Appointement',
   setup() {
     const { result: appointmentsResult, error } = useQuery(getAppointments, null, {
@@ -178,7 +166,8 @@ export default defineComponent({
       error,
       selectAll,
       selectedAppointment,
-      isOpen: ref(false)
+      popupPayload: new Map(),
+      isPopupOpen: ref(false)
     };
   },
   methods: {
@@ -188,13 +177,21 @@ export default defineComponent({
     getUsername(userId: number) {
       return this.users.find((user: User) => user.id === userId.toString()).username;
     },
-    removeAppointment(appointmentId: string) {
-      console.log(appointmentId);
+    handleRemove({ _id, title }: Partial<Appointment>) {
+      if (!this.selectedAppointment.has(_id)) {
+        this.selectedAppointment.set(_id, title);
+      }
+      this.popupPayload = new Map([[_id, title]]);
+      this.isPopupOpen = true;
     },
-    select(appointment: Appointment) {
-      this.selectedAppointment.has(appointment._id)
-        ? this.selectedAppointment.delete(appointment._id)
-        : this.selectedAppointment.set(appointment._id, appointment.title);
+    handleRemoveAll() {
+      this.popupPayload = this.selectedAppointment;
+      this.isPopupOpen = true;
+    },
+    select({ _id, title }: Partial<Appointment>) {
+      this.selectedAppointment.has(_id)
+        ? this.selectedAppointment.delete(_id)
+        : this.selectedAppointment.set(_id, title);
     }
   }
 });

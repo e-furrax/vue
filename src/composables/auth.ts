@@ -6,7 +6,6 @@ import { postgresClient } from '../apollo/client';
 const AUTH_KEY = 'furrax_token';
 export const AUTH_TOKEN = 'accessToken';
 
-provideApolloClient(postgresClient);
 export interface User {
   [AUTH_TOKEN]: string;
   id: string;
@@ -29,9 +28,11 @@ const token = window.localStorage.getItem(AUTH_KEY);
 const setUserData = () => {
   if (token) {
     state.authenticating = true;
-    const { result, loading, error } = useQuery(me);
+    const { result, loading, error } = provideApolloClient(postgresClient)(() => useQuery(me));
 
-    const userResult = useResult(result, null, data => data.me);
+    const userResult = provideApolloClient(postgresClient)(() =>
+      useResult(result, null, data => data.me)
+    );
 
     watch([loading], () => {
       if (error.value) {
@@ -46,7 +47,6 @@ const setUserData = () => {
 };
 
 setUserData();
-
 export const useAuth = () => {
   const setUser = (payload: User) => {
     window.localStorage.setItem(AUTH_KEY, payload[AUTH_TOKEN]);
