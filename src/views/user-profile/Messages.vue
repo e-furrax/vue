@@ -65,6 +65,7 @@
             No conversations.
           </div>
           <button
+            @click="newMessageModalOpened = true"
             class="
               md:mx-6
               mx-4
@@ -93,7 +94,7 @@
     <section class="flex flex-col items-start mt-6 w-full">
       <h2 class="font-semibold border-purple-800 mb-4 ml-6">Messages</h2>
       <div
-        v-if="selectedConversationId"
+        v-if="selectedConversationId || selectedToUserId"
         ref="displayedConversationDOM"
         class="overflow-y-scroll w-full flex flex-col h-full"
       >
@@ -121,7 +122,7 @@
         </div>
       </div>
       <Form
-        v-if="selectedConversationId"
+        v-if="selectedConversationId || selectedToUserId"
         class="w-full flex items-center px-6 my-2 py-1"
         :validation-schema="schema"
         @submit="handleSendMessage"
@@ -138,11 +139,12 @@
       </Form>
       <div
         class="flex flex-col items-center justify-center w-full h-full"
-        v-if="!selectedConversationId"
+        v-if="!selectedConversationId && !selectedToUserId"
       >
         <h3 class="text-xl">You don't have a conversation selected</h3>
         <p class="mt-1">Choose one from your existing conversations, or start a new one.</p>
         <button
+          @click="newMessageModalOpened = true"
           class="
             mt-4
             font-bold
@@ -162,11 +164,34 @@
         </button>
       </div>
     </section>
+    <div
+      v-show="newMessageModalOpened"
+      class="absolute w-full flex items-center justify-center h-full top-0 left-0"
+    >
+      <div
+        @click="newMessageModalOpened = false"
+        class="absolute w-full h-full bg-gray-800 opacity-50"
+      ></div>
+      <div class="z-20">
+        <div class="bg-purple-1200 p-4 flex flex-col w-192 rounded items-start">
+          <div class="flex items-start w-full justify-between">
+            <h2 class="font-semibold border-b-2 border-purple-800 mb-6">New message</h2>
+            <img
+              @click="newMessageModalOpened = false"
+              class="cursor-pointer hover:bg-purple-925 rounded-full"
+              src="/images/icons/close.svg"
+              width="20"
+            />
+          </div>
+          <NewMessageSearch class="w-full" @user-selected="handleUserSelected" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useAuth } from '@/composables/auth';
 import { useMutation, useQuery, useResult, useSubscription } from '@vue/apollo-composable';
 import { Field, Form } from 'vee-validate';
@@ -178,6 +203,7 @@ import {
   newMessageSubscription
 } from '@/apollo/message.gql';
 import Loader from '@/components/Loader.vue';
+import NewMessageSearch from '@/components/NewMessageSearch.vue';
 import MessageModel from '@/models/message.model';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -202,13 +228,16 @@ export default defineComponent({
   data() {
     return {
       selectedConversationId: 0,
-      selectedToUserId: 0
+      selectedToUserId: 0,
+      newMessageModalOpened: false,
+      creatingNewConversation: false
     };
   },
   components: {
     Loader,
     Form,
-    Field
+    Field,
+    NewMessageSearch
   },
   setup() {
     const displayedConversationDOM = ref();
@@ -249,11 +278,17 @@ export default defineComponent({
     };
   },
   watch: {
-    newMessageSubResult(value: { newMessage: MessageModel }) {
-      this.refetchConversations();
+    async newMessageSubResult(value: { newMessage: MessageModel }) {
+      await this.refetchConversations();
+      this.setActiveConversation(this.selectedConversationId);
       if (this.selectedConversationId === value.newMessage.conversationId) {
         this.displayedConversation.push(value.newMessage);
         this.scrollToBottomOfDisplayedConversation();
+      }
+
+      if (this.creatingNewConversation) {
+        this.selectedConversationId = value.newMessage.conversationId;
+        this.creatingNewConversation = false;
       }
     },
     selectedToUserId(value) {
@@ -265,6 +300,39 @@ export default defineComponent({
     }
   },
   methods: {
+    handleUserSelected(userSelectedId: string) {
+      this.selectedToUserId = +userSelectedId;
+
+      let conversationFound: MessageModel | undefined;
+      if (this.conversations) {
+        conversationFound = this.conversations.find(
+          (conversation: MessageModel) => conversation.toUser.id == this.selectedToUserId
+        );
+
+        if (conversationFound) {
+          const conversationDOM = document.querySelector(
+            `[data-to-user-id="${this.selectedToUserId}"]`
+          ) as HTMLLIElement | undefined;
+
+          if (conversationDOM) {
+            conversationDOM.click();
+          }
+        }
+      }
+
+      if (!conversationFound || !this.conversations) {
+        this.creatingNewConversation = true;
+        this.displayedConversation = [];
+        const newActiveConversation = document.querySelector(
+          `[data-conversation-id="${this.selectedConversationId}"]`
+        ) as HTMLLIElement | undefined;
+        if (newActiveConversation) {
+          newActiveConversation.classList.toggle('active-conversation');
+        }
+      }
+
+      this.newMessageModalOpened = false;
+    },
     scrollToBottomOfDisplayedConversation() {
       if (this.displayedConversationDOM) {
         setTimeout(
@@ -297,7 +365,7 @@ export default defineComponent({
         this.scrollToBottomOfDisplayedConversation();
       });
     },
-    setActiveConversation(userId: number) {
+    setActiveConversation(conversationId: number) {
       const lastActiveConversation = document.querySelector('.active-conversation') as
         | HTMLLIElement
         | undefined;
@@ -305,9 +373,9 @@ export default defineComponent({
         lastActiveConversation.classList.toggle('active-conversation');
       }
 
-      const newActiveConversation = document.querySelector(`[data-user-id="${userId}"]`) as
-        | HTMLLIElement
-        | undefined;
+      const newActiveConversation = document.querySelector(
+        `[data-conversation-id="${conversationId}"]`
+      ) as HTMLLIElement | undefined;
       if (newActiveConversation) {
         newActiveConversation.classList.toggle('active-conversation');
       }

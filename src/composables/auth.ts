@@ -33,7 +33,7 @@ const setUserData = () => {
     const { result, loading, error } = useQuery(me);
 
     const userResult = useResult(result, null, data => data.me);
-    console.log(state.user);
+
     watch([loading], () => {
       if (error.value) {
         window.localStorage.removeItem(AUTH_KEY);

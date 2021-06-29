@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { useSubscription } from '@vue/apollo-composable';
 import { useToast } from 'vue-toastification';
 import { useAuth } from './composables/auth';
@@ -19,13 +20,18 @@ export default defineComponent({
   components: {},
   setup() {
     const { user } = useAuth();
+    const route = useRoute();
 
     if (user) {
       const toast = useToast();
       const { result: newMessageSubResult } = useSubscription(newMessageSubscription);
 
       watch(newMessageSubResult, data => {
-        if (user.value && data.newMessage.toUser.id === +user.value.id) {
+        if (
+          route.name !== 'Messages' &&
+          user.value &&
+          data.newMessage.toUser.id === user.value.id
+        ) {
           toast(
             {
               component: ChatNotification,
