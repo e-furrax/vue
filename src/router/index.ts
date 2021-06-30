@@ -10,6 +10,8 @@ import Search from '../views/Search.vue';
 import UserProfile from '../views/UserProfile.vue';
 import { myProfileRoutes } from './myProfile';
 import { backOfficeRoutes } from './backOffice';
+import { useAuth } from '@/composables/auth';
+import { watch } from 'vue-demi';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -57,6 +59,27 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  const { user, authenticating } = useAuth();
+  watch([user], () => {
+    if (authenticating.value === false && to.meta.requiresAuth && user?.value) {
+      next();
+    }
+  });
+  // Not logged into a guarded route?
+  if (to.meta.requiresAuth && !user?.value && authenticating.value === false) {
+    next({ name: 'SignIn' });
+  }
+  // // Logged in for an auth route
+  else if ((to.name === 'SignIn' || to.name === 'SignUp') && user?.value) {
+    next({ name: 'Home' });
+  }
+  // // Carry On...
+  else {
+    next();
+  }
 });
 
 export default router;

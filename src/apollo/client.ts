@@ -16,7 +16,7 @@ const terminatingLink = createUploadLink({
   uri: `${process.env.VUE_APP_BACKEND_URL || 'http://localhost:3000'}/graphql`
 });
 
-const token = localStorage.getItem('furrax_token');
+let token = localStorage.getItem('furrax_token');
 
 const wsLink = new WebSocketLink({
   uri: process.env.VUE_APP_BACKEND_URL_WS || 'ws://localhost:3000/subscriptions',
@@ -29,6 +29,7 @@ const wsLink = new WebSocketLink({
 });
 
 const auth = new ApolloLink((op, fw) => {
+  token = localStorage.getItem('furrax_token');
   op.setContext(({ headers }: Record<string, any>) => ({
     headers: {
       ...headers,

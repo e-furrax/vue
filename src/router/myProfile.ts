@@ -8,14 +8,11 @@ import Connections from '@/views/user-profile/Connections.vue';
 import Messages from '@/views/user-profile/Messages.vue';
 
 import Header from '@/components/layouts/default/Header.vue';
-import { authGuard } from '@/guards/authGuard';
 
 export const myProfileRoutes: RouteRecordRaw = {
   path: '/profile',
   name: 'MyProfile',
-  beforeEnter: (to, from, next) => {
-    authGuard(to, from, next);
-  },
+  meta: { requiresAuth: true },
   redirect: '/profile/settings',
   components: {
     default: MyProfile,

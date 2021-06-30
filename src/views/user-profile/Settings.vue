@@ -59,7 +59,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .border-opacity-20 {
   border-color: rgba(255, 255, 255, 0.2);
 }

@@ -55,10 +55,6 @@ export default defineComponent({
         }
       });
     }
-
-    onMounted(() => {
-      useAuth();
-    });
   }
 });
 </script>
