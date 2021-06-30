@@ -4,14 +4,11 @@
       class="flex flex-col text-xs text-purple-200 justify-center items-center bg-purple-1200 py-6"
     >
       <div class="mb-2 text-sm">
-        <router-link class="mx-4 hover:text-white transition duration-300" to="/"
+        <router-link class="mx-4 hover:text-white transition duration-300" to="/terms"
           >Terms of Service</router-link
         >
-        <router-link class="mx-4 hover:text-white transition duration-300" to="/"
+        <router-link class="mx-4 hover:text-white transition duration-300" to="/privacy"
           >Privacy Policy</router-link
-        >
-        <router-link class="mx-4 hover:text-white transition duration-300" to="/"
-          >Cookie Policy</router-link
         >
       </div>
       <div>
