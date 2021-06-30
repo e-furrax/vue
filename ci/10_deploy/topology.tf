@@ -43,6 +43,7 @@ resource "local_file" "hosts" {
       web               = aws_instance.web.public_ip
       postgres_endpoint = aws_db_instance.default.endpoint
       mongo_endpoint = aws_instance.mongo.public_ip
+      redis_endpoint = aws_elasticache_cluster.redis.endpoint
     }
   )
   filename = "../20_ansible/inventories/hosts.cfg"
@@ -161,6 +162,23 @@ resource "aws_security_group" "my_mongo_security_group" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+# REDIS ============================================================
+resource "aws_elasticache_cluster" "redis" {
+  cluster_id           = "redis"
+  engine               = "redis"
+  node_type            = "cache.m4.large"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis3.2"
+  engine_version       = "3.2.10"
+  port                 = 6379
+  subnet_group_name = aws_elasticache_subnet_group.redis_subnet.name
+}
+
+resource "aws_elasticache_subnet_group" "redis_subnet" {
+  name       = "redis_subnet_group"
+  subnet_ids = [aws_subnet.my_subnet.id]
 }
 
 # DNS ==============================================================
