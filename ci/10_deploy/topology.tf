@@ -213,3 +213,9 @@ resource "aws_route53_record" "www" {
   type    = "CNAME"
   records = ["e-furrax.com"]
 }
+
+# BUCKET ==============================================================
+resource "aws_s3_bucket" "bucket" {
+  bucket = "efurrax-bucket"
+  acl    = "public-read"
+}
