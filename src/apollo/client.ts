@@ -55,5 +55,10 @@ export const postgresClient = new ApolloClient({
 
 export const mongoClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: from([auth, new HttpLink({ uri: 'http://localhost:4000/graphql' })])
+  link: from([
+    auth,
+    new HttpLink({
+      uri: `${process.env.VUE_APP_MONGO_BACKEND_URL || 'http://localhost:4000'}/graphql`
+    })
+  ])
 });

@@ -3,7 +3,7 @@ name: Artifact
 on:
   workflow_run:
     workflows:
-      - Terraform
+      - Common
     branches:
       - main
     types:
@@ -25,10 +25,15 @@ jobs:
         shell: bash
         env:
           VUE_APP_BACKEND_URL: ${{ secrets.VUE_APP_BACKEND_URL }}
+          VUE_APP_MONGO_BACKEND_URL: ${{ secrets.VUE_APP_MONGO_BACKEND_URL }}
           VUE_APP_BACKEND_URL_WS: ${{ secrets.VUE_APP_BACKEND_URL_WS }}
         run: |
           echo "VUE_APP_BACKEND_URL=$VUE_APP_BACKEND_URL" > .env
+          echo "VUE_APP_MONGO_BACKEND_URL=$VUE_APP_MONGO_BACKEND_URL" >> .env
           echo "VUE_APP_BACKEND_URL_WS=$VUE_APP_BACKEND_URL_WS" >> .env
+
+      - name: Build
+        run: npm run build
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2

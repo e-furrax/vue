@@ -5,6 +5,7 @@
   vars:
     server_name: "{{ groups['app_server'][0] }}"
     postgres_endpoint: "{{ groups['db_endpoints'][0] }}"
+    mongo_endpoint: "{{ groups['mongo_endpoint'][0] }}"
     document_root: /var/www/html
     app_root: vue/dist
     backend_root: backend/app
@@ -89,7 +90,7 @@
       shell: cd /home/{{ backend_root }} && npm install
 
     - name: Start pm2 backend process
-      shell: 'cd /home/{{ backend_root }} && POSTGRES_DATABASE_URL=postgres://furrax:{{ postgres_password }}@{{ postgres_endpoint }}/furrax pm2 start dist/index.js'
+      shell: 'cd /home/{{ backend_root }} && MONGO_DATABASE_URL=mongodb://furrax:{{ mongo_password }}@{{ mongo_endpoint }}:27017/furrax POSTGRES_DATABASE_URL=postgres://furrax:{{ postgres_password }}@{{ postgres_endpoint }}/furrax pm2 start dist/index.js'
 
     # CERTBOT ========================================================
     - name: Check if certificate already exists.

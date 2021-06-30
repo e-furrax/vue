@@ -10,6 +10,10 @@ variable "subnet_cidr_block2" {
   type = string
 }
 
+variable "subnet_cidr_block3" {
+  type = string
+}
+
 variable "availability_zone_suffix" {
   type = string
 }

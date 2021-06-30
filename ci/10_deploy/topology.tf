@@ -1,3 +1,4 @@
+# GLOBAL ===========================================================
 resource "aws_vpc" "my_vpc" {
   cidr_block = "10.0.0.0/16"
 }
@@ -31,6 +32,22 @@ resource "aws_route_table_association" "my_route_table_association" {
   route_table_id = aws_route_table.my_route_table.id
 }
 
+resource "aws_route_table_association" "my_mongo_route_table_association" {
+  subnet_id      = aws_subnet.mongo_subnet.id
+  route_table_id = aws_route_table.my_route_table.id
+}
+
+resource "local_file" "hosts" {
+  content = templatefile("${path.module}/templates/hosts.tpl",
+    {
+      web               = aws_instance.web.public_ip
+      postgres_endpoint = aws_db_instance.default.endpoint
+      mongo_endpoint = aws_instance.mongo.public_ip
+    }
+  )
+  filename = "../20_ansible/inventories/hosts.cfg"
+}
+
 resource "aws_security_group" "my_security_group" {
   vpc_id = aws_vpc.my_vpc.id
 
@@ -52,6 +69,29 @@ resource "aws_security_group" "my_security_group" {
   }
 }
 
+# WEB ==============================================================
+
+resource "aws_key_pair" "mykey" {
+  key_name   = "newkey"
+  public_key = file("../.ssh/id_rsa_aws.pub")
+}
+
+resource "aws_instance" "web" {
+  ami                         = data.aws_ami.ubuntu.id
+  subnet_id                   = aws_subnet.my_subnet.id
+  instance_type               = "t2.micro"
+  vpc_security_group_ids      = [aws_security_group.my_security_group.id]
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.mykey.key_name
+}
+
+# POSTGRES =========================================================
+
+resource "aws_db_subnet_group" "default" {
+  name       = "main"
+  subnet_ids = [aws_subnet.my_subnet.id, aws_subnet.my_subnet2.id]
+}
+
 resource "aws_security_group" "my_db_security_group" {
   vpc_id = aws_vpc.my_vpc.id
 
@@ -70,35 +110,6 @@ resource "aws_security_group" "my_db_security_group" {
   }
 }
 
-resource "aws_key_pair" "mykey" {
-  key_name   = "newkey"
-  public_key = file("../.ssh/id_rsa_aws.pub")
-}
-
-resource "aws_instance" "web" {
-  ami                         = data.aws_ami.ubuntu.id
-  subnet_id                   = aws_subnet.my_subnet.id
-  instance_type               = "t2.micro"
-  vpc_security_group_ids      = [aws_security_group.my_security_group.id]
-  associate_public_ip_address = true
-  key_name                    = aws_key_pair.mykey.key_name
-}
-
-resource "local_file" "hosts" {
-  content = templatefile("${path.module}/templates/hosts.tpl",
-    {
-      web               = aws_instance.web.public_ip
-      postgres_endpoint = aws_db_instance.default.endpoint
-    }
-  )
-  filename = "../20_ansible/inventories/hosts.cfg"
-}
-
-resource "aws_db_subnet_group" "default" {
-  name       = "main"
-  subnet_ids = [aws_subnet.my_subnet.id, aws_subnet.my_subnet2.id]
-}
-
 resource "aws_db_instance" "default" {
   allocated_storage      = 10
   engine                 = "postgres"
@@ -109,6 +120,47 @@ resource "aws_db_instance" "default" {
   vpc_security_group_ids = [aws_security_group.my_db_security_group.id]
   password               = var.postgres_password # must be set with the -var command line option
   db_subnet_group_name   = aws_db_subnet_group.default.name
+}
+
+# MONGO ============================================================
+resource "aws_instance" "mongo" {
+  ami                         = data.aws_ami.ubuntu.id
+  subnet_id                   = aws_subnet.mongo_subnet.id
+  instance_type               = "t2.micro"
+  vpc_security_group_ids      = [aws_security_group.my_mongo_security_group.id]
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.mykey.key_name
+}
+
+resource "aws_subnet" "mongo_subnet" {
+  availability_zone = local.availability_zone
+  cidr_block        = var.subnet_cidr_block3
+  vpc_id            = aws_vpc.my_vpc.id
+}
+
+resource "aws_security_group" "my_mongo_security_group" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  ingress {
+    from_port       = 27017
+    to_port         = 27017
+    protocol        = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 # DNS ==============================================================

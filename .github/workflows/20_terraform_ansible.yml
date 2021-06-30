@@ -1,9 +1,13 @@
 name: Terraform
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - Artifact
     branches:
-    - main
+      - main
+    types:
+      - completed
 
 jobs:
   common:
@@ -52,3 +56,15 @@ jobs:
         working-directory: ./ci/10_deploy
         if: ${{ github.ref == 'refs/heads/main' }}
         run: terraform apply --auto-approve -var="postgres_password=${{ secrets.POSTGRES_PASSWORD }}"
+
+      - name: Mongo Ansible playbook
+        working-directory: ./ci/20_ansible
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: ansible-playbook mongo.yml --verbose --private-key ../.ssh/id_rsa_aws
+      
+      - name: Web Ansible playbook
+        working-directory: ./ci/20_ansible
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: ansible-playbook install.yml --verbose --extra-vars="username=e-furrax access_token=${{ secrets.GITHUB_TOKEN }} postgres_password=${{ secrets.POSTGRES_PASSWORD }} mongo_password=${{ secrets.MONGO_PASSWORD }}" --private-key ../.ssh/id_rsa_aws
+      
+
