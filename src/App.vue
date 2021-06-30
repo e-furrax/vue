@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, watch } from 'vue';
+import { defineComponent, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useSubscription } from '@vue/apollo-composable';
 import { useToast } from 'vue-toastification';
