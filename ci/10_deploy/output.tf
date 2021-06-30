@@ -11,5 +11,5 @@ output "mongo_ip" {
 }
 
 output "redis_endpoint" {
-  value = aws_elasticache_cluster.redis.endpoint
+  value = aws_instance.mongo.public_ip
 }

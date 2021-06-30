@@ -12,3 +12,17 @@ services:
             MONGO_INITDB_DATABASE: furrax
         volumes:
             - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+    redis:
+        container_name: redis_container
+        image: redis:alpine
+        command: redis-server --requirepass furrax
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis-data:/data
+            - redis-conf:/usr/local/etc/redis/redis.conf
+
+volumes:
+  redis-data:
+  redis-conf:
