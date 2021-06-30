@@ -215,7 +215,7 @@ resource "aws_route53_record" "www" {
 }
 
 # BUCKET ==============================================================
-resource "aws_s3_bucket" "bucket" {
-  bucket = "efurrax-bucket"
+resource "aws_s3_bucket" "public_bucket" {
+  bucket = "efurrax-public-bucket"
   acl    = "public-read"
 }
