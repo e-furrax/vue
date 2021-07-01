@@ -1,19 +1,20 @@
 <template>
-  <div class="relative inline-block text-left">
+  <div class="relative inline-block text-left" v-click-outside="handleClickOutside">
     <div>
       <img
-        v-if="profile?.profileImage"
-        :src="profile.profileImage"
+        v-if="user?.profileImage"
+        :src="user.profileImage"
         alt="profile picture"
         class="object-cover inline-flex rounded-full h-11 w-11 cursor-pointer hover:opacity-80 transition duration-100"
         @click="handleDropdown"
       />
-      <span
-        v-else
+      <img
+        v-if="!user?.profileImage"
         alt="placeholder profile picture"
-        class="inline-flex rounded-full h-11 w-11 cursor-pointer hover:opacity-80 transition duration-100 bg-gray-500"
+        src="/images/photo-placeholder.jpg"
+        class="inline-flex rounded-full h-11 w-11 object-cover cursor-pointer hover:opacity-80 transition duration-100"
         @click="handleDropdown"
-      ></span>
+      />
       <input
         type="file"
         id="uploadFile"
@@ -23,98 +24,89 @@
         @change="onUploadFile"
       />
     </div>
-
-    <!--
-    Dropdown menu, show/hide based on menu state.
-
-    Entering: "transition ease-out duration-100"
-      From: "transform opacity-0 scale-95"
-      To: "transform opacity-100 scale-100"
-    Leaving: "transition ease-in duration-75"
-      From: "transform opacity-100 scale-100"
-      To: "transform opacity-0 scale-95"
-  -->
-    <div
-      class="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-purple-1100 focus:outline-none divide-y divide-orange-600 divide-opacity-50 border border-opacity-25"
-      role="menu"
-      aria-orientation="vertical"
-      aria-labelledby="menu-button"
-      tabindex="-1"
-      v-if="open"
-    >
-      <div class="flex flex-col space-y-4 items-center justify-center m-4">
-        <img
-          v-if="profile?.profileImage"
-          :src="profile.profileImage"
-          alt="profile picture"
-          class="object-cover inline-flex rounded-full h-11 w-11 cursor-pointer hover:opacity-80 transition duration-100"
-          @click="openInputFile"
-        />
-        <span
-          v-else
-          alt="placeholder profile picture"
-          class="inline-flex rounded-full h-20 w-20 cursor-pointer hover:opacity-80 transition duration-100 bg-gray-500"
-          @click="openInputFile"
-        ></span>
-        <span class="text-white text-lg font-medium w-44 truncate"
-          >Jeannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnne</span
-        >
-      </div>
-      <div class="py-1" role="none">
-        <nav>
-          <router-link
-            :to="route.path"
-            v-slot="{ href, isActive }"
-            v-for="route in myProfileRoutes"
-            :key="route.path"
-          >
-            <a
-              :href="href"
-              :class="isActive && 'bg-purple-950'"
-              class="text-white px-4 py-2 text-sm hover:bg-purple-950 transition-colors duration-100 flex flex-row items-center space-x-2"
-              role="menuitem"
-              tabindex="-1"
+    <transition name="fade">
+      <div
+        class="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-purple-1100 focus:outline-none divide-y divide-orange-600 divide-opacity-50 border border-opacity-25"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="menu-button"
+        tabindex="-1"
+        v-if="open"
+      >
+        <div class="flex flex-col space-y-4 items-center justify-center m-4">
+          <div class="relative">
+            <div class="absolute" v-if="loading">
+              <Loader />
+            </div>
+            <img
+              v-if="user?.profileImage"
+              :src="user?.profileImage"
+              alt="profile picture"
+              class="object-cover inline-flex rounded-full h-11 w-11 cursor-pointer hover:opacity-80 transition duration-100"
+              @click="openInputFile"
+            />
+            <img
+              v-if="!user?.profileImage"
+              alt="placeholder profile picture"
+              src="/images/photo-placeholder.jpg"
+              class="inline-flex rounded-full h-20 w-20 object-cover cursor-pointer hover:opacity-80 transition duration-100"
+              @click="openInputFile"
+            />
+          </div>
+          <span class="text-white text-lg text-center font-medium w-44 truncate">{{
+            user.username
+          }}</span>
+        </div>
+        <div class="py-1" role="none">
+          <nav>
+            <router-link
+              :to="route.path"
+              v-slot="{ href, isActive }"
+              v-for="route in myProfileRoutes"
+              :key="route.path"
             >
-              <img
-                :src="`/images/${route.meta.icon}`"
-                class="opacity-100"
-                style="width: 24px; max-width: inherit"
-              />
-              <span>{{ route.name }}</span>
-            </a>
-          </router-link>
-        </nav>
-      </div>
-      <div class="py-1" role="none">
-        <div class="m-2 flex justify-center">
-          <button
-            v-if="user"
-            class="hidden lg:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
-            @click="handleLogout"
-          >
-            Log Out
-          </button>
+              <a
+                :href="href"
+                :class="isActive && 'bg-purple-950'"
+                class="text-white px-4 py-2 text-sm hover:bg-purple-950 transition-colors duration-100 flex flex-row items-center space-x-2"
+                role="menuitem"
+                tabindex="-1"
+              >
+                <img
+                  :src="`/images/${route.meta.icon}`"
+                  class="opacity-100"
+                  style="width: 24px; max-width: inherit"
+                />
+                <span>{{ route.name }}</span>
+              </a>
+            </router-link>
+          </nav>
+        </div>
+        <div class="py-1" role="none">
+          <div class="m-2 flex justify-center">
+            <button
+              v-if="user"
+              class="px-3 py-1 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+              @click="handleLogout"
+            >
+              Log Out
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
-import { getProfileSidebar, updateProfilePicMutation } from '@/apollo/user.gql';
+import { useMutation } from '@vue/apollo-composable';
+import { updateProfilePicMutation } from '@/apollo/user.gql';
 import { useToast } from 'vue-toastification';
 import { useAuth } from '@/composables/auth';
 import { useRouter } from 'vue-router';
-
-interface ProfileSidebarResponse {
-  getProfile: {
-    id: string;
-    profileImage: string;
-    username: string;
-  };
-}
+import clickOutside from '@/library/click-outside';
+import Loader from '@/components/Loader.vue';
 
 interface UpdateProfilePicVariables {
   picture: File;
@@ -122,6 +114,9 @@ interface UpdateProfilePicVariables {
 
 export default defineComponent({
   name: 'ProfileDropdown',
+  components: {
+    Loader
+  },
   data() {
     return {
       open: false,
@@ -147,15 +142,21 @@ export default defineComponent({
   methods: {
     handleDropdown() {
       this.open = !this.open;
+    },
+    handleClickOutside() {
+      if (this.open) {
+        this.open = !this.open;
+      }
     }
+  },
+  directives: {
+    clickOutside
   },
   setup() {
     const fileInput = ref<HTMLInputElement>();
-    const { mutate: updateProfilePic } = useMutation<boolean, UpdateProfilePicVariables>(
+    const { mutate: updateProfilePic, loading } = useMutation<string, UpdateProfilePicVariables>(
       updateProfilePicMutation
     );
-    const { result } = useQuery<ProfileSidebarResponse>(getProfileSidebar);
-    const { value: profile } = useResult(result);
     const toast = useToast();
     const { user, logout } = useAuth();
     const router = useRouter();
@@ -176,7 +177,12 @@ export default defineComponent({
         return;
       }
       updateProfilePic({ picture: files[0] })
-        .then(() => toast.success('Image updated !'))
+        .then(({ data }) => {
+          if (user?.value && data) {
+            user.value = { ...user?.value, profileImage: data };
+          }
+          toast.success('Image updated !');
+        })
         .catch(() => toast.error('There was an error while uploading your image'));
     };
 
@@ -184,12 +190,31 @@ export default defineComponent({
       fileInput,
       openInputFile,
       onUploadFile,
-      profile,
       user,
-      handleLogout
+      handleLogout,
+      loading
     };
   }
 });
 </script>
 
-<style scoped></style>
+<style lang="postcss" scoped>
+.fade-enter-active {
+  @apply transition ease-out duration-100;
+}
+.fade-leave-active {
+  @apply transition ease-in duration-75;
+}
+.fade-enter-from {
+  @apply transform opacity-0 scale-95;
+}
+.fade-enter-to {
+  @apply transform opacity-100 scale-100;
+}
+.fade-leave-from {
+  @apply transform opacity-100 scale-100;
+}
+.fade-leave-to {
+  @apply transform opacity-0 scale-95;
+}
+</style>

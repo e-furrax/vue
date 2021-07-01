@@ -54,7 +54,7 @@
             >Log In</router-link
           >
 
-          <div class="mt-1 ml-4" v-if="user">
+          <div class="ml-4" v-if="user">
             <ProfileDropdown />
           </div>
         </div>

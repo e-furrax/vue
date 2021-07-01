@@ -111,21 +111,28 @@ export default defineComponent({
   },
   methods: {
     onSubmit(values: LoginPayload) {
-      this.login(values).then(({ data }) => {
-        if (data) {
-          this.setUser(data.login);
-          this.$router.push({ name: 'Home' });
-        }
-      });
+      this.login(values)
+        .then(({ data }) => {
+          if (data) {
+            this.setUser(data.login);
+            this.$router.push({ name: 'Home' });
+          }
+        })
+        .catch(() => {
+          this.shakeSubmitButton();
+        });
     },
     checkIfFormValid(valid: boolean) {
       if (!valid) {
-        const submitEl = this.$refs.submitLogin as HTMLElement;
-        submitEl.classList.add('animate-shake-x');
-        setTimeout(() => {
-          submitEl.classList.remove('animate-shake-x');
-        }, 1000);
+        this.shakeSubmitButton();
       }
+    },
+    shakeSubmitButton() {
+      const submitEl = this.$refs.submitLogin as HTMLElement;
+      submitEl.classList.add('animate-shake-x');
+      setTimeout(() => {
+        submitEl.classList.remove('animate-shake-x');
+      }, 1000);
     }
   }
 });
