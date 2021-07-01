@@ -35,9 +35,7 @@
             </li>
             <li
               class="h-full flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
-            >
-              <router-link to="/profile" v-if="user">Profile</router-link>
-            </li>
+            ></li>
           </ul>
         </div>
         <div class="flex items-center">
@@ -55,13 +53,10 @@
             v-if="!user"
             >Log In</router-link
           >
-          <button
-            v-else
-            class="hidden lg:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
-            @click="handleLogout"
-          >
-            Log Out
-          </button>
+
+          <div class="mt-1 ml-4" v-if="user">
+            <ProfileDropdown />
+          </div>
         </div>
       </div>
     </nav>
@@ -71,26 +66,18 @@
 <script lang="ts">
 import { useAuth } from '@/composables/auth';
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
 import SearchBar from '../../SearchBar.vue';
 import HeaderBurger from './HeaderBurger.vue';
+import ProfileDropdown from './ProfileDropdown.vue';
 
 export default defineComponent({
-  components: { SearchBar, HeaderBurger },
+  components: { SearchBar, HeaderBurger, ProfileDropdown },
   name: 'Header',
   setup() {
-    const { user, logout } = useAuth();
-    const router = useRouter();
-
-    const handleLogout = () => {
-      logout().then(() => {
-        router.push({ name: 'Home' });
-      });
-    };
+    const { user } = useAuth();
 
     return {
-      user,
-      handleLogout
+      user
     };
   },
   data() {
