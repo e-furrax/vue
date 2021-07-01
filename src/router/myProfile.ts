@@ -43,8 +43,7 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
       default: Messages,
       header: Header,
       footer: Footer
-    },
-    meta: { icon: 'icons/email.svg' }
+    }
   },
   {
     path: '/history',
@@ -53,8 +52,7 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
       default: HistoryTransactions,
       header: Header,
       footer: Footer
-    },
-    meta: { icon: 'receipt_long.svg' }
+    }
   },
   {
     path: '/settings',
@@ -65,7 +63,6 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
       footer: Footer
     },
     redirect: '/settings/account',
-    meta: { icon: 'settings.svg' },
     children: settingsRoutes
   }
 ];
