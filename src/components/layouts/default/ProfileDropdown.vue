@@ -112,6 +112,10 @@ interface UpdateProfilePicVariables {
   picture: File;
 }
 
+interface UpdateProfileMutationResponse {
+  updateProfilePic: string;
+}
+
 export default defineComponent({
   name: 'ProfileDropdown',
   components: {
@@ -154,9 +158,10 @@ export default defineComponent({
   },
   setup() {
     const fileInput = ref<HTMLInputElement>();
-    const { mutate: updateProfilePic, loading } = useMutation<string, UpdateProfilePicVariables>(
-      updateProfilePicMutation
-    );
+    const { mutate: updateProfilePic, loading } = useMutation<
+      UpdateProfileMutationResponse,
+      UpdateProfilePicVariables
+    >(updateProfilePicMutation);
     const toast = useToast();
     const { user, logout } = useAuth();
     const router = useRouter();
@@ -179,7 +184,7 @@ export default defineComponent({
       updateProfilePic({ picture: files[0] })
         .then(({ data }) => {
           if (user?.value && data) {
-            user.value = { ...user?.value, profileImage: data };
+            user.value = { ...user?.value, profileImage: data.updateProfilePic };
           }
           toast.success('Image updated !');
         })
