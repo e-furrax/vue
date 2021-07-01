@@ -31,12 +31,12 @@
             <span>Find your teammate</span>
           </router-link>
         </li>
-        <li class="cursor-pointer px-6 py-2 hover:bg-purple-1000" @click="handleBurger">
+        <!-- <li class="cursor-pointer px-6 py-2 hover:bg-purple-1000" @click="handleBurger">
           <router-link to="/profile" class="flex items-center">
             <img src="/images/icons/person.svg" class="opacity-50 mr-6" />
             <span>Profile</span>
           </router-link>
-        </li>
+        </li> -->
       </ul>
       <ul v-if="!user" class="py-3 px-4 flex flex-col items-start">
         <li

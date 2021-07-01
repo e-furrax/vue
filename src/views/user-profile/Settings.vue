@@ -3,9 +3,9 @@
     <section class="flex flex-col border-r-2 border-opacity-20 md:w-84">
       <div class="py-6">
         <ul class="">
-          <div v-for="route in settingsRouteChildren" :key="route.path">
+          <div v-for="route in settingsRoutes" :key="route.path">
             <router-link
-              :to="`/profile/settings/${route.path}`"
+              :to="`/settings/${route.path}`"
               v-slot="{ href, route, navigate, isActive }"
               custom
             >
@@ -43,17 +43,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { myProfileRoutes } from '@/router/myProfile';
+import { settingsRoutes } from '@/router/myProfile';
 
 export default defineComponent({
   name: 'Settings',
   setup() {
-    const settingsRouteChildren = myProfileRoutes.children
-      ?.filter(childRoute => childRoute.name === 'Settings')
-      .map(settingsRoute => settingsRoute.children)[0];
+    // const settingsRouteChildren = myProfileRoutes
+    //   ?.filter(childRoute => childRoute.name === 'Settings')
+    //   .map(settingsRoute => settingsRoute.children)[0];
+    // console.log(myProfileRoutes);
 
     return {
-      settingsRouteChildren
+      settingsRoutes
     };
   }
 });

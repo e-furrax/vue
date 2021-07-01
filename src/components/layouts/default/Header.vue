@@ -35,9 +35,7 @@
             </li>
             <li
               class="h-full flex items-center hover:text-purple-500 cursor-pointer border-b-2 border-transparent hover:border-purple-500 transition"
-            >
-              <router-link to="/profile" v-if="user">Profile</router-link>
-            </li>
+            ></li>
           </ul>
         </div>
         <div class="flex items-center">
@@ -62,6 +60,9 @@
           >
             Log Out
           </button>
+          <div class="mt-1 ml-4" v-if="user">
+            <ProfileDropdown />
+          </div>
         </div>
       </div>
     </nav>
@@ -74,9 +75,10 @@ import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import SearchBar from '../../SearchBar.vue';
 import HeaderBurger from './HeaderBurger.vue';
+import ProfileDropdown from './ProfileDropdown.vue';
 
 export default defineComponent({
-  components: { SearchBar, HeaderBurger },
+  components: { SearchBar, HeaderBurger, ProfileDropdown },
   name: 'Header',
   setup() {
     const { user, logout } = useAuth();

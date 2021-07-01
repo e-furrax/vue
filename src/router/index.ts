@@ -1,17 +1,18 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import Header from '../components/layouts/default/Header.vue';
-import Footer from '../components/layouts/default/Footer.vue';
-
-import Home from '../views/Home.vue';
-import SignIn from '../views/SignIn.vue';
-import SignUp from '../views/SignUp.vue';
-
-import Search from '../views/Search.vue';
-import UserProfile from '../views/UserProfile.vue';
-import { myProfileRoutes } from './myProfile';
+import Header from '@/components/layouts/default/Header.vue';
+import Footer from '@/components/layouts/default/Footer.vue';
+import Home from '@/views/Home.vue';
+import SignIn from '@/views/SignIn.vue';
+import SignUp from '@/views/SignUp.vue';
+import Messages from '@/views/user-profile/Messages.vue';
+import HistoryTransactions from '@/views/user-profile/HistoryTransactions.vue';
+import Settings from '@/views/user-profile/Settings.vue';
+import Search from '@/views/Search.vue';
+import UserProfile from '@/views/UserProfile.vue';
 import { backOfficeRoutes } from './backOffice';
 import { useAuth } from '@/composables/auth';
 import { watch } from 'vue-demi';
+import { myProfileRoutes } from './myProfile';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -52,7 +53,7 @@ const routes: Array<RouteRecordRaw> = [
       footer: Footer
     }
   },
-  myProfileRoutes,
+  ...myProfileRoutes,
   ...backOfficeRoutes
 ];
 
