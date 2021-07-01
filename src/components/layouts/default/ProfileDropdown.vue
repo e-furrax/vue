@@ -35,7 +35,7 @@
       To: "transform opacity-0 scale-95"
   -->
     <div
-      class="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-purple-1100 focus:outline-none divide-y divide-orange-600 divide-opacity-50"
+      class="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-purple-1100 focus:outline-none divide-y divide-orange-600 divide-opacity-50 border border-opacity-25"
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="menu-button"
@@ -71,13 +71,30 @@
             <a
               :href="href"
               :class="isActive && 'bg-purple-950'"
-              class="text-white block px-4 py-2 text-sm hover:bg-purple-950 transition-colors duration-100"
+              class="text-white px-4 py-2 text-sm hover:bg-purple-950 transition-colors duration-100 flex flex-row items-center space-x-2"
               role="menuitem"
               tabindex="-1"
-              >{{ route.name }}</a
             >
+              <img
+                :src="`/images/${route.meta.icon}`"
+                class="opacity-100"
+                style="width: 24px; max-width: inherit"
+              />
+              <span>{{ route.name }}</span>
+            </a>
           </router-link>
         </nav>
+      </div>
+      <div class="py-1" role="none">
+        <div class="m-2 flex justify-center">
+          <button
+            v-if="user"
+            class="hidden lg:block px-3 py-1 mx-2 rounded bg-transparent border border-purple-400 text-purple-400 hover:border-purple-300 hover:text-purple-300 transition duration-300"
+            @click="handleLogout"
+          >
+            Log Out
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -88,6 +105,8 @@ import { defineComponent, ref } from 'vue';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import { getProfileSidebar, updateProfilePicMutation } from '@/apollo/user.gql';
 import { useToast } from 'vue-toastification';
+import { useAuth } from '@/composables/auth';
+import { useRouter } from 'vue-router';
 
 interface ProfileSidebarResponse {
   getProfile: {
@@ -109,31 +128,26 @@ export default defineComponent({
       myProfileRoutes: [
         {
           path: '/messages',
-          name: 'Messages'
+          name: 'Messages',
+          meta: { icon: 'icons/email.svg' }
         },
         {
           path: '/history',
-          name: 'History Transactions'
+          name: 'History Transactions',
+          meta: { icon: 'receipt_long.svg' }
         },
         {
           path: '/settings',
-          name: 'Settings'
+          name: 'Settings',
+          meta: { icon: 'settings.svg' }
         }
       ]
     };
-  },
-  computed: {
-    routes() {
-      return this.$router.options.routes.find(route => route.name === 'Settings')?.children;
-    }
   },
   methods: {
     handleDropdown() {
       this.open = !this.open;
     }
-  },
-  mounted() {
-    console.log(this.$router);
   },
   setup() {
     const fileInput = ref<HTMLInputElement>();
@@ -143,6 +157,14 @@ export default defineComponent({
     const { result } = useQuery<ProfileSidebarResponse>(getProfileSidebar);
     const { value: profile } = useResult(result);
     const toast = useToast();
+    const { user, logout } = useAuth();
+    const router = useRouter();
+
+    const handleLogout = () => {
+      logout().then(() => {
+        router.push({ name: 'Home' });
+      });
+    };
 
     const openInputFile = () => {
       fileInput.value?.click();
@@ -162,7 +184,9 @@ export default defineComponent({
       fileInput,
       openInputFile,
       onUploadFile,
-      profile
+      profile,
+      user,
+      handleLogout
     };
   }
 });
