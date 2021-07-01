@@ -62,7 +62,7 @@
             >
               <img
                 src="/images/avatar1.png"
-                class="rounded-full border-2 border-yellow-800 z-20 w-32 lg:w-40"
+                class="rounded-full border-2 border-purple-custom z-20 w-32 lg:w-40"
               />
               <div
                 class="
@@ -83,7 +83,17 @@
                 "
               >
                 <div class="flex items-center">
-                  <h2 class="text-xl lg:text-2xl mr-2">{{ user.username }}</h2>
+                  <h2 class="text-xl lg:text-2xl flex items-center">
+                    <span class="mr-2">{{ user.username }}</span>
+                    <img
+                      v-if="
+                        user.gender.toLowerCase() === 'female' ||
+                          user.gender.toLowerCase() === 'male'
+                      "
+                      width="20"
+                      :src="`/images/icons/${user.gender}.svg`"
+                    />
+                  </h2>
                 </div>
                 <div class="flex flex-col mt-2 text-sm">
                   <div class="flex items-center flex-wrap mb-1">
@@ -113,46 +123,163 @@
             </div>
             <section class="lg:mt-20 pt-4 px-4">
               <h4 class="font-bold uppercase">Games</h4>
-              <div class="grid gap-2 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
-                <GameRank background="/images/backgrounds/lowres/rl.jpg">
-                  <template v-slot:image>
-                    <img src="/images/ranks/rocket-league/c3.png" width="60" />
-                  </template>
-                  <template v-slot:game>Rocket League</template>
-                  <template v-slot:mode>Ranked standard 3v3</template>
-                  <template v-slot:rank>Champion III Division IV</template>
-                </GameRank>
-                <GameRank background="/images/backgrounds/lowres/csgo.jpg">
-                  <template v-slot:image>
-                    <img src="/images/ranks/csgo/supreme.png" width="75" />
-                  </template>
-                  <template v-slot:game>CS:GO</template>
-                  <template v-slot:mode>Competitive 5v5</template>
-                  <template v-slot:rank>Supreme Master</template>
-                </GameRank>
-                <GameRank background="/images/backgrounds/lowres/valorant.jpg">
-                  <template v-slot:image>
-                    <img src="/images/ranks/valorant/radiant.png" width="50" />
-                  </template>
-                  <template v-slot:game>Valorant</template>
-                  <template v-slot:mode>Competitive 5v5</template>
-                  <template v-slot:rank>Radiant</template>
-                </GameRank>
-                <GameRank background="/images/backgrounds/lowres/lol.jpg">
-                  <template v-slot:image>
-                    <img src="/images/ranks/lol/master.png" width="60" />
-                  </template>
-                  <template v-slot:game>League of Legends</template>
-                  <template v-slot:mode>Competitive 5v5</template>
-                  <template v-slot:rank>Master</template>
-                </GameRank>
+              <div class="flex items-center">
+                <select
+                  class="px-1 text-sm py-0.5 border border-purple-custom bg-purple-1100 rounded"
+                  name="my-game-add"
+                  ref="myGameAdd"
+                >
+                  <option value="" select hidden>All games</option>
+                  <option v-for="game of games" :key="game.id" :value="game.id">
+                    {{ game.name }}
+                  </option>
+                </select>
+                <button
+                  class="
+                    ml-2
+                    px-4
+                    outline-none
+                    font-bold
+                    text-white
+                    uppercase
+                    rounded
+                    bg-purple-800
+                    text-sm
+                    py-0.5
+                    hover:bg-purple-700
+                    transition-all
+                    ease-in
+                    duration-200
+                  "
+                  @click="handleAddGame"
+                >
+                  Add
+                </button>
+              </div>
+              <div class="mt-2 flex items-center flex-wrap">
+                <div
+                  class="
+                    flex
+                    items-center
+                    mr-1
+                    text-sm
+                    px-3
+                    py-0.5
+                    bg-purple-1100
+                    rounded-full
+                    border border-purple-custom
+                  "
+                  v-for="game of user.games"
+                  :key="game.id"
+                >
+                  <span>{{ game.name }}</span>
+                  <img
+                    :data-game-id="game.id"
+                    @click="handleRemoveGame"
+                    class="
+                      ml-1
+                      cursor-pointer
+                      hover:bg-red-400 hover:bg-opacity-30
+                      p-0.5
+                      transition
+                      duration-200
+                      rounded-full
+                    "
+                    src="/images/icons/close.svg"
+                    width="20"
+                  />
+                </div>
+                <div v-if="!user.games.length">This user did not pick any games.</div>
               </div>
             </section>
-            <section class="pt-4 px-4 relative">
+            <section class="pt-8 px-4">
+              <h4 class="font-bold uppercase">
+                Ranks ({{ user.statistics.length }}/{{ maxRanks }})
+              </h4>
+              <div class="grid gap-2 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
+                <GameRank
+                  v-for="statistic of user.statistics"
+                  :key="statistic.id"
+                  image="/images/ranks/rocket-league/c3.png"
+                  background="/images/backgrounds/lowres/rl.jpg"
+                  :games="games"
+                  game="Rocket League"
+                  mode="Ranked standard 3v3"
+                  rank="Champion III Division IV"
+                  :editing="false"
+                />
+                <GameRank
+                  image="/images/ranks/csgo/supreme.png"
+                  background="/images/backgrounds/lowres/csgo.jpg"
+                  game="CS:GO"
+                  mode="Competitive 5v5"
+                  rank="Supreme Master"
+                  :editing="false"
+                  :games="games"
+                />
+                <GameRank
+                  image="/images/ranks/valorant/radiant.png"
+                  background="/images/backgrounds/lowres/valorant.jpg"
+                  game="Valorant"
+                  mode="Competitive 5v5"
+                  rank="Radiant"
+                  :editing="false"
+                  :games="games"
+                />
+                <GameRank
+                  image="/images/ranks/lol/master.png"
+                  background="/images/backgrounds/lowres/lol.jpg"
+                  game="League of Legends"
+                  mode="Competitive 5v5"
+                  rank="Master"
+                  :editing="false"
+                  :games="games"
+                />
+                <GameRank
+                  v-show="addingGame"
+                  image="/images/ranks/lol/master.png"
+                  background="/images/backgrounds/lowres/lol.jpg"
+                  :editing="true"
+                  :games="games"
+                  @adding-game="handleEmitAddingGame"
+                />
+                <div
+                  @click="addingGame = addingGame ? false : true"
+                  v-show="!addingGame"
+                  class="
+                    w-full
+                    flex
+                    border-2 border-dashed border-purple-custom
+                    justify-center
+                    items-center
+                    cursor-pointer
+                    transition
+                    duration-200
+                    bg-purple-1100
+                    hover:bg-purple-1200
+                    h-20
+                  "
+                >
+                  <img src="/images/icons/add_circle.svg" width="24" />
+                  <span class="ml-2">Add a game</span>
+                </div>
+              </div>
+            </section>
+            <section class="pt-8 px-4 relative">
               <img
                 src="/images/icons/edit.svg"
-                class="absolute top-4 right-4 cursor-pointer"
-                width="20"
+                class="
+                  absolute
+                  top-3
+                  right-3
+                  cursor-pointer
+                  hover:bg-white hover:bg-opacity-20
+                  transition
+                  duration-200
+                  p-1
+                  rounded-full
+                "
+                width="24"
                 @click="handleEditingDescription"
                 v-if="!editingDescription && userAuth"
               />
@@ -271,10 +398,10 @@
                     self-end
                   "
                 >
-                  Envoyer
+                  Send
                 </button>
               </Form>
-              <div v-if="computedReceivedRatings.length" id="commentsDOM">
+              <div class="mt-4" v-if="computedReceivedRatings.length" id="commentsDOM">
                 <Comment
                   v-for="com in computedReceivedRatings"
                   :key="com.id"
@@ -418,11 +545,18 @@ import { addRatingMutation } from '@/apollo/rating.gql';
 import { useAuth } from '@/composables/auth';
 import { defineComponent, ref } from 'vue';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
-import { getUser, updateDescriptionMutation } from '@/apollo/user.gql';
+import {
+  getUser,
+  updateDescriptionMutation,
+  addGamesMutation,
+  removeUserGameMutation
+} from '@/apollo/user.gql';
+import { getGames } from '@/apollo/game.gql';
 import * as yup from 'yup';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import RatingModel from '@/models/rating.model';
 import UserModel from '@/models/user.model';
+import GameModel from '@/models/game.model';
 
 import Comment from '@/components/Comment.vue';
 import Error from '@/components/Error.vue';
@@ -454,7 +588,22 @@ interface AddRatingVariables {
   };
 }
 
+interface AddGamesVariables {
+  games: {
+    ids: number[];
+  };
+}
+
 export default defineComponent({
+  data() {
+    return {
+      editingDescription: false,
+      totalPrice: '4.50',
+      demandGame: 'lol',
+      addingGame: false,
+      maxRanks: 6
+    };
+  },
   props: {
     userId: {
       type: String,
@@ -464,11 +613,23 @@ export default defineComponent({
   setup(props) {
     const { user: userAuth } = useAuth();
     const computedAverageRatingRef = ref();
+    const myGameAdd = ref();
     const descriptionRef = ref();
     const { result, loading, error, refetch: refetchUser } = useQuery(getUser, {
       data: { id: parseInt(props.userId) }
     });
     const user = useResult(result, null, data => data.getUser);
+
+    const { result: gamesResult } = useQuery(getGames);
+    const games = useResult(gamesResult, null, data => data.getGames);
+
+    const { mutate: removeUserGame } = useMutation<Partial<GameModel>, { id: number }>(
+      removeUserGameMutation
+    );
+
+    const { mutate: addGames } = useMutation<Partial<GameModel>, AddGamesVariables>(
+      addGamesMutation
+    );
 
     const { mutate: addRating } = useMutation<Partial<RatingModel>, AddRatingVariables>(
       addRatingMutation
@@ -489,6 +650,10 @@ export default defineComponent({
       toUser: yup.object().shape({
         id: yup.number()
       })
+    });
+
+    const gamesSchema = yup.object({
+      games: yup.number()
     });
 
     const descriptionSchema = yup.object({
@@ -513,7 +678,12 @@ export default defineComponent({
       loading,
       error,
       refetchUser,
-      userAuth
+      userAuth,
+      games,
+      gamesSchema,
+      myGameAdd,
+      addGames,
+      removeUserGame
     };
   },
   computed: {
@@ -527,6 +697,31 @@ export default defineComponent({
   name: 'UserProfile',
   components: { Field, ErrorMessage, Form, Comment, Loader, GameRank, Availability, Error },
   methods: {
+    handleEmitAddingGame(value: boolean) {
+      this.addingGame = value;
+    },
+    handleAddGame() {
+      const gameId = this.myGameAdd.value;
+      if (gameId !== '') {
+        this.addGames({
+          games: {
+            ids: [+gameId]
+          }
+        }).then(() => {
+          this.refetchUser();
+          this.toast.success('Game added successfully.');
+        });
+      }
+    },
+    handleRemoveGame({ target }: { target: HTMLImageElement }) {
+      const gameId = target.dataset.gameId;
+      if (gameId && gameId !== '') {
+        this.removeUserGame({ id: +gameId }).then(() => {
+          this.refetchUser();
+          this.toast.success('Game removed successfully.');
+        });
+      }
+    },
     calculateAverageRating(ratings: RatingModel[]): string {
       const sum = ratings.reduce((acc: number, rating: RatingModel) => acc + +rating.rating, 0);
       return sum ? (sum / ratings.length).toFixed(2) : '0';
@@ -593,13 +788,6 @@ export default defineComponent({
     handleEditingDescription() {
       this.editingDescription = this.editingDescription ? false : true;
     }
-  },
-  data() {
-    return {
-      editingDescription: false,
-      totalPrice: '4.50',
-      demandGame: 'lol'
-    };
   }
 });
 </script>

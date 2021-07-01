@@ -3,9 +3,9 @@
   <div v-else class="availability relative">
     <img
       src="/images/icons/edit.svg"
-      class="absolute right-0 cursor-pointer"
+      class="absolute right-0 cursor-pointer hover:bg-white hover:bg-opacity-20 transition duration-200 p-1 rounded-full"
       style="top: -2rem"
-      width="20"
+      width="24"
       @click="handleEditing"
       v-if="!editing && user"
     />

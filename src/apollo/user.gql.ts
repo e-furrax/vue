@@ -22,6 +22,7 @@ export const getUsers = gql`
         name
       }
       games {
+        id
         name
       }
       receivedRatings {
@@ -63,6 +64,12 @@ export const getUser = gql`
       games {
         id
         name
+      }
+      statistics {
+        id
+        rank
+        mode
+        playerId
       }
     }
   }
@@ -140,6 +147,28 @@ export const confirmUserMutation = gql`
   mutation confirmUser($code: String!) {
     confirmUser(code: $code) {
       accessToken
+    }
+  }
+`;
+
+export const addGamesMutation = gql`
+  mutation addGames($games: GamesInput!) {
+    addGames(games: $games) {
+      username
+      games {
+        name
+      }
+    }
+  }
+`;
+
+export const removeUserGameMutation = gql`
+  mutation removeUserGame($id: Float!) {
+    removeUserGame(id: $id) {
+      username
+      games {
+        name
+      }
     }
   }
 `;
