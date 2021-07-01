@@ -6,6 +6,9 @@ import SignIn from '@/views/SignIn.vue';
 import SignUp from '@/views/SignUp.vue';
 import Search from '@/views/Search.vue';
 import UserProfile from '@/views/UserProfile.vue';
+import Privacy from '@/views/Privacy.vue';
+import Terms from '@/views/Terms.vue';
+
 import { backOfficeRoutes } from './backOffice';
 import { useAuth } from '@/composables/auth';
 import { watch } from 'vue-demi';
@@ -46,6 +49,24 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
     components: {
       default: UserProfile,
+      header: Header,
+      footer: Footer
+    }
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    components: {
+      default: Privacy,
+      header: Header,
+      footer: Footer
+    }
+  },
+  {
+    path: '/terms',
+    name: 'Terms',
+    components: {
+      default: Terms,
       header: Header,
       footer: Footer
     }
