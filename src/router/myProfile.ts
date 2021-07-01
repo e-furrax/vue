@@ -40,9 +40,9 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
     path: '/messages',
     name: 'Messages',
     components: {
-      default: Messages
-      // header: Header,
-      // footer: Footer
+      default: Messages,
+      header: Header,
+      footer: Footer
     },
     meta: { icon: 'icons/email.svg' }
   },
@@ -50,9 +50,9 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
     path: '/history',
     name: 'History Transactions',
     components: {
-      default: HistoryTransactions
-      // header: Header,
-      // footer: Footer
+      default: HistoryTransactions,
+      header: Header,
+      footer: Footer
     },
     meta: { icon: 'receipt_long.svg' }
   },
@@ -60,9 +60,9 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
     path: '/settings',
     name: 'Settings',
     components: {
-      default: Settings
-      // header: Header,
-      // footer: Footer
+      default: Settings,
+      header: Header,
+      footer: Footer
     },
     redirect: '/settings/account',
     meta: { icon: 'settings.svg' },

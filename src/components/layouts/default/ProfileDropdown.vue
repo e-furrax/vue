@@ -61,22 +61,23 @@
         >
       </div>
       <div class="py-1" role="none">
-        <router-link
-          :to="route.path"
-          v-slot="{ href, navigate, isActive }"
-          v-for="route in myProfileRoutes"
-          :key="route.path"
-        >
-          <a
-            :href="href"
-            @click="navigate"
-            :class="isActive && 'bg-purple-950'"
-            class="text-white block px-4 py-2 text-sm hover:bg-purple-950 transition-colors duration-100"
-            role="menuitem"
-            tabindex="-1"
-            >{{ route.name }}</a
+        <nav>
+          <router-link
+            :to="route.path"
+            v-slot="{ href, isActive }"
+            v-for="route in myProfileRoutes"
+            :key="route.path"
           >
-        </router-link>
+            <a
+              :href="href"
+              :class="isActive && 'bg-purple-950'"
+              class="text-white block px-4 py-2 text-sm hover:bg-purple-950 transition-colors duration-100"
+              role="menuitem"
+              tabindex="-1"
+              >{{ route.name }}</a
+            >
+          </router-link>
+        </nav>
       </div>
     </div>
   </div>
@@ -84,7 +85,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { myProfileRoutes } from '@/router/myProfile';
 import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import { getProfileSidebar, updateProfilePicMutation } from '@/apollo/user.gql';
 import { useToast } from 'vue-toastification';
@@ -106,15 +106,35 @@ export default defineComponent({
   data() {
     return {
       open: false,
-      myProfileRoutes
+      myProfileRoutes: [
+        {
+          path: '/messages',
+          name: 'Messages'
+        },
+        {
+          path: '/history',
+          name: 'History Transactions'
+        },
+        {
+          path: '/settings',
+          name: 'Settings'
+        }
+      ]
     };
+  },
+  computed: {
+    routes() {
+      return this.$router.options.routes.find(route => route.name === 'Settings')?.children;
+    }
   },
   methods: {
     handleDropdown() {
       this.open = !this.open;
     }
   },
-
+  mounted() {
+    console.log(this.$router);
+  },
   setup() {
     const fileInput = ref<HTMLInputElement>();
     const { mutate: updateProfilePic } = useMutation<boolean, UpdateProfilePicVariables>(

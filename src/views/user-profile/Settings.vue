@@ -1,4 +1,5 @@
 <template>
+  <router-view name="header" />
   <div class="flex text-white h-full">
     <section class="flex flex-col border-r-2 border-opacity-20 md:w-84">
       <div class="py-6">

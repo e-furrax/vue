@@ -52,14 +52,12 @@ const routes: Array<RouteRecordRaw> = [
       header: Header,
       footer: Footer
     }
-  },
-  ...myProfileRoutes,
-  ...backOfficeRoutes
+  }
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes: [...routes, ...myProfileRoutes, ...backOfficeRoutes]
 });
 
 router.beforeEach((to, from, next) => {
