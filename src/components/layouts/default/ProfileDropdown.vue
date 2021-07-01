@@ -42,7 +42,7 @@
               v-if="user?.profileImage"
               :src="user?.profileImage"
               alt="profile picture"
-              class="object-cover inline-flex rounded-full h-11 w-11 cursor-pointer hover:opacity-80 transition duration-100"
+              class="object-cover inline-flex rounded-full h-20 w-20 cursor-pointer hover:opacity-80 transition duration-100"
               @click="openInputFile"
             />
             <img

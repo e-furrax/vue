@@ -22,7 +22,10 @@ export const settingsRoutes: Array<RouteRecordRaw> = [
     path: 'security',
     name: 'Security',
     component: Security,
-    meta: { additionalInformations: 'Change Password', icon: 'policy.svg' }
+    meta: {
+      additionalInformations: 'Change Password',
+      icon: 'policy.svg'
+    }
   },
   {
     path: 'connections',
@@ -39,6 +42,7 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
   {
     path: '/messages',
     name: 'Messages',
+    meta: { requiresAuth: true },
     components: {
       default: Messages,
       header: Header,
@@ -48,6 +52,7 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
   {
     path: '/history',
     name: 'History Transactions',
+    meta: { requiresAuth: true },
     components: {
       default: HistoryTransactions,
       header: Header,
@@ -57,6 +62,7 @@ export const myProfileRoutes: Array<RouteRecordRaw> = [
   {
     path: '/settings',
     name: 'Settings',
+    meta: { requiresAuth: true },
     components: {
       default: Settings,
       header: Header,
