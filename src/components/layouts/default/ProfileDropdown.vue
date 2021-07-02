@@ -26,7 +26,7 @@
     </div>
     <transition name="fade">
       <div
-        class="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-purple-1100 focus:outline-none divide-y divide-orange-600 divide-opacity-50 border border-opacity-25"
+        class="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-sm shadow-xl bg-purple-1100 focus:outline-none divide-y divide-gray-600 divide-opacity-30 border border-opacity-10"
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="menu-button"

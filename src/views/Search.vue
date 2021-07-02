@@ -71,7 +71,7 @@ import { defineComponent, ref } from 'vue';
 import { getUsers } from '@/apollo/user.gql';
 import { getGames } from '@/apollo/game.gql';
 import { getLanguages } from '@/apollo/language.gql';
-import { provideApolloClient, useApolloClient, useQuery, useResult } from '@vue/apollo-composable';
+import { provideApolloClient, useQuery, useResult } from '@vue/apollo-composable';
 import { postgresClient } from '@/apollo/client';
 
 import { Field, Form } from 'vee-validate';
