@@ -12,20 +12,20 @@
     >
       <div class="search-criteria mr-2">
         <Field as="select" name="games">
-          <option value="" disabled select hidden>All games</option>
+          <option value="" select hidden>All games</option>
           <option v-for="game of games" :key="game.id" :value="game.id">{{ game.name }}</option>
         </Field>
       </div>
       <div class="search-criteria mr-2">
         <Field as="select" name="gender">
-          <option value="" disabled select hidden>All genders</option>
+          <option value="" select hidden>All genders</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </Field>
       </div>
       <div class="search-criteria">
         <Field as="select" name="languages">
-          <option value="" disabled select hidden>All languages</option>
+          <option value="" select hidden>All languages</option>
           <option v-for="language of languages" :key="language.id" :value="language.id">
             {{ language.name }}
           </option>
@@ -71,7 +71,8 @@ import { defineComponent, ref } from 'vue';
 import { getUsers } from '@/apollo/user.gql';
 import { getGames } from '@/apollo/game.gql';
 import { getLanguages } from '@/apollo/language.gql';
-import { useQuery, useResult } from '@vue/apollo-composable';
+import { provideApolloClient, useQuery, useResult } from '@vue/apollo-composable';
+import { postgresClient } from '@/apollo/client';
 
 import { Field, Form } from 'vee-validate';
 import * as yup from 'yup';
@@ -96,6 +97,7 @@ export default defineComponent({
     Form
   },
   setup() {
+    provideApolloClient(postgresClient);
     const filterFormSubmitRef = ref();
 
     const { result: usersResult, loading: usersLoading } = useQuery(getUsers);

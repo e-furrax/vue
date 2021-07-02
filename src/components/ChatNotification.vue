@@ -4,7 +4,7 @@
       <img src="/images/avatar1.png" class="rounded-full" width="50" height="50" />
       <div class="ml-4 flex flex-col items-start">
         <h1 class="font-bold">{{ message.fromUser.username }}</h1>
-        <span class="trim">{{ message.content }}</span>
+        <span class="trim break-all">{{ message.content }}</span>
       </div>
     </div>
     <div class="flex flex-col items-end justify-between">

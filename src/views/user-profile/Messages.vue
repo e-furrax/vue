@@ -1,7 +1,7 @@
 <template>
   <div class="flex text-white h-full">
-    <section class="flex flex-col border-r-2 border-opacity-20 md:w-84">
-      <div class="flex flex-col items-start py-6">
+    <section class="flex flex-col border-r border-opacity-10 md:w-84">
+      <div class="flex flex-col items-start py-6 bg-purple-1200 h-full">
         <h2 class="font-semibold border-b-2 border-purple-800 mb-6 mx-4 md:mx-6">Conversations</h2>
         <ul v-if="!loading" class="w-full">
           <li
@@ -99,7 +99,7 @@
         class="overflow-y-scroll w-full flex flex-col h-full"
       >
         <div
-          class="my-1.5 py-1.5 px-6 w-full flex items-start hover:bg-purple-1000"
+          class="my-1.5 py-1.5 px-6 w-full flex items-start hover:bg-purple-1200"
           v-for="message of displayedConversation"
           :key="message.id"
         >
@@ -117,7 +117,7 @@
               >
               <span class="text-xs text-gray-300">{{ dayjs().to(dayjs(message.createdAt)) }}</span>
             </div>
-            <div>{{ message.content }}</div>
+            <div class="break-all">{{ message.content }}</div>
           </div>
         </div>
       </div>
@@ -128,7 +128,7 @@
         @submit="handleSendMessage"
       >
         <Field
-          class="rounded-full w-full mr-2 px-4 py-2 bg-purple-1100 text-white"
+          class="rounded-full w-full mr-2 px-4 py-2 border border-opacity-10 bg-purple-1200 text-white"
           name="content"
           type="text"
           placeholder="Start a new message"
