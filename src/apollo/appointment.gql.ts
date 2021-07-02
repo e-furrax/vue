@@ -36,6 +36,14 @@ export const getAppointmentbyUser = gql`
   }
 `;
 
+export const createAppointment = gql`
+  mutation createAppointment($appointmentInput: AppointmentInput!) {
+    createAppointment(appointmentInput: $appointmentInput) {
+      _createdAt
+    }
+  }
+`;
+
 export const deleteAppointment = gql`
   mutation deleteAppointment($payload: AppointmentIdsInput!) {
     deleteAppointment(payload: $payload)

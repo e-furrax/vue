@@ -421,60 +421,62 @@
         @click="handleModal"
       />
       <h2 class="text-xl p-4">Complete demand</h2>
-      <div
-        class="demand-banner flex items-start justify-between bg-purple-1200 p-4"
-        :style="
-          `
+      <Form :validation-schema="appointmentSchema" @submit="handleNewAppointment">
+        <div
+          class="demand-banner flex items-start justify-between bg-purple-1200 p-4"
+          :style="
+            `
         background-image: linear-gradient(90deg, rgba(22, 16, 51, 1) 70%, rgba(22, 16, 51, 0.4) 100%),
         url('/images/backgrounds/lowres/${demandGame}.jpg');
         `
-        "
-      >
-        <div class="flex flex-col">
-          <select @change="handleGameChange" name="game" class="bg-purple-1200">
-            <option value="lol">League of Legends</option>
-            <option value="rl">Rocket League</option>
-            <option value="valorant">Valorant</option>
-            <option value="csgo">CS:GO</option>
-          </select>
-          <div class="mt-2 flex items-center">
-            <img src="/images/avatar1.png" class="mr-2 w-5 h-5 rounded-full" />
-            <span class="text-sm">{{ user.username }}</span>
+          "
+        >
+          <div class="flex flex-col">
+            <Field as="select" name="game" v-model="demandGame" class="bg-purple-1200">
+              <option value="lol">League of Legends</option>
+              <option value="rl">Rocket League</option>
+              <option value="valorant">Valorant</option>
+              <option value="csgo">CS:GO</option>
+            </Field>
+            <div class="mt-2 flex items-center">
+              <img src="/images/avatar1.png" class="mr-2 w-5 h-5 rounded-full" />
+              <span class="text-sm">{{ user.username }}</span>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
+            <span>4.50<span class="text-xs">/Match</span></span>
           </div>
         </div>
-        <div class="flex items-center">
-          <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
-          <span>4.50<span class="text-xs">/Match</span></span>
+        <div class="px-4 my-4">
+          <div class="mt-4 flex justify-between items-center">
+            <label for="matches">Matches</label>
+            <Field
+              type="number"
+              name="matches"
+              v-model="matches"
+              min="1"
+              max="999"
+              value="1"
+              class="w-20 bg-purple-1200 p-1 text-white"
+            />
+          </div>
+          <div class="mt-4 flex justify-between items-center">
+            <label for="date">Start time</label>
+            <Field type="datetime-local" name="date" class="bg-purple-1200 p-1 text-white" />
+          </div>
         </div>
-      </div>
-      <div class="px-4 my-4">
-        <div class="mt-4 flex justify-between items-center">
-          <label for="round">Matches</label>
-          <input
-            @input="handleRoundChange"
-            type="number"
-            name="round"
-            min="1"
-            max="999"
-            value="1"
-            class="w-20 bg-purple-1200 p-1 text-white"
-          />
+        <div class="p-4 border-t border-purple-925 flex justify-between items-center">
+          <span>Total</span>
+          <div class="flex items-center">
+            <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
+            <span>{{ totalPrice }}</span>
+          </div>
         </div>
-        <div class="mt-4 flex justify-between items-center">
-          <label for="time">Start time</label>
-          <input type="datetime-local" name="time" class="bg-purple-1200 p-1 text-white" />
-        </div>
-      </div>
-      <div class="p-4 border-t border-purple-925 flex justify-between items-center">
-        <span>Total</span>
-        <div class="flex items-center">
-          <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
-          <span>{{ totalPrice }}</span>
-        </div>
-      </div>
-      <div class="p-4 bg-purple-1200 flex items-center justify-between">
-        <button
-          class="
+        <div class="p-4 bg-purple-1200 flex items-center justify-between">
+          <button
+            type="button"
+            class="
             font-bold
             uppercase
             rounded
@@ -488,12 +490,13 @@
             ease-in
             duration-200
           "
-          @click="handleModal"
-        >
-          Cancel
-        </button>
-        <button
-          class="
+            @click="handleModal"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="
             font-bold
             uppercase
             rounded
@@ -506,10 +509,11 @@
             ease-in
             duration-200
           "
-        >
-          Confirm
-        </button>
-      </div>
+          >
+            Confirm
+          </button>
+        </div>
+      </Form>
     </div>
   </div>
 </template>
@@ -538,6 +542,7 @@ import Loader from '@/components/Loader.vue';
 import GameRank from '@/components/GameRank.vue';
 import Availability from '@/components/Availability.vue';
 import { useToast } from 'vue-toastification';
+import { createAppointment } from '@/apollo/appointment.gql';
 
 interface RatingForm {
   rating: string;
@@ -545,6 +550,13 @@ interface RatingForm {
 }
 
 interface DescriptionForm {
+  description: string;
+}
+
+interface AppointmentForm {
+  game: string;
+  matches: number;
+  date: Date;
   description: string;
 }
 
@@ -568,14 +580,25 @@ interface AddGamesVariables {
   };
 }
 
+interface NewAppointmentVariables {
+  appointmentInput: {
+    to: number;
+    from?: number;
+    description: string;
+    date: Date;
+    matches: number;
+    game: string;
+  };
+}
+
 export default defineComponent({
   data() {
     return {
       editingDescription: false,
-      totalPrice: '4.50',
       demandGame: 'lol',
       addingGame: false,
-      maxRanks: 6
+      maxRanks: 6,
+      matches: 1
     };
   },
   props: {
@@ -614,6 +637,11 @@ export default defineComponent({
       UpdateDescriptionVariables
     >(updateDescriptionMutation);
 
+    const { mutate: newAppointment } = useMutation<any, NewAppointmentVariables>(
+      createAppointment,
+      { clientId: 'mongo' }
+    );
+
     const schema = yup.object({
       rating: yup
         .string()
@@ -638,6 +666,17 @@ export default defineComponent({
         .max(2000)
     });
 
+    const appointmentSchema = yup.object({
+      game: yup.string().required(),
+      matches: yup.number().required(),
+      date: yup.date().required(),
+      description: yup
+        .string()
+        .required()
+        .min(5)
+        .max(250)
+    });
+
     const toast = useToast();
 
     return {
@@ -657,7 +696,9 @@ export default defineComponent({
       gamesSchema,
       myGameAdd,
       addGames,
-      removeUserGame
+      removeUserGame,
+      newAppointment,
+      appointmentSchema
     };
   },
   computed: {
@@ -666,6 +707,9 @@ export default defineComponent({
     },
     computedAverageRating(): string {
       return this.calculateAverageRating(this.user.receivedRatings);
+    },
+    totalPrice(): string {
+      return (4.5 * +this.matches).toFixed(2);
     }
   },
   name: 'UserProfile',
@@ -757,14 +801,19 @@ export default defineComponent({
       const body = document.querySelector('body') as HTMLBodyElement;
       body.classList.toggle('overflow-hidden');
     },
-    handleRoundChange(event: { target: HTMLInputElement }) {
-      this.totalPrice = (4.5 * +event.target.value).toFixed(2);
-    },
-    handleGameChange(event: { target: HTMLInputElement }) {
-      this.demandGame = event.target.value;
-    },
     handleEditingDescription() {
       this.editingDescription = this.editingDescription ? false : true;
+    },
+    handleNewAppointment(values: AppointmentForm) {
+      this.newAppointment({
+        appointmentInput: {
+          to: +this.userId,
+          description: 'default description',
+          date: values.date,
+          game: values.game,
+          matches: values.matches
+        }
+      });
     }
   }
 });

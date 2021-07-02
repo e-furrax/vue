@@ -2,7 +2,7 @@ export interface Profile {
   id?: number;
   username: string;
   email: string;
-  description: string;
+  description: string | null;
 }
 
 export interface ProfileQuery {
@@ -16,7 +16,7 @@ export interface UpdateProfileMutationResponse {
 export interface ProfileForm {
   email?: string;
   username?: string;
-  bio?: string;
+  bio?: string | null;
 }
 
 export interface UpdateProfileVariables {
