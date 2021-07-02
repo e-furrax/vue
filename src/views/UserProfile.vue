@@ -200,40 +200,12 @@
                 <GameRank
                   v-for="statistic of user.statistics"
                   :key="statistic.id"
-                  image="/images/ranks/rocket-league/c3.png"
-                  background="/images/backgrounds/lowres/rl.jpg"
                   :games="games"
-                  game="Rocket League"
-                  mode="Ranked standard 3v3"
-                  rank="Champion III Division IV"
+                  :statistic="statistic"
                   :editing="false"
-                />
-                <GameRank
-                  image="/images/ranks/csgo/supreme.png"
-                  background="/images/backgrounds/lowres/csgo.jpg"
-                  game="CS:GO"
-                  mode="Competitive 5v5"
-                  rank="Supreme Master"
-                  :editing="false"
-                  :games="games"
-                />
-                <GameRank
-                  image="/images/ranks/valorant/radiant.png"
-                  background="/images/backgrounds/lowres/valorant.jpg"
-                  game="Valorant"
-                  mode="Competitive 5v5"
-                  rank="Radiant"
-                  :editing="false"
-                  :games="games"
-                />
-                <GameRank
-                  image="/images/ranks/lol/master.png"
-                  background="/images/backgrounds/lowres/lol.jpg"
-                  game="League of Legends"
-                  mode="Competitive 5v5"
-                  rank="Master"
-                  :editing="false"
-                  :games="games"
+                  :addGameCard="false"
+                  @upsert-statistic="handleUpsertStatistic"
+                  @delete-statistic="refetchUser()"
                 />
                 <GameRank
                   v-show="addingGame"
@@ -242,6 +214,8 @@
                   :editing="true"
                   :games="games"
                   @adding-game="handleEmitAddingGame"
+                  @upsert-statistic="handleUpsertStatistic"
+                  :addGameCard="true"
                 />
                 <div
                   @click="addingGame = addingGame ? false : true"
@@ -697,6 +671,10 @@ export default defineComponent({
   name: 'UserProfile',
   components: { Field, ErrorMessage, Form, Comment, Loader, GameRank, Availability, Error },
   methods: {
+    handleUpsertStatistic() {
+      this.addingGame = false;
+      this.refetchUser();
+    },
     handleEmitAddingGame(value: boolean) {
       this.addingGame = value;
     },

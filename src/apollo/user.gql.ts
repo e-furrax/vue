@@ -70,6 +70,10 @@ export const getUser = gql`
         rank
         mode
         playerId
+        game {
+          id
+          name
+        }
       }
     }
   }

@@ -40,11 +40,31 @@
       v-show="!isEditing"
       title="Edit"
     />
-    <img :src="image" width="60" />
+    <img
+      class="
+        absolute
+        bottom-1
+        right-1
+        cursor-pointer
+        hover:bg-red-400
+        rounded-full
+        transition
+        duration-200
+        p-1
+        hover:bg-opacity-40
+      "
+      src="/images/icons/delete.svg"
+      width="24"
+      :data-id="statistic?.id"
+      @click="handleDelete"
+      v-show="!isEditing"
+      title="Edit"
+    />
+    <!-- <img width="60" /> -->
     <div v-show="!isEditing" class="flex flex-col ml-3">
-      <span class="font-bold">{{ game }}</span>
-      <span class="text-sm text-gray-200">{{ rank }}</span>
-      <span class="text-xs text-gray-200">{{ mode }}</span>
+      <span class="font-bold">{{ statistic ? statistic.game.name : '' }}</span>
+      <span class="text-sm text-gray-200">{{ statistic ? statistic.rank : '' }}</span>
+      <span class="text-xs text-gray-200">{{ statistic ? statistic.mode : '' }}</span>
     </div>
     <Form
       class="flex flex-col ml-3"
@@ -52,6 +72,7 @@
       @submit="handleGame"
       v-show="isEditing"
     >
+      <Field class="hidden" type="text" name="id" :value="statistic?.id" />
       <Field
         as="select"
         class="px-1 mb-0.5 border border-purple-custom bg-white bg-opacity-10 rounded"
@@ -59,7 +80,6 @@
         ref="myGameAdd"
         @input="changeBackground"
       >
-        <option class="bg-black" value="" select hidden>Game</option>
         <option
           class="bg-purple-950"
           v-for="currentGame of games"
@@ -82,7 +102,7 @@
         type="text"
         placeholder="Rank"
         name="rank"
-        :value="rank"
+        :value="statistic?.rank"
       />
       <Field
         class="
@@ -96,7 +116,7 @@
         type="text"
         placeholder="Mode"
         name="mode"
-        :value="mode"
+        :value="statistic?.mode"
       />
       <div class="absolute bottom-0 right-1 items-center">
         <button
@@ -133,7 +153,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import * as yup from 'yup';
 import { Field, Form } from 'vee-validate';
 import { provideApolloClient, useMutation } from '@vue/apollo-composable';
@@ -145,6 +165,7 @@ import StatisticModel from '@/models/statistic.model';
 
 interface UpsertStatisticVariables {
   data: {
+    id?: number;
     rank: string;
     mode: string;
     game: {
@@ -155,6 +176,7 @@ interface UpsertStatisticVariables {
 }
 
 interface StatisticForm {
+  id: string;
   rank: string;
   mode: string;
   game: string;
@@ -169,32 +191,32 @@ export default defineComponent({
   },
   data() {
     return {
-      isEditing: this.editing,
-      backgrounds: [
-        '/images/backgrounds/lowres/rl.jpg',
-        '/images/backgrounds/lowres/lol.jpg',
-        '/images/backgrounds/lowres/valorant.jpg',
-        '/images/backgrounds/lowres/csgo.jpg'
-      ]
+      isEditing: this.editing
     };
   },
   props: {
-    background: String,
-    rank: String,
-    mode: String,
     games: [],
-    game: String,
-    image: String,
-    editing: Boolean
+    editing: Boolean,
+    addGameCard: Boolean,
+    statistic: Object
   },
   setup(props) {
     provideApolloClient(postgresClient);
+    const myGameAdd = ref();
 
-    const backgroundSrc = reactive({ value: props.background });
+    const backgrounds = [
+      '/images/backgrounds/lowres/rl.jpg',
+      '/images/backgrounds/lowres/lol.jpg',
+      '/images/backgrounds/lowres/valorant.jpg',
+      '/images/backgrounds/lowres/csgo.jpg'
+    ];
+
+    const backgroundSrc = reactive({ value: backgrounds[props.statistic?.game.id - 1] });
 
     const { user } = useAuth();
 
     const schema = yup.object({
+      id: yup.string(),
       game: yup
         .string()
         .required()
@@ -228,28 +250,53 @@ export default defineComponent({
       schema,
       user,
       backgroundSrc,
+      backgrounds,
       upsertStatistic,
-      deleteStatistic
+      deleteStatistic,
+      myGameAdd
     };
   },
   methods: {
+    handleDelete({ target }: { target: HTMLImageElement }) {
+      const statisticId = target.dataset.id;
+      if (statisticId) {
+        this.deleteStatistic({ id: +statisticId }).then(() => {
+          this.$emit('delete-statistic');
+          this.toast.success('Rank deleted successfully!');
+        });
+      }
+    },
     changeBackground({ target }: { target: HTMLSelectElement }) {
       this.backgroundSrc.value = this.backgrounds[+target.value - 1];
     },
     emitAddingGame() {
-      this.$emit('adding-game', false);
+      if (this.addGameCard) {
+        this.$emit('adding-game', false);
+      }
+
+      if (!this.addGameCard) {
+        this.isEditing = false;
+      }
     },
-    handleGame(values: StatisticForm) {
-      const { game, mode, rank } = values;
+    handleGame(values: StatisticForm, { resetForm }: any) {
+      const { id, game, mode, rank } = values;
       this.upsertStatistic({
         data: {
+          id: id ? +id : undefined,
           game: { id: +game },
           mode,
           rank
         }
       }).then(() => {
-        this.isEditing = false;
+        if (!this.addGameCard) {
+          this.isEditing = false;
+        }
+        if (this.addGameCard) {
+          this.backgroundSrc.value = '';
+        }
+        this.$emit('upsert-statistic');
         this.toast.success('Rank added successfully!');
+        resetForm();
       });
     }
   }
