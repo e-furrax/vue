@@ -5,14 +5,14 @@
         v-if="user?.profileImage"
         :src="user.profileImage"
         alt="profile picture"
-        class="object-cover inline-flex rounded-full h-11 w-11 cursor-pointer hover:opacity-80 transition duration-100"
+        class="object-cover inline-flex rounded-full h-10 w-10 cursor-pointer hover:opacity-80 transition duration-100"
         @click="handleDropdown"
       />
       <img
         v-if="!user?.profileImage"
         alt="placeholder profile picture"
         src="/images/photo-placeholder.jpg"
-        class="inline-flex rounded-full h-11 w-11 object-cover cursor-pointer hover:opacity-80 transition duration-100"
+        class="inline-flex rounded-full h-10 w-10 object-cover cursor-pointer hover:opacity-80 transition duration-100"
         @click="handleDropdown"
       />
       <input

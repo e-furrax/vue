@@ -1,5 +1,5 @@
 <template>
-  <div class="flex text-white h-full">
+  <div class="flex text-white h-full border-b border-opacity-10">
     <section class="flex flex-col border-r border-opacity-10 md:w-84">
       <div class="flex flex-col items-start py-6 bg-purple-1200 h-full">
         <h2 class="font-semibold border-b-2 border-purple-800 mb-6 mx-4 md:mx-6">Conversations</h2>

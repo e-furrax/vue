@@ -1,6 +1,6 @@
 <template>
   <router-view name="header" />
-  <div class="flex text-white h-full">
+  <div class="flex text-white h-full border-b border-opacity-10">
     <section class="flex flex-col border-r border-opacity-10 bg-purple-1200 md:w-84">
       <div class="py-6">
         <ul class="">

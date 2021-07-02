@@ -27,7 +27,24 @@
       </div>
       <div class="w-full flex flex-col items-start">
         <button
-          class="w-full mt-2 border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200"
+          class="
+            w-full
+            mt-2
+            border-none
+            outline-none
+            font-bold
+            text-white
+            uppercase
+            rounded
+            bg-purple-800
+            text-sm
+            leading-8
+            py-1
+            hover:bg-purple-700
+            transition-all
+            ease-in
+            duration-200
+          "
         >
           Save Changes
         </button>
@@ -86,10 +103,7 @@ export default defineComponent({
         .string()
         .required()
         .email(),
-      bio: yup
-        .string()
-        .max(200)
-        .nullable()
+      bio: yup.string().max(200)
     });
 
     const { handleSubmit, setFieldValue } = useForm<ProfileForm>({

@@ -1,5 +1,8 @@
 <template>
-  <section class="h-screen w-screen background">
+  <section class="h-screen w-screen">
+    <div class="flex items-center justify-center h-full w-full fixed opacity-10">
+      <img style="z-index: -1" src="/images/e-furrax.svg" width="600" />
+    </div>
     <router-link to="/" class="absolute m-6 text-white flex items-center"
       ><img src="/images/e-furrax.svg" width="38" /><span class="ml-3 text-xl"
         >E-FURRAX</span
