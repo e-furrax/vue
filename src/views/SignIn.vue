@@ -1,7 +1,10 @@
 <template>
   <section class="h-screen w-screen">
-    <div class="flex items-center justify-center h-full w-full fixed opacity-10">
-      <img style="z-index: -1" src="/images/e-furrax.svg" width="600" />
+    <div
+      class="flex items-center justify-center h-full w-full fixed opacity-10"
+      style="z-index: -1"
+    >
+      <img src="/images/e-furrax.svg" width="600" />
     </div>
     <router-link to="/" class="absolute m-6 text-white flex items-center"
       ><img src="/images/e-furrax.svg" width="38" /><span class="ml-3 text-xl"
@@ -9,10 +12,18 @@
       ></router-link
     >
     <div class="h-full w-full flex justify-center items-center">
-      <div class="w-96 flex flex-col items-center">
-        <h1 class="text-3xl font-semibold mb-6 text-white">Sign In</h1>
-        <Form class="form-grid" @submit="onSubmit" :validation-schema="schema" v-slot="{ meta }">
-          <div class="input-grid">
+      <div class="w-96 flex flex-col items-center space-y-6">
+        <h1 class="text-3xl font-semibold text-white">Sign In</h1>
+        <p v-if="errorLogin" class="text-pink-600 text-sm">
+          We didn't recognized you. Make sure that your email and password are correct below.
+        </p>
+        <Form
+          class="form-grid"
+          @submit="onSubmit"
+          :validation-schema="schema"
+          v-slot="{ meta, errors }"
+        >
+          <div class="input-grid" :class="errors.email && 'border-error'">
             <div class="icons">
               <svg width="16px" height="16px" viewBox="0 0 511.626 511.626" fill="currentColor">
                 <path
@@ -31,8 +42,23 @@
               autocomplete="current-email"
               name="email"
             />
+            <ErrorMessage name="email" v-slot="{ message }" as="div">
+              <svg
+                width="16"
+                height="14"
+                viewBox="0 0 16 14"
+                class="error-icon"
+                v-tooltip.right-end="message"
+              >
+                <path
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                  d="M15.882 12.702L8.754.432a.874.874 0 00-1.508 0L.118 12.703A.865.865 0 00.872 14h14.256c.67 0 1.09-.721.754-1.298zm-7.92-8.255c.49-.023.9.39.855.871L8.444 9.29a.432.432 0 01-.432.39.44.44 0 01-.439-.39l-.37-3.947a.814.814 0 01.758-.896zm.037 7.361a.817.817 0 01-.82-.814c0-.45.367-.814.82-.814.452 0 .82.364.82.814 0 .45-.368.814-.82.814z"
+                ></path>
+              </svg>
+            </ErrorMessage>
           </div>
-          <div class="input-grid">
+          <div class="input-grid" :class="errors.password && 'border-error'">
             <div class="icons">
               <svg width="12px" height="17px" viewBox="0 0 12 17">
                 <path
@@ -53,10 +79,25 @@
               autocomplete="current-password"
               name="password"
             />
+            <ErrorMessage name="password" v-slot="{ message }" as="div">
+              <svg
+                width="16"
+                height="14"
+                viewBox="0 0 16 14"
+                class="error-icon"
+                v-tooltip.right-end="message"
+              >
+                <path
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                  d="M15.882 12.702L8.754.432a.874.874 0 00-1.508 0L.118 12.703A.865.865 0 00.872 14h14.256c.67 0 1.09-.721.754-1.298zm-7.92-8.255c.49-.023.9.39.855.871L8.444 9.29a.432.432 0 01-.432.39.44.44 0 01-.439-.39l-.37-3.947a.814.814 0 01.758-.896zm.037 7.361a.817.817 0 01-.82-.814c0-.45.367-.814.82-.814.452 0 .82.364.82.814 0 .45-.368.814-.82.814z"
+                ></path>
+              </svg>
+            </ErrorMessage>
           </div>
           <button
             ref="submitLogin"
-            class="border-none outline-none font-bold text-white uppercase rounded bg-purple-900 text-sm leading-8 py-1 hover:bg-purple-800 transition-all ease-in duration-200"
+            class="border-none outline-none font-bold text-white uppercase rounded bg-purple-700 text-sm leading-8 bg-opacity-50 opa py-1 hover:bg-purple-800 transition-all ease-in duration-200"
             @click="checkIfFormValid(meta.valid)"
           >
             Sign In
@@ -83,32 +124,30 @@ import { useMutation } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
 import { useAuth } from '../composables/auth';
 import { loginMutation } from '@/apollo/user.gql';
-import { Form, Field } from 'vee-validate';
+import { Form, Field, ErrorMessage } from 'vee-validate';
 import { object, string } from 'yup';
 import { LoginMutationResponse, LoginPayload } from '@/models/user.model';
 
 export default defineComponent({
   components: {
     Form,
-    Field
+    Field,
+    ErrorMessage
   },
   setup() {
     const { setUser } = useAuth();
-    const { mutate: login } = useMutation<LoginMutationResponse>(loginMutation);
-
-    return {
-      setUser,
-      login
-    };
-  },
-  data() {
+    const { mutate: login, error: errorLogin } = useMutation<LoginMutationResponse>(loginMutation);
     const schema = object({
       email: string()
         .required()
         .email(),
       password: string().required()
     });
+
     return {
+      setUser,
+      login,
+      errorLogin,
       schema
     };
   },
@@ -142,6 +181,14 @@ export default defineComponent({
 </script>
 
 <style lang="postcss" scoped>
+.error-icon {
+  color: rgb(224, 18, 115);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translate(0px, -50%);
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 100%;
@@ -189,5 +236,9 @@ export default defineComponent({
 .icons {
   color: rgb(136, 138, 180);
   @apply absolute left-3 top-1/2 w-8 text-center transform translate-x-0 -translate-y-2/4;
+}
+
+.border-error {
+  border: 1px solid rgb(224, 18, 115);
 }
 </style>
