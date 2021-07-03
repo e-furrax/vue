@@ -413,7 +413,7 @@
     v-if="user"
   >
     <div class="w-full z-10 h-full bg-black bg-opacity-50 absolute" @click="handleModal"></div>
-    <div class="w-96 bg-purple-1100 shadow-xl z-20 text-white rounded-sm relative">
+    <div class=" bg-purple-1100 shadow-xl z-20 text-white rounded-sm relative">
       <img
         src="/images/icons/close.svg"
         width="20"

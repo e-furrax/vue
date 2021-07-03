@@ -12,7 +12,7 @@
       ></router-link
     >
     <div class="h-full w-full flex justify-center items-center">
-      <div class="w-96 flex flex-col items-center space-y-6">
+      <div class="w-80 md:w-96 flex flex-col items-center space-y-6">
         <h1 class="text-3xl font-semibold text-white">Sign In</h1>
         <p v-if="errorLogin" class="text-pink-600 text-sm">
           We didn't recognized you. Make sure that your email and password are correct below.
@@ -39,7 +39,7 @@
               aria-label="Email address"
               type="email"
               placeholder="Email address"
-              autocomplete="current-email"
+              autocomplete="email"
               name="email"
             />
             <ErrorMessage name="email" v-slot="{ message }" as="div">
@@ -104,12 +104,18 @@
           </button>
         </Form>
         <div class="absolute bottom-12 flex flex-col items-center">
-          <p class="text-purple-300 hover:underline leading-8 cursor-pointer">
-            Forgot your password?
+          <p
+            class="text-purple-300 hover:opacity-50 ease-in duration-200 transition leading-8 cursor-pointer"
+          >
+            <router-link to="/request-reset-password">
+              Forgot your password?
+            </router-link>
           </p>
           <p class="text-white leading-8">
             Don't have an E-Furrax account?
-            <router-link class="text-purple-300 cursor-pointer hover:underline" to="/sign-up"
+            <router-link
+              class="text-purple-300 cursor-pointer hover:opacity-50 ease-in duration-200 transition"
+              to="/sign-up"
               >Sign Up</router-link
             >
           </p>

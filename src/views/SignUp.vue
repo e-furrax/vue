@@ -12,13 +12,15 @@
       ></router-link
     >
     <div class="h-full w-full flex justify-center items-center">
-      <div class="w-96 flex flex-col items-center">
+      <div class="w-80 md:w-96 flex flex-col items-center">
         <FirstStep v-if="step === 1" />
         <SecondStep v-if="step === 2" />
         <div class="absolute bottom-12 flex flex-col items-center">
           <p class="text-white leading-8">
             Already have an account?
-            <router-link class="text-purple-300 hover:underline cursor-pointer" to="/sign-in"
+            <router-link
+              class="text-purple-300 hover:opacity-50 ease-in duration-200 transition cursor-pointer"
+              to="/sign-in"
               >Sign In</router-link
             >
           </p>
