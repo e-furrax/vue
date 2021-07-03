@@ -97,7 +97,7 @@
           </div>
           <button
             ref="submitLogin"
-            class="border-none outline-none font-bold text-white uppercase rounded bg-purple-700 text-sm leading-8 bg-opacity-50 opa py-1 hover:bg-purple-800 transition-all ease-in duration-200"
+            class="border-none outline-none font-bold text-white uppercase rounded bg-purple-700 text-sm leading-8 bg-opacity-50 py-1 hover:bg-purple-800 transition-all ease-in duration-200"
             @click="checkIfFormValid(meta.valid)"
           >
             Sign In
