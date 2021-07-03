@@ -35,7 +35,7 @@
           </p>
         </div>
         <div
-          class="grid gap-4 grid-cols-1 grid-rows-4 sm:gap-4 md:grid-cols-2 sm:grid-rows-2 sm:gap-2 lg:grid-cols-4 lg:grid-rows-1 lg:gap-3 xl:grid-cols-4 xl:grid-rows-1 xl:gap-4 text-white games-preview z-20 pt-10 w-full"
+          class="grid gap-4 grid-cols-1 grid-rows-4 sm:gap-4 md:grid-cols-2 sm:grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 lg:gap-3 xl:grid-cols-4 xl:grid-rows-1 xl:gap-4 text-white games-preview z-20 pt-10 w-full"
         >
           <GamePreview
             name="Rocket League"

@@ -91,7 +91,7 @@
                           user.gender.toLowerCase() === 'male'
                       "
                       width="20"
-                      :src="`/images/icons/${user.gender}.svg`"
+                      :src="`/images/icons/${user.gender.toLowerCase()}.svg`"
                     />
                   </h2>
                 </div>

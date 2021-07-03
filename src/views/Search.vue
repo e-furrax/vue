@@ -1,6 +1,6 @@
 <template>
-  <div v-if="error" class="mt-10 container mx-auto">
-    <Error :message="error.message"></Error>
+  <div v-if="usersError" class="mt-10 container mx-auto">
+    <Error :message="usersError.message"></Error>
   </div>
   <div v-else class="container mx-auto px-2 pb-14 flex flex-col items-start">
     <div class="my-10 text-2xl text-white">Players List</div>
@@ -54,7 +54,7 @@
         gap-5
       "
     >
-      <Loader v-if="loading" />
+      <Loader v-if="usersLoading" />
       <SearchCard v-else v-for="user in users" :key="user.id" :user="user"></SearchCard>
       <div v-if="users && !users.length" class="w-full text-white flex flex-col text-left">
         <h3 class="text-xl">No players found.</h3>
@@ -100,7 +100,7 @@ export default defineComponent({
     provideApolloClient(postgresClient);
     const filterFormSubmitRef = ref();
 
-    const { result: usersResult, loading: usersLoading } = useQuery(getUsers);
+    const { result: usersResult, loading: usersLoading, error: usersError } = useQuery(getUsers);
     const users = useResult(usersResult, null, data => data.getUsers);
 
     const { result: gamesResult, loading: gamesLoading } = useQuery(getGames);
@@ -123,7 +123,8 @@ export default defineComponent({
       schema,
       usersLoading,
       gamesLoading,
-      languagesLoading
+      languagesLoading,
+      usersError
     };
   },
   methods: {

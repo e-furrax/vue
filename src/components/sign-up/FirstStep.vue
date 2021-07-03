@@ -56,6 +56,7 @@
         type="text"
         placeholder="Username"
         name="username"
+        autocomplete="username"
       />
       <ErrorMessage name="username" v-slot="{ message }" as="div">
         <svg
@@ -144,7 +145,7 @@
     </div>
     <button
       :disabled="loading"
-      class="border-none outline-none font-bold text-white uppercase rounded bg-purple-800 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 disabled:opacity-70"
+      class="border-none outline-none font-bold text-white uppercase rounded bg-purple-700 bg-opacity-50 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 disabled:opacity-70"
     >
       Sign up
     </button>
