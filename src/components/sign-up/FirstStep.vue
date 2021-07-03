@@ -17,7 +17,7 @@
         aria-label="Email address"
         type="email"
         placeholder="Email address"
-        autocomplete="current-email"
+        autocomplete="email"
         name="email"
       />
       <ErrorMessage name="email" v-slot="{ message }" as="div">

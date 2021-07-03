@@ -8,6 +8,8 @@ import Search from '@/views/Search.vue';
 import UserProfile from '@/views/UserProfile.vue';
 import Privacy from '@/views/Privacy.vue';
 import Terms from '@/views/Terms.vue';
+import RequestResetPassword from '@/views/ResetPassword.vue';
+import ResetPassword from '@/views/ResetPassword.vue';
 
 import { backOfficeRoutes } from './backOffice';
 import { useAuth } from '@/composables/auth';
@@ -28,6 +30,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/sign-in',
     name: 'SignIn',
     component: SignIn
+  },
+  {
+    path: '/request-reset-password',
+    name: 'RequestResetPassword',
+    component: RequestResetPassword
+  },
+  {
+    path: '/reset-password/:token',
+    name: 'ResetPassword',
+    component: ResetPassword
   },
   {
     path: '/sign-up',

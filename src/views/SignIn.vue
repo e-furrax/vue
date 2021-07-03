@@ -28,7 +28,7 @@
               aria-label="Email address"
               type="email"
               placeholder="Email address"
-              autocomplete="current-email"
+              autocomplete="email"
               name="email"
             />
           </div>
@@ -63,12 +63,18 @@
           </button>
         </Form>
         <div class="absolute bottom-12 flex flex-col items-center">
-          <p class="text-purple-300 hover:underline leading-8 cursor-pointer">
-            Forgot your password?
+          <p
+            class="text-purple-300 hover:opacity-50 ease-in duration-200 transition leading-8 cursor-pointer"
+          >
+            <router-link to="/request-reset-password">
+              Forgot your password?
+            </router-link>
           </p>
           <p class="text-white leading-8">
             Don't have an E-Furrax account?
-            <router-link class="text-purple-300 cursor-pointer hover:underline" to="/sign-up"
+            <router-link
+              class="text-purple-300 cursor-pointer hover:opacity-50 ease-in duration-200 transition"
+              to="/sign-up"
               >Sign Up</router-link
             >
           </p>

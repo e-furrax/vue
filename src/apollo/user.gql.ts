@@ -142,16 +142,30 @@ export const updatePasswordMutation = gql`
     updatePassword(initialPassword: $initialPassword, newPassword: $newPassword)
   }
 `;
+
 export const updateProfilePicMutation = gql`
   mutation updateProfilePic($picture: Upload!) {
     updateProfilePic(picture: $picture)
   }
 `;
+
 export const confirmUserMutation = gql`
   mutation confirmUser($code: String!) {
     confirmUser(code: $code) {
       accessToken
     }
+  }
+`;
+
+export const resetPassword = gql`
+  mutation resetPassword($email: String!) {
+    resetPassword(email: $email)
+  }
+`;
+
+export const changePassword = gql`
+  mutation changePassword($token: String!, $newPassword: String!) {
+    changePassword(token: $token, newPassword: $newPassword)
   }
 `;
 

@@ -15,7 +15,9 @@
         <div class="absolute bottom-12 flex flex-col items-center">
           <p class="text-white leading-8">
             Already have an account?
-            <router-link class="text-purple-300 hover:underline cursor-pointer" to="/sign-in"
+            <router-link
+              class="text-purple-300 hover:opacity-50 ease-in duration-200 transition cursor-pointer"
+              to="/sign-in"
               >Sign In</router-link
             >
           </p>
