@@ -13,7 +13,7 @@
     >
     <div class="h-full w-full flex justify-center items-center">
       <template v-if="!emailSent">
-        <div class="w-96 flex flex-col items-center space-y-8">
+        <div class="w-80 md:w-96 flex flex-col items-center space-y-8">
           <h1 class="text-3xl font-semibold text-white">Reset Password</h1>
           <Form
             class="form-grid"
@@ -62,7 +62,7 @@
             </div>
             <button
               type="submit"
-              class="border-none outline-none font-bold text-white uppercase rounded bg-orange-600 text-sm leading-8 py-1 hover:bg-orange-800 transition-all ease-in duration-200 disabled:opacity-70"
+              class="border-none outline-none font-bold text-white uppercase rounded bg-orange-500 text-sm leading-8 py-1 hover:bg-orange-700 transition-all ease-in duration-200 disabled:opacity-70"
             >
               Send Email
             </button>
@@ -78,7 +78,7 @@
           </div>
         </div>
       </template>
-      <template v-if="emailSent">
+      <template v-else>
         <div class="w-80 md:w-96 flex flex-col items-center space-y-6">
           <svg width="48px" height="43px" viewBox="0 0 48 43" class="text-indigo-800">
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -101,7 +101,7 @@
           </p>
           <router-link
             to="/sign-in"
-            class="border-none outline-none font-bold text-white uppercase text-center rounded bg-orange-600 text-sm leading-8 py-1 w-full hover:bg-orange-800 transition-all ease-in duration-200 disabled:opacity-70"
+            class="border-none outline-none font-bold text-white uppercase text-center rounded bg-orange-500 text-sm leading-8 py-1 w-full hover:bg-orange-700 transition-all ease-in duration-200 disabled:opacity-70"
           >
             OKAY, GOT IT
           </router-link>
@@ -118,7 +118,7 @@ import { object, string } from 'yup';
 import { useMutation } from '@vue/apollo-composable';
 import { resetPassword } from '@/apollo/user.gql';
 
-interface ForgotPasswordForm {
+interface ResetPasswordForm {
   email: string;
 }
 
@@ -126,13 +126,13 @@ export default defineComponent({
   components: { Form, Field, ErrorMessage },
   setup() {
     const emailSent = ref(false);
-    const { mutate } = useMutation<{ resetPassword: boolean }>(resetPassword);
+    const { mutate } = useMutation<{ resetPassword: boolean }, { email: string }>(resetPassword);
     const schema = object({
       email: string()
         .required()
         .email()
     });
-    const onSubmit = (values: ForgotPasswordForm) => {
+    const onSubmit = (values: ResetPasswordForm) => {
       mutate({ email: values.email });
       emailSent.value = true;
     };

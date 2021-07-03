@@ -12,7 +12,7 @@
       ></router-link
     >
     <div class="h-full w-full flex justify-center items-center">
-      <div class="w-96 flex flex-col items-center">
+      <div class="w-80 md:w-96 flex flex-col items-center">
         <FirstStep v-if="step === 1" />
         <SecondStep v-if="step === 2" />
         <div class="absolute bottom-12 flex flex-col items-center">

@@ -91,7 +91,7 @@
         class="border m-2 input-fillable"
         type="password"
         placeholder="Password"
-        autocomplete="current-password"
+        autocomplete="new-password"
         name="password"
       />
       <ErrorMessage name="password" v-slot="{ message }" as="div">
