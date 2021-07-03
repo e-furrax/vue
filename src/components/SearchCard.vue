@@ -75,7 +75,7 @@
           <img
             v-if="user.gender.toLowerCase() === 'female' || user.gender.toLowerCase() === 'male'"
             width="18"
-            :src="`/images/icons/${user.gender}.svg`"
+            :src="`/images/icons/${user.gender.toLowerCase()}.svg`"
           />
         </div>
       </div>
