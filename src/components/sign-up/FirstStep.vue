@@ -56,6 +56,7 @@
         type="text"
         placeholder="Username"
         name="username"
+        autocomplete="username"
       />
       <ErrorMessage name="username" v-slot="{ message }" as="div">
         <svg
