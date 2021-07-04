@@ -44,8 +44,8 @@ import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/material.css';
 import 'tippy.js/animations/shift-away.css';
 import { useAuth } from '@/composables/auth';
-import { getAppointmentsByUser } from '@/apollo/appointment.gql';
-import { useQuery, useResult } from '@vue/apollo-composable';
+import { getAppointmentsByUser, deleteAppointment } from '@/apollo/appointment.gql';
+import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import dayjs from 'dayjs';
 import { useToast } from 'vue-toastification';
 
@@ -65,6 +65,7 @@ interface UserModel {
 }
 
 interface Appointment {
+  _id: string;
   from: UserModel;
   to: UserModel;
   game: string;
@@ -73,19 +74,9 @@ interface Appointment {
   matches: string;
 }
 
-interface Transaction {
-  _id: string;
-  price: number;
-  status: string;
-}
-
-interface AppointmentsResponse {
-  getAppointmentsByUser: {
-    date: string;
-    game: string;
-    status: string;
-    from: number;
-    to: number;
+interface DeleteAppointmentVariables {
+  payload: {
+    _id: string[];
   };
 }
 
@@ -99,16 +90,25 @@ export default defineComponent({
     const { user } = useAuth();
     const { result: appointmentsResult } = useQuery(
       getAppointmentsByUser,
-      { from: user && user.value ? +user.value.id : 0 },
+      { data: { from: user && user.value ? +user.value.id : 0, status: ['PENDING', 'CONFIRMED'] } },
       { clientId: 'mongo', fetchPolicy: 'no-cache' }
     );
-
     const appointments = useResult(appointmentsResult, null, data => data.getAppointmentsByUser);
 
     const { result: usersResult } = useQuery(getUsers);
     const users = useResult(usersResult, null, data => data.getUsers);
 
+    const { mutate: deleteAppointmentMutation } = useMutation<boolean, DeleteAppointmentVariables>(
+      deleteAppointment
+    );
+
+    const { mutate: confirmAppointmentMutation } = useMutation<boolean, DeleteAppointmentVariables>(
+      deleteAppointment
+    );
+
     return {
+      deleteAppointmentMutation,
+      confirmAppointmentMutation,
       user,
       dayjs,
       users,
@@ -138,11 +138,29 @@ export default defineComponent({
     findUser(id: number): UserModel {
       return this.users.find((user: UserModel) => user.id == id);
     },
-    handleCancel() {
-      this.toast.success('Appointment cancelled successfully!');
+    handleCancel(event: Event) {
+      const appointmentId = (event.target as HTMLElement).dataset.id;
+      if (appointmentId) {
+        this.deleteAppointmentMutation(
+          {
+            payload: { _id: [appointmentId] }
+          },
+          { clientId: 'mongo' }
+        );
+        this.toast.success('Appointment cancelled successfully!');
+      }
     },
-    handleConfirm() {
-      this.toast.success('Appointment confirmed successfully!');
+    handleConfirm(event: Event) {
+      const appointmentId = (event.target as HTMLElement).dataset.id;
+      if (appointmentId) {
+        this.confirmAppointmentMutation(
+          {
+            payload: { _id: [appointmentId] }
+          },
+          { clientId: 'mongo' }
+        );
+        this.toast.success('Appointment confirmed successfully!');
+      }
     },
     attachPopoverToCalendarAppointments() {
       this.$nextTick(() => {
@@ -162,9 +180,12 @@ export default defineComponent({
               <span>Matches: <span class="text-gold">${
                 attr.customData.appointment.matches
               }</span></span>
-              <span>Status: <span class="text-gold">Pending</span></span>
+              <span>Status: <span class="text-gold">${
+                attr.customData.appointment.status
+              }</span></span>
               <div class="mt-2 flex items-center justify-between">
                 <img
+                  data-id="${attr.customData.appointment._id}"
                   class="
                     cancel
                     cursor-pointer
@@ -182,6 +203,7 @@ export default defineComponent({
                   width="24"
                 />
                 <img
+                  data-id="${attr.customData.appointment._id}"
                   class="
                     confirm
                     cursor-pointer

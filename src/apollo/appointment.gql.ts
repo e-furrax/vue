@@ -19,8 +19,8 @@ export const getAppointments = gql`
 `;
 
 export const getAppointmentsByUser = gql`
-  query getAppointmentsByUser($from: Float!) {
-    getAppointmentsByUser(from: $from) {
+  query getAppointmentsByUser($data: AppointmentStatusInput!) {
+    getAppointmentsByUser(data: $data) {
       _id
       _createdAt
       _updatedAt
@@ -29,6 +29,7 @@ export const getAppointmentsByUser = gql`
       game
       date
       matches
+      status
     }
   }
 `;
@@ -44,5 +45,11 @@ export const createAppointment = gql`
 export const deleteAppointment = gql`
   mutation deleteAppointment($payload: AppointmentIdsInput!) {
     deleteAppointment(payload: $payload)
+  }
+`;
+
+export const confirmAppointment = gql`
+  mutation confirmAppointment($payload: AppointmentIdsInput!) {
+    confirmAppointment(payload: $payload)
   }
 `;
