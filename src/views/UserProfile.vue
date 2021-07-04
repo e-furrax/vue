@@ -409,6 +409,7 @@
                   :key="com.id"
                   :comment="com"
                   class="mt-2"
+                  @rating-removed="handleRatingRemoved"
                 ></Comment>
               </div>
               <div v-else>This user did not receive any comments yet.</div>
@@ -807,6 +808,9 @@ export default defineComponent({
   methods: {
     findLolGame(): GameModel {
       return this.games.find((game: GameModel) => game.name === 'League of Legends');
+    },
+    handleRatingRemoved() {
+      this.refetchUser();
     },
     getLolRanks() {
       this.getLolStats({

@@ -1,5 +1,21 @@
 <template>
-  <div class="comment py-2 px-3 w-full rounded-sm bg-purple-1100 text-white relative">
+  <div class="relative comment py-2 px-3 w-full rounded-sm bg-purple-1100 text-white relative">
+    <img
+      class="
+        absolute
+        cursor-pointer
+        top-2
+        right-2
+        hover:bg-white hover:bg-opacity-20
+        transition
+        duration-200
+        p-1
+        rounded-full
+      "
+      @click="handleRemove"
+      src="/images/icons/delete.svg"
+      width="24"
+    />
     <div class="flex items-start">
       <img
         src="/images/avatar1.png"
@@ -29,14 +45,51 @@
 </template>
 
 <script lang="ts">
+import { removeRatingMutation } from '@/apollo/rating.gql';
+import { useAuth } from '@/composables/auth';
+import RatingModel from '@/models/rating.model';
+import { useMutation } from '@vue/apollo-composable';
 import { defineComponent } from 'vue';
+import { useToast } from 'vue-toastification';
+
+interface RemoveRatingVariables {
+  ratings: {
+    ids: number[];
+  };
+}
 
 export default defineComponent({
   name: 'Comment',
   props: {
     comment: Object
   },
+  setup() {
+    const { user } = useAuth();
+    const { mutate: removeRating } = useMutation<Partial<RatingModel>, RemoveRatingVariables>(
+      removeRatingMutation
+    );
+
+    const toast = useToast();
+
+    return {
+      toast,
+      removeRating,
+      user
+    };
+  },
   methods: {
+    handleRemove() {
+      this.removeRating({
+        ratings: { ids: [+this.comment?.id] }
+      })
+        .then(() => {
+          this.$emit('rating-removed');
+          this.toast.success('Comment removed succesfully!');
+        })
+        .catch(error => {
+          this.toast.error(error.message);
+        });
+    },
     timeDifference(current: number, previous: number) {
       const msPerMinute = 60 * 1000;
       const msPerHour = msPerMinute * 60;

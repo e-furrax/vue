@@ -15,3 +15,9 @@ export const addRatingMutation = gql`
     }
   }
 `;
+
+export const removeRatingMutation = gql`
+  mutation removeRating($ratings: RatingIdsInput!) {
+    removeRating(ratings: $ratings)
+  }
+`;
