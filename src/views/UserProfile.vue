@@ -105,8 +105,7 @@
                       />
                     </div>
                   </div>
-                  <span>22 years old</span>
-                  <span>Joined 1 year ago</span>
+                  <span>Joined {{ dayjs().to(user.createdAt) }}</span>
                 </div>
               </div>
             </div>
@@ -119,74 +118,24 @@
             </div>
             <section class="lg:mt-20 pt-4 px-4">
               <h4 class="font-bold uppercase">Games</h4>
-              <div class="flex items-center">
-                <select
-                  class="px-1 text-sm py-0.5 border border-purple-custom bg-purple-1100 rounded"
-                  name="my-game-add"
-                  ref="myGameAdd"
-                >
-                  <option value="" select hidden>All games</option>
-                  <option v-for="game of games" :key="game.id" :value="game.id">
-                    {{ game.name }}
-                  </option>
-                </select>
-                <button
-                  class="
-                    ml-2
-                    px-4
-                    outline-none
-                    font-bold
-                    text-white
-                    uppercase
-                    rounded
-                    bg-purple-800
-                    text-sm
-                    py-0.5
-                    hover:bg-purple-700
-                    transition-all
-                    ease-in
-                    duration-200
-                  "
-                  @click="handleAddGame"
-                >
-                  Add
-                </button>
-              </div>
-              <div class="mt-2 flex items-center flex-wrap">
-                <div
-                  class="
-                    flex
-                    items-center
-                    mr-1
-                    text-sm
-                    px-3
-                    py-0.5
-                    bg-purple-1100
-                    rounded-full
-                    border border-purple-custom
-                  "
-                  v-for="game of user.games"
-                  :key="game.id"
-                >
-                  <span>{{ game.name }}</span>
-                  <img
-                    :data-game-id="game.id"
-                    @click="handleRemoveGame"
-                    class="
-                      ml-1
-                      cursor-pointer
-                      hover:bg-red-400 hover:bg-opacity-30
-                      p-0.5
-                      transition
-                      duration-200
-                      rounded-full
-                    "
-                    src="/images/icons/close.svg"
-                    width="20"
-                  />
-                </div>
-                <div v-if="!user.games.length">This user did not pick any games.</div>
-              </div>
+              <Selector
+                :datas="games"
+                :userDatas="user.games"
+                name="Games"
+                @handle-add="handleAddGame"
+                @handle-remove="handleRemoveGame"
+              />
+            </section>
+            <section class="pt-4 px-4">
+              <h4 class="font-bold uppercase">Languages</h4>
+
+              <Selector
+                :datas="languages"
+                :userDatas="user.languages"
+                name="Languages"
+                @handle-add="handleAddLanguage"
+                @handle-remove="handleRemoveLanguage"
+              />
             </section>
             <section class="pt-8 px-4">
               <h4 class="font-bold uppercase">
@@ -556,14 +505,21 @@ import {
   getUser,
   updateDescriptionMutation,
   addGamesMutation,
+  addLanguagesMutation,
+  removeUserLanguageMutation,
   removeUserGameMutation
 } from '@/apollo/user.gql';
 import { getGames } from '@/apollo/game.gql';
+import { getLanguages } from '@/apollo/language.gql';
 import * as yup from 'yup';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import RatingModel from '@/models/rating.model';
 import UserModel from '@/models/user.model';
 import GameModel from '@/models/game.model';
+import LanguageModel from '@/models/language.model';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 import Comment from '@/components/Comment.vue';
 import Error from '@/components/Error.vue';
@@ -575,6 +531,7 @@ import { createAppointment } from '@/apollo/appointment.gql';
 import { getLolStatsMutation } from '@/apollo/statistic.gql';
 import StatisticModel from '@/models/statistic.model';
 import { upsertStatisticMutation } from '@/apollo/statistic.gql';
+import Selector from '@/components/Selector.vue';
 
 interface UpsertStatisticVariables {
   data: {
@@ -624,6 +581,12 @@ interface AddRatingVariables {
 
 interface AddGamesVariables {
   games: {
+    ids: number[];
+  };
+}
+
+interface AddLanguagesVariables {
+  languages: {
     ids: number[];
   };
 }
@@ -684,7 +647,6 @@ export default defineComponent({
   setup(props) {
     const { user: userAuth } = useAuth();
     const computedAverageRatingRef = ref();
-    const myGameAdd = ref();
     const descriptionRef = ref();
     const lolUsername = ref();
     const { result, loading, error, refetch: refetchUser } = useQuery(getUser, {
@@ -695,12 +657,23 @@ export default defineComponent({
     const { result: gamesResult } = useQuery(getGames);
     const games = useResult(gamesResult, null, data => data.getGames);
 
+    const { result: languagesResult } = useQuery(getLanguages);
+    const languages = useResult(languagesResult, null, data => data.getLanguages);
+
     const { mutate: removeUserGame } = useMutation<Partial<GameModel>, { id: number }>(
       removeUserGameMutation
     );
 
     const { mutate: addGames } = useMutation<Partial<GameModel>, AddGamesVariables>(
       addGamesMutation
+    );
+
+    const { mutate: removeUserLanguage } = useMutation<Partial<LanguageModel>, { id: number }>(
+      removeUserLanguageMutation
+    );
+
+    const { mutate: addLanguages } = useMutation<Partial<LanguageModel>, AddLanguagesVariables>(
+      addLanguagesMutation
     );
 
     const { mutate: addRating } = useMutation<Partial<RatingModel>, AddRatingVariables>(
@@ -768,6 +741,7 @@ export default defineComponent({
     const toast = useToast();
 
     return {
+      dayjs,
       upsertStatistic,
       lolUsername,
       getLolStats,
@@ -784,8 +758,10 @@ export default defineComponent({
       refetchUser,
       userAuth,
       games,
+      languages,
       gamesSchema,
-      myGameAdd,
+      removeUserLanguage,
+      addLanguages,
       addGames,
       removeUserGame,
       newAppointment,
@@ -804,7 +780,17 @@ export default defineComponent({
     }
   },
   name: 'UserProfile',
-  components: { Field, ErrorMessage, Form, Comment, Loader, GameRank, Availability, Error },
+  components: {
+    Field,
+    ErrorMessage,
+    Form,
+    Comment,
+    Loader,
+    GameRank,
+    Availability,
+    Error,
+    Selector
+  },
   methods: {
     findLolGame(): GameModel {
       return this.games.find((game: GameModel) => game.name === 'League of Legends');
@@ -855,12 +841,11 @@ export default defineComponent({
     handleEmitAddingGame(value: boolean) {
       this.addingGame = value;
     },
-    handleAddGame() {
-      const gameId = this.myGameAdd.value;
-      if (gameId !== '') {
+    handleAddGame(id: string) {
+      if (id !== '') {
         this.addGames({
           games: {
-            ids: [+gameId]
+            ids: [+id]
           }
         }).then(() => {
           this.refetchUser();
@@ -874,6 +859,27 @@ export default defineComponent({
         this.removeUserGame({ id: +gameId }).then(() => {
           this.refetchUser();
           this.toast.success('Game removed successfully.');
+        });
+      }
+    },
+    handleAddLanguage(id: string) {
+      if (id !== '') {
+        this.addLanguages({
+          languages: {
+            ids: [+id]
+          }
+        }).then(() => {
+          this.refetchUser();
+          this.toast.success('Language added successfully.');
+        });
+      }
+    },
+    handleRemoveLanguage({ target }: { target: HTMLImageElement }) {
+      const gameId = target.dataset.gameId;
+      if (gameId && gameId !== '') {
+        this.removeUserLanguage({ id: +gameId }).then(() => {
+          this.refetchUser();
+          this.toast.success('Language removed successfully.');
         });
       }
     },
@@ -960,6 +966,7 @@ export default defineComponent({
   height: 500px;
   z-index: -1;
 }
+
 .border-purple-custom {
   border-color: #3b2963;
 }
