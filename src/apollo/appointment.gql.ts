@@ -8,7 +8,6 @@ export const getAppointments = gql`
       _updatedAt
       from
       to
-      title
       status
       transactions {
         _id
@@ -19,19 +18,17 @@ export const getAppointments = gql`
   }
 `;
 
-export const getAppointmentbyUser = gql`
-  query getAppointmentByUser($id: number!) {
-    getAppointmentsByUser(id: $id) {
+export const getAppointmentsByUser = gql`
+  query getAppointmentsByUser($from: Float!) {
+    getAppointmentsByUser(from: $from) {
       _id
       _createdAt
       _updatedAt
       from
       to
-      title
-      transactions {
-        price
-        status
-      }
+      game
+      date
+      matches
     }
   }
 `;
