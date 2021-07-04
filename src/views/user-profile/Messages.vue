@@ -36,23 +36,24 @@
                 pointer-events-none
                 rounded-full
                 border border-purple-100 border-opacity-20
-                mr-2
+                mr-1 md:mr-2
+                w-9 md:w-11
+                w-9 md:h-11
               "
-              style="width: 50px"
             />
-            <div class="pointer-events-none ml-2 md:flex hidden flex-col">
+            <div class="pointer-events-none ml-2 flex flex-col">
               <h3 class="font-semibold flex items-center text-sm text-white">
                 <span>{{
                   conversation.fromUser.id === user.id
-                    ? conversation.toUser.username
-                    : conversation.fromUser.username
+                    ? conversation.toUser.username.substr(0, 10)
+                    : conversation.fromUser.username.substr(0, 10)
                 }}</span>
-                <span class="mx-2 w-0.5 h-0.5 bg-gray-400 rounded-full"></span>
-                <span class="text-xs text-gray-400 font-normal">{{
+                <span class="mx-2 w-0.5 h-0.5 bg-gray-400 hidden md:block rounded-full"></span>
+                <span class="hidden md:block text-xs text-gray-400 font-normal">{{
                   dayjs().to(dayjs(conversation.createdAt))
                 }}</span>
               </h3>
-              <div class="text-xs flex items-center text-gray-400">
+              <div class="hidden md:block text-xs flex items-center text-gray-400">
                 <span class="mr-1">{{ conversation.fromUser.username }}:</span>
                 <span class="mr-1">{{ conversation.content.substr(0, 17) }}...</span>
               </div>
@@ -141,8 +142,12 @@
         class="flex flex-col items-center justify-center w-full h-full"
         v-if="!selectedConversationId && !selectedToUserId"
       >
-        <h3 class="text-xl">You don't have a conversation selected</h3>
-        <p class="mt-1">Choose one from your existing conversations, or start a new one.</p>
+        <h3 class="px-1 md:px-0 text-lg md:text-xl text-center">
+          You don't have a conversation selected
+        </h3>
+        <p class="px-1 md:px-0 text-sm md:text-base mt-2 text-center">
+          Choose one from your existing conversations, or start a new one.
+        </p>
         <button
           @click="newMessageModalOpened = true"
           class="
@@ -172,8 +177,8 @@
         @click="newMessageModalOpened = false"
         class="absolute w-full h-full bg-gray-800 opacity-50"
       ></div>
-      <div class="z-20">
-        <div class="bg-purple-1200 p-4 flex flex-col w-192 rounded items-start">
+      <div class="z-20 w-full md:w-auto">
+        <div class="bg-purple-1200 p-4 flex flex-col w-full md:w-128 lg:w-192 rounded items-start">
           <div class="flex items-start w-full justify-between">
             <h2 class="font-semibold border-b-2 border-purple-800 mb-6">New message</h2>
             <img

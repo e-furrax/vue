@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { object, string, ref as yupRef } from 'yup';
 import { useMutation } from '@vue/apollo-composable';

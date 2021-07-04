@@ -8,22 +8,22 @@
       @submit="onSubmit"
       @change="onChange"
       :validation-schema="schema"
-      class="flex text-white text-xs mb-5 items-center"
+      class="flex flex-wrap text-white text-xs mb-5 items-center"
     >
-      <div class="search-criteria mr-2">
+      <div class="search-criteria mb-2 mr-2">
         <Field as="select" name="games">
           <option value="" select hidden>All games</option>
           <option v-for="game of games" :key="game.id" :value="game.id">{{ game.name }}</option>
         </Field>
       </div>
-      <div class="search-criteria mr-2">
+      <div class="search-criteria mb-2 mr-2">
         <Field as="select" name="gender">
           <option value="" select hidden>All genders</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </Field>
       </div>
-      <div class="search-criteria">
+      <div class="search-criteria mb-2">
         <Field as="select" name="languages">
           <option value="" select hidden>All languages</option>
           <option v-for="language of languages" :key="language.id" :value="language.id">
@@ -31,7 +31,7 @@
           </option>
         </Field>
       </div>
-      <button @click="onReset" type="reset" class="ml-2 hover:underline cursor-pointer">
+      <button @click="onReset" type="reset" class="mb-2 ml-2 hover:underline cursor-pointer">
         Clear filters
       </button>
       <button
