@@ -111,10 +111,6 @@
               </div>
             </div>
             <div class="flex flex-col justify-center items-end absolute top-8 lg:top-4 right-4">
-              <!-- <div class="flex items-center">
-                <img src="/images/icons/local_atm.svg" class="mr-1" height="20" />
-                <span class="text-lg">4.50<span class="text-sm">/Match</span></span>
-              </div> -->
               <div v-show="computedAverageRating !== '0'" class="flex items-center">
                 <img src="/images/icons/star.svg" width="18" />
                 <span class="ml-1" ref="computedAverageRatingRef">{{ computedAverageRating }}</span>
@@ -389,7 +385,7 @@
         </div>
         <div
           class="
-            bg-purple-925 bg-opacity-70
+            bg-opacity-70
             sm:rounded-sm
             border
             bg-purple-925
@@ -445,7 +441,7 @@
           </div>
           <div class="flex items-center">
             <img src="/images/icons/local_atm.svg" class="mr-1" height="16" />
-            <span>4.50<span class="text-xs">/Match</span></span>
+            <span>0.00<span class="text-xs">/Match</span></span>
           </div>
         </div>
         <div class="px-4 my-4">
@@ -591,6 +587,12 @@ interface NewAppointmentVariables {
   };
 }
 
+interface NewAppointmentResponse {
+  createAppointment: {
+    _createdAt: string;
+  };
+}
+
 export default defineComponent({
   data() {
     return {
@@ -637,9 +639,13 @@ export default defineComponent({
       UpdateDescriptionVariables
     >(updateDescriptionMutation);
 
-    const { mutate: newAppointment } = useMutation<any, NewAppointmentVariables>(
+    const { mutate: newAppointment } = useMutation<NewAppointmentResponse, NewAppointmentVariables>(
       createAppointment,
-      { clientId: 'mongo' }
+      {
+        context: {
+          uri: `${process.env.VUE_APP_MONGO_BACKEND_URL || 'http://localhost:4000'}/graphql`
+        }
+      }
     );
 
     const schema = yup.object({
@@ -709,7 +715,7 @@ export default defineComponent({
       return this.calculateAverageRating(this.user.receivedRatings);
     },
     totalPrice(): string {
-      return (4.5 * +this.matches).toFixed(2);
+      return (0 * +this.matches).toFixed(2);
     }
   },
   name: 'UserProfile',
@@ -804,15 +810,18 @@ export default defineComponent({
     handleEditingDescription() {
       this.editingDescription = this.editingDescription ? false : true;
     },
-    handleNewAppointment(values: AppointmentForm) {
+    handleNewAppointment({ date, game, matches }: AppointmentForm) {
       this.newAppointment({
         appointmentInput: {
           to: +this.userId,
           description: 'default description',
-          date: values.date,
-          game: values.game,
-          matches: values.matches
+          date,
+          game,
+          matches: +matches
         }
+      }).then(() => {
+        this.toast.success('Your demand was sent !');
+        this.handleModal();
       });
     }
   }
