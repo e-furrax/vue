@@ -103,7 +103,7 @@ export default defineComponent({
         .string()
         .required()
         .email(),
-      bio: yup.string().max(200)
+      bio: yup.string().max(1000)
     });
 
     const { handleSubmit, setFieldValue } = useForm<ProfileForm>({
