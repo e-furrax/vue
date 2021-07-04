@@ -231,7 +231,39 @@
                   "
                 >
                   <img src="/images/icons/add_circle.svg" width="24" />
-                  <span class="ml-2">Add a game</span>
+                  <span class="ml-2">Add a rank</span>
+                </div>
+              </div>
+              <div class="mt-4">
+                <label for="lol-username" class="text-sm"
+                  >Enter your League of Legends summoner's name to get your ranks
+                  automatically</label
+                >
+                <div class="flex items-center">
+                  <input
+                    type="text"
+                    ref="lolUsername"
+                    class="mr-2 bg-purple-1200 px-2 py-0.5 rounded-sm"
+                    name="lol-username"
+                  />
+                  <button
+                    @click="getLolRanks"
+                    class="
+                      px-3
+                      py-1
+                      rounded
+                      bg-transparent
+                      border border-purple-400
+                      text-purple-400
+                      hover:border-purple-300
+                      hover:text-purple-300
+                      transition
+                      duration-300
+                      text-sm
+                    "
+                  >
+                    GET RANKS
+                  </button>
                 </div>
               </div>
             </section>
@@ -409,7 +441,7 @@
     v-if="user"
   >
     <div class="w-full z-10 h-full bg-black bg-opacity-50 absolute" @click="handleModal"></div>
-    <div class=" bg-purple-1100 shadow-xl z-20 text-white rounded-sm relative">
+    <div class="bg-purple-1100 shadow-xl z-20 text-white rounded-sm relative">
       <img
         src="/images/icons/close.svg"
         width="20"
@@ -473,19 +505,19 @@
           <button
             type="button"
             class="
-            font-bold
-            uppercase
-            rounded
-            bg-transparent
-            border border-purple-custom
-            text-sm
-            py-2
-            px-6
-            hover:bg-purple-1200
-            transition-all
-            ease-in
-            duration-200
-          "
+              font-bold
+              uppercase
+              rounded
+              bg-transparent
+              border border-purple-custom
+              text-sm
+              py-2
+              px-6
+              hover:bg-purple-1200
+              transition-all
+              ease-in
+              duration-200
+            "
             @click="handleModal"
           >
             Cancel
@@ -493,18 +525,18 @@
           <button
             type="submit"
             class="
-            font-bold
-            uppercase
-            rounded
-            bg-orange-600
-            text-sm
-            py-2
-            px-6
-            hover:bg-orange-700
-            transition-all
-            ease-in
-            duration-200
-          "
+              font-bold
+              uppercase
+              rounded
+              bg-orange-600
+              text-sm
+              py-2
+              px-6
+              hover:bg-orange-700
+              transition-all
+              ease-in
+              duration-200
+            "
           >
             Confirm
           </button>
@@ -539,6 +571,21 @@ import GameRank from '@/components/GameRank.vue';
 import Availability from '@/components/Availability.vue';
 import { useToast } from 'vue-toastification';
 import { createAppointment } from '@/apollo/appointment.gql';
+import { getLolStatsMutation } from '@/apollo/statistic.gql';
+import StatisticModel from '@/models/statistic.model';
+import { upsertStatisticMutation } from '@/apollo/statistic.gql';
+
+interface UpsertStatisticVariables {
+  data: {
+    id?: number;
+    rank: string;
+    mode: string;
+    game: {
+      id: number;
+    };
+    playerId?: string;
+  };
+}
 
 interface RatingForm {
   rating: string;
@@ -558,6 +605,10 @@ interface AppointmentForm {
 
 interface UpdateDescriptionVariables {
   description: string;
+}
+
+interface GetLolStatsVariables {
+  username: string;
 }
 
 interface AddRatingVariables {
@@ -587,6 +638,26 @@ interface NewAppointmentVariables {
   };
 }
 
+interface LolData {
+  leagueId: string;
+  queueType: string;
+  tier: string;
+  rank: string;
+  summonerId: string;
+  summonerName: string;
+  leaguePoints: string;
+  wins: number;
+  losses: number;
+  veteran: boolean;
+  inactive: boolean;
+  freshBlood: boolean;
+  hotStreak: boolean;
+}
+
+interface LolResponseType {
+  getLolStats: LolData[];
+}
+
 interface NewAppointmentResponse {
   createAppointment: {
     _createdAt: string;
@@ -614,6 +685,7 @@ export default defineComponent({
     const computedAverageRatingRef = ref();
     const myGameAdd = ref();
     const descriptionRef = ref();
+    const lolUsername = ref();
     const { result, loading, error, refetch: refetchUser } = useQuery(getUser, {
       data: { id: parseInt(props.userId) }
     });
@@ -639,6 +711,10 @@ export default defineComponent({
       UpdateDescriptionVariables
     >(updateDescriptionMutation);
 
+    const { mutate: getLolStats } = useMutation<LolResponseType, GetLolStatsVariables>(
+      getLolStatsMutation
+    );
+
     const { mutate: newAppointment } = useMutation<NewAppointmentResponse, NewAppointmentVariables>(
       createAppointment,
       {
@@ -647,6 +723,11 @@ export default defineComponent({
         }
       }
     );
+
+    const { mutate: upsertStatistic } = useMutation<
+      Partial<StatisticModel>,
+      UpsertStatisticVariables
+    >(upsertStatisticMutation);
 
     const schema = yup.object({
       rating: yup
@@ -686,6 +767,9 @@ export default defineComponent({
     const toast = useToast();
 
     return {
+      upsertStatistic,
+      lolUsername,
+      getLolStats,
       toast,
       computedAverageRatingRef,
       descriptionRef,
@@ -721,6 +805,45 @@ export default defineComponent({
   name: 'UserProfile',
   components: { Field, ErrorMessage, Form, Comment, Loader, GameRank, Availability, Error },
   methods: {
+    findLolGame(): GameModel {
+      return this.games.find((game: GameModel) => game.name === 'League of Legends');
+    },
+    getLolRanks() {
+      this.getLolStats({
+        username: this.lolUsername.value
+      }).then(({ data }) => {
+        const lolData = data?.getLolStats;
+        if (!lolData || !lolData.length) {
+          this.toast.info('No ranks found, are you sure you play the game?!');
+          return;
+        }
+
+        const promises = [] as any;
+
+        lolData.forEach(stat => {
+          promises.push(
+            this.upsertStatistic({
+              data: {
+                game: { id: +this.findLolGame().id },
+                mode: stat.queueType === 'RANKED_SOLO_5x5' ? 'Ranked Solo/Duo' : 'Ranked Flex',
+                rank: `${stat.tier} ${stat.rank}`,
+                playerId: stat.summonerId
+              }
+            })
+          );
+        });
+
+        Promise.all(promises)
+          .then(() => {
+            this.toast.success('Rank added successfully!');
+            this.lolUsername.value = '';
+            this.refetchUser();
+          })
+          .catch(() => {
+            this.toast.error('An error occurred!');
+          });
+      });
+    },
     handleUpsertStatistic() {
       this.addingGame = false;
       this.refetchUser();
