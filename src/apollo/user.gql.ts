@@ -190,3 +190,15 @@ export const removeUserGameMutation = gql`
     }
   }
 `;
+
+export const addGamesLolMutation = gql`
+  mutation addGamesLol($userName: String!) {
+    addGamesLol(userName: $userName)
+  }
+`;
+
+export const addGamesCSMutation = gql`
+  mutation addGamesCS($userName: String!) {
+    addGamesCS(userName: $userName)
+  }
+`;
