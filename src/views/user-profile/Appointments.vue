@@ -9,7 +9,7 @@
       transition="slide-h"
       is-dark
       is-expanded
-      @update:to-page="attachPopoverToCalendarAppointments"
+      @update:from-page="attachPopoverToCalendarAppointments"
     >
       <template v-slot:day-content="{ day, attributes }">
         <div class="flex flex-col h-full z-10 overflow-hidden">
@@ -21,9 +21,10 @@
               class="bg-pink-500 cursor-pointer text-xs leading-tight rounded-sm p-1 mt-0 mb-1"
               :id="attr.customData.id"
             >
-              <span class="font-bold">{{
-                dayjs(new Date(attr.customData.appointment.date)).format('h:mm A')
-              }}</span>
+              <span class="font-bold">
+                {{ dayjs(new Date(attr.customData.appointment.date)).format('h:mm A') }}
+                <span class="text-xs font-normal">({{ attr.customData.appointment.status }})</span>
+              </span>
               <br />
               {{ attr.customData.appointment.game }} with
               {{ attr.customData.appointment.from.username }}
@@ -44,10 +45,15 @@ import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/material.css';
 import 'tippy.js/animations/shift-away.css';
 import { useAuth } from '@/composables/auth';
-import { getAppointmentsByUser, deleteAppointment } from '@/apollo/appointment.gql';
-import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
+import {
+  getAppointmentsByUser,
+  deleteAppointment,
+  confirmAppointment
+} from '@/apollo/appointment.gql';
+import { provideApolloClient, useMutation, useQuery, useResult } from '@vue/apollo-composable';
 import dayjs from 'dayjs';
 import { useToast } from 'vue-toastification';
+import { mongoClient } from '@/apollo/client';
 
 interface AttributeType {
   key: number;
@@ -74,10 +80,14 @@ interface Appointment {
   matches: string;
 }
 
-interface DeleteAppointmentVariables {
+interface AppointmentVariables {
   payload: {
-    _id: string[];
+    ids: string[];
   };
+}
+
+interface AppointmentsResult {
+  getAppointmentsByUser: Appointment[];
 }
 
 export default defineComponent({
@@ -88,23 +98,35 @@ export default defineComponent({
   setup() {
     const toast = useToast();
     const { user } = useAuth();
-    const { result: appointmentsResult } = useQuery(
-      getAppointmentsByUser,
-      { data: { from: user && user.value ? +user.value.id : 0, status: ['PENDING', 'CONFIRMED'] } },
-      { clientId: 'mongo', fetchPolicy: 'no-cache' }
-    );
-    const appointments = useResult(appointmentsResult, null, data => data.getAppointmentsByUser);
+
+    const appointments = [] as Appointment[];
 
     const { result: usersResult } = useQuery(getUsers);
     const users = useResult(usersResult, null, data => data.getUsers);
 
-    const { mutate: deleteAppointmentMutation } = useMutation<boolean, DeleteAppointmentVariables>(
+    const { mutate: deleteAppointmentMutation } = useMutation<boolean, AppointmentVariables>(
       deleteAppointment
     );
 
-    const { mutate: confirmAppointmentMutation } = useMutation<boolean, DeleteAppointmentVariables>(
-      deleteAppointment
+    const { mutate: confirmAppointmentMutation } = useMutation<boolean, AppointmentVariables>(
+      confirmAppointment
     );
+
+    const queryAppointmentsByUser = (userData: any) => {
+      const { onResult } = provideApolloClient(mongoClient)(() =>
+        useQuery(
+          getAppointmentsByUser,
+          {
+            data: {
+              from: userData ? +userData.id : 0,
+              status: ['PENDING', 'CONFIRMED']
+            }
+          },
+          { fetchPolicy: 'no-cache' }
+        )
+      );
+      return onResult;
+    };
 
     return {
       deleteAppointmentMutation,
@@ -113,13 +135,32 @@ export default defineComponent({
       dayjs,
       users,
       appointments,
-      toast
+      toast,
+      queryAppointmentsByUser
     };
   },
+  mounted() {
+    if (!this.appointmentsLoaded && this.user) {
+      const onResult = this.queryAppointmentsByUser(this.user);
+      onResult(({ data }: { data: AppointmentsResult }) => {
+        this.setAttributes(JSON.parse(JSON.stringify(data.getAppointmentsByUser)));
+        this.appointmentsLoaded = true;
+      });
+    }
+  },
   watch: {
-    appointments(): void {
-      const clonedAppointments: Appointment[] = [...JSON.parse(JSON.stringify(this.appointments))];
-      this.attributes = clonedAppointments.map((appointment, index) => {
+    user(): void {
+      this.appointmentsLoaded = true;
+      const onResult = this.queryAppointmentsByUser(this.user);
+      onResult(({ data }: { data: AppointmentsResult }) => {
+        this.setAttributes(JSON.parse(JSON.stringify(data.getAppointmentsByUser)));
+      });
+    }
+  },
+  methods: {
+    setAttributes(appointments: Appointment[]) {
+      this.clonedAppointments = JSON.parse(JSON.stringify(appointments));
+      this.attributes = appointments.map((appointment, index) => {
         appointment.from = this.findUser(+appointment.from);
         appointment.to = this.findUser(+appointment.to);
         return {
@@ -132,9 +173,7 @@ export default defineComponent({
         };
       });
       this.attachPopoverToCalendarAppointments();
-    }
-  },
-  methods: {
+    },
     findUser(id: number): UserModel {
       return this.users.find((user: UserModel) => user.id == id);
     },
@@ -143,11 +182,24 @@ export default defineComponent({
       if (appointmentId) {
         this.deleteAppointmentMutation(
           {
-            payload: { _id: [appointmentId] }
+            payload: { ids: [appointmentId] }
           },
-          { clientId: 'mongo' }
-        );
-        this.toast.success('Appointment cancelled successfully!');
+          {
+            context: {
+              uri: `${process.env.VUE_APP_MONGO_BACKEND_URL || 'http://localhost:4000'}/graphql`
+            }
+          }
+        )
+          .then(() => {
+            this.toast.success('Appointment cancelled successfully!');
+            const index = this.clonedAppointments.findIndex(v => v._id === appointmentId);
+            this.clonedAppointments[index].status = 'CANCELLED';
+            this.setAttributes(this.clonedAppointments);
+            this.$forceUpdate();
+          })
+          .catch(() => {
+            this.toast.error('An error occurred.');
+          });
       }
     },
     handleConfirm(event: Event) {
@@ -155,19 +207,40 @@ export default defineComponent({
       if (appointmentId) {
         this.confirmAppointmentMutation(
           {
-            payload: { _id: [appointmentId] }
+            payload: { ids: [appointmentId] }
           },
-          { clientId: 'mongo' }
-        );
-        this.toast.success('Appointment confirmed successfully!');
+          {
+            context: {
+              uri: `${process.env.VUE_APP_MONGO_BACKEND_URL || 'http://localhost:4000'}/graphql`
+            }
+          }
+        )
+          .then(() => {
+            this.toast.success('Appointment confirmed successfully!');
+            const index = this.clonedAppointments.findIndex(v => v._id === appointmentId);
+            this.clonedAppointments[index].status = 'CONFIRMED';
+            this.setAttributes(this.clonedAppointments);
+            this.$forceUpdate();
+          })
+          .catch(() => {
+            this.toast.error('An error occurred.');
+          });
       }
+    },
+    destroyAllTippyInstances() {
+      this.tippyInstances.forEach((i: any) => {
+        if (!i.state.isDestroyed) {
+          i.destroy();
+        }
+      });
     },
     attachPopoverToCalendarAppointments() {
       this.$nextTick(() => {
+        this.destroyAllTippyInstances();
         this.attributes.forEach(attr => {
           const appointmentDOM = document.getElementById(attr.customData.id);
           if (appointmentDOM) {
-            tippy(appointmentDOM, {
+            const instance = tippy(appointmentDOM, {
               content: `
             <div class="flex flex-col">
               <span>Start at: <span class="text-gold">${this.dayjs(
@@ -239,6 +312,7 @@ export default defineComponent({
                 }
               }
             });
+            this.tippyInstances.push(instance);
           }
         });
       });
@@ -250,6 +324,8 @@ export default defineComponent({
       masks: {
         weekdays: 'WWW'
       },
+      tippyInstances: [] as any,
+      appointmentsLoaded: false,
       clonedAppointments: [] as Appointment[],
       attributes: [] as AttributeType[]
     };
