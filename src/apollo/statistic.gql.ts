@@ -18,3 +18,14 @@ export const deleteStatisticMutation = gql`
     deleteStatistic(id: $id)
   }
 `;
+export const getLolStatsMutation = gql`
+  query getLolStats($username: String!) {
+    getLolStats(username: $username) {
+      tier
+      rank
+      summonerId
+      summonerName
+      queueType
+    }
+  }
+`;
