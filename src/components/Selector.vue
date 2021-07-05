@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <div v-if="isAllowed(['ADMIN', 'MODERATOR'])" class="flex items-center">
+    <div v-if="isOwner()" class="flex items-center">
       <select
         class="px-1 text-sm py-0.5 border border-purple-custom bg-purple-1100 rounded"
         name="my-data-add"
@@ -53,7 +53,7 @@
         <img
           :data-game-id="data.id"
           @click="handleRemove"
-          v-if="isAllowed(['ADMIN', 'MODERATOR'])"
+          v-if="isOwner()"
           class="
             ml-1
             cursor-pointer
@@ -101,7 +101,7 @@ export default defineComponent({
       myDataAdd
     };
   },
-  inject: ['isAllowed'],
+  inject: ['isOwner', 'authorized'],
   methods: {
     handleAdd() {
       const id = this.myDataAdd.value;

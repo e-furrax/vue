@@ -37,7 +37,7 @@
       src="/images/icons/edit.svg"
       width="24"
       @click="isEditing = true"
-      v-show="!isEditing"
+      v-show="!isEditing && isOwner()"
       title="Edit"
     />
     <img
@@ -57,7 +57,7 @@
       width="24"
       :data-id="statistic?.id"
       @click="handleDelete"
-      v-show="!isEditing"
+      v-show="!isEditing && isOwner()"
       title="Edit"
     />
     <!-- <img width="60" /> -->
@@ -200,6 +200,7 @@ export default defineComponent({
     addGameCard: Boolean,
     statistic: Object
   },
+  inject: ['isOwner', 'authorized'],
   setup(props) {
     provideApolloClient(postgresClient);
     const myGameAdd = ref();

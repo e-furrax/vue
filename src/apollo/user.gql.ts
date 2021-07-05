@@ -41,6 +41,7 @@ export const getUser = gql`
       description
       gender
       createdAt
+      role
       receivedRatings {
         id
         comments
