@@ -15,7 +15,7 @@
       <div class="w-80 md:w-96 flex flex-col items-center space-y-8">
         <h1 class="text-3xl font-semibold text-white">New password</h1>
         <Form class="form-grid" @submit="onSubmit" :validation-schema="schema" v-slot="{ errors }">
-          <p class="text-sm text-lightBlue-100 text-center mb-2">
+          <p class="text-sm text-sky-100 text-center mb-2">
             Did you lost or someone figured out your password ? Just enter your new one here.
           </p>
           <div class="input-grid" :class="errors.password && 'border-error'">

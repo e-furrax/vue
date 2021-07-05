@@ -404,7 +404,7 @@
     </div>
   </div>
   <div
-    class="hidden absolute top-0 left-0 w-full h-full flex items-center justify-center"
+    class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
     id="play-modal"
     v-if="user"
   >

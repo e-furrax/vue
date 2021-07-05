@@ -21,7 +21,7 @@
             :validation-schema="schema"
             v-slot="{ errors }"
           >
-            <p class="text-sm text-lightBlue-100 text-center mb-2">
+            <p class="text-sm text-sky-100 text-center mb-2">
               Did you lost or someone figured out your password ? Just enter your email below if you
               want to change it.
             </p>
@@ -95,7 +95,7 @@
             </g>
           </svg>
           <h1 class="text-white text-2xl font-semibold">Email sent</h1>
-          <p class="text-sm text-lightBlue-100 text-center">
+          <p class="text-sm text-sky-100 text-center">
             Check your email for this account! We've sent instructions for how to change your
             password.
           </p>
