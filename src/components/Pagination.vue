@@ -6,13 +6,10 @@
         v-for="(page, i) in pages"
         :key="`page-${page}`"
         @click="changePage(i)"
-        :class="
-          `bg-${
-            i === currentPage ? 'red' : 'purple'
-          }-500 mr-10 cursor-pointer text-white rounded px-4 py-3`
-        "
+        class="mr-10 cursor-pointer text-white rounded-full w-8 h-8 flex items-center justify-center"
+        :class="[i === currentPage ? 'bg-pink-500' : 'bg-purple-1100']"
       >
-        {{ page }}
+        <span>{{ page }}</span>
       </div>
     </div>
   </div>

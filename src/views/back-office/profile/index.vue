@@ -28,12 +28,13 @@
         />
 
         <div class="overflow-x-scroll col-span-12 overflow-auto lg:overflow-visible">
-          <span
-            class="inline-flex items-center justify-center rounded-full h-8 w-8 lg:mr-4"
+          <button
+            class="cursor-pointer px-3 py-1 rounded mb-4 border text-pink-500 border-pink-500 hover:border-pink-400
+            hover:text-pink-400 transition duration-200"
             @click="filterModified = (filterModified + 1) % 3"
           >
             {{ filterModifiedText }}
-          </span>
+          </button>
           <table class="table-auto w-full table-report">
             <thead>
               <tr class="text-white text-xs">
@@ -79,16 +80,16 @@
                 <td class="table-report__action w-56 px-2 py-1">
                   <div class="flex justify-center items-center">
                     <img
-                      src="/images/eyes.svg"
+                      src="/images/icons/open_in_new.svg"
                       alt="details"
-                      class="flex items-center cursor-pointer"
+                      class="hover:bg-white p-1 rounded-full hover:bg-opacity-20 transition duration-200 cursor-pointer"
                       @click.stop="$router.push(`/user/${user.id}`)"
                     />
                     <img
                       v-show="modifiedUsers.has(user.id)"
-                      src="/images/trash.svg"
+                      src="/images/icons/delete.svg"
                       alt="trash"
-                      class="flex items-center cursor-pointer"
+                      class="hover:bg-white p-1 rounded-full hover:bg-opacity-20 transition duration-200 ml-4 cursor-pointer"
                       @click="update(user)"
                     />
                   </div>

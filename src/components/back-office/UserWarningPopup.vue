@@ -8,20 +8,22 @@
         error {{ errorMessage }}
       </div>
 
-      <div v-else-if="!loading && isDone">
-        <img src="/images/icons/star.svg" />
-        Done
+      <div class="flex items-center mb-2 p-1" v-else-if="!loading && isDone">
+        <img src="/images/icons/done.svg" />
+        <span class="ml-2">Done</span>
       </div>
 
       <div v-else-if="!loading && !isDone">
-        <div>
+        <p class="mb-2">
           Careful, you're about to change the role the following {{ name }}, are you sure you want
           to proceed?
-        </div>
-        <div class="overflow-y-auto bg-gray-200 shadow-2xl shadow-inner h-24 justify-center">
+        </p>
+        <div
+          class="overflow-y-auto bg-darkpurple-200 p-1 shadow-2xl shadow-inner h-24 justify-center"
+        >
           {{ payload.user.username }} from {{ payload.user.role }} to {{ payload.newRole }}
         </div>
-        <div class="flex justify-center m-3">
+        <div class="flex justify-center mb-2">
           <div class="w-full flex flex-col items-start">
             <button
               @click="useRemove"
@@ -29,7 +31,6 @@
             >
               Proceed
             </button>
-            <button class="mt-2">Cancel</button>
           </div>
         </div>
       </div>

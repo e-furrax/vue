@@ -3,22 +3,22 @@
     <template v-slot:content>
       <Loader v-if="loading" />
 
-      <div v-if="errorMessage">
-        <img src="/images/icons/trash.svg" />
-        error {{ errorMessage }}
+      <div class="flex items-center mb-4" v-if="errorMessage">
+        <img src="/images/icons/delete.svg" />
+        <span class="ml-2">error {{ errorMessage }}</span>
       </div>
 
-      <div v-else-if="!loading && isDone">
-        <img src="/images/icons/star.svg" />
-        Done
+      <div class="flex items-center mb-4" v-else-if="!loading && isDone">
+        <img src="/images/icons/done.svg" />
+        <span class="ml-2">Done</span>
       </div>
 
       <div v-else-if="!loading && !isDone">
-        <div>
+        <div class="mb-2">
           Careful, you're about to delete the following {{ name }}, are you sure you want to
           proceed?
         </div>
-        <div class="overflow-y-auto bg-gray-200 shadow-2xl shadow-inner h-24 justify-center">
+        <div class="overflow-y-auto bg-darkpurple-200 shadow-2xl shadow-inner h-24 justify-center">
           <ul
             v-for="(value, key) of formattedPayload"
             :key="`popup-${key}`"
@@ -27,7 +27,7 @@
             <li>{{ key }}, {{ value }}</li>
           </ul>
         </div>
-        <div class="flex justify-center m-3">
+        <div class="flex justify-center mb-2">
           <div class="w-full flex flex-col items-start">
             <button
               @click="useRemoveAppointment"
@@ -35,7 +35,6 @@
             >
               Proceed
             </button>
-            <button class="mt-2">Cancel</button>
           </div>
         </div>
       </div>
@@ -45,7 +44,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, ref, computed } from 'vue';
-import { getAppointments, deleteAppointment } from '@/apollo/appointment.gql';
+import { deleteAppointment } from '@/apollo/appointment.gql';
 import { useMutation } from '@vue/apollo-composable';
 import Loader from '@/components/Loader.vue';
 import Popup from '@/components/Popup.vue';
@@ -75,18 +74,7 @@ export default defineComponent({
           ids: Object.keys(formattedPayload.value)
         }
       },
-      clientId: 'mongo',
-      update: (cache, { data: deleteAppointment }) => {
-        const cachedAppointments = cache.readQuery({ query: getAppointments }) as any;
-        const updatedAppointments = {
-          getAppointments: cachedAppointments.getAppointments.map((appointment: any) => ({
-            ...appointment,
-            status: deleteAppointment.status,
-            transactions: deleteAppointment.transactions
-          }))
-        };
-        cache.writeQuery({ query: getAppointments, data: updatedAppointments });
-      }
+      clientId: 'mongo'
     });
 
     onDone(() => (isDone.value = true));

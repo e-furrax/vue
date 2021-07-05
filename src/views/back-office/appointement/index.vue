@@ -100,7 +100,7 @@
                     <img
                       :src="`/images/icons/${appointment.status.toLowerCase()}.svg`"
                       :alt="`${appointment.status}`"
-                      class="h-5 w-5"
+                      class="h-5 w-5 mr-1"
                     />
                     {{ appointment.status }}
                   </div>
@@ -108,15 +108,9 @@
                 <td class="table-report__action">
                   <div class="flex justify-center items-center">
                     <img
-                      src="/images/eyes.svg"
-                      alt="details"
-                      class="flex items-center mr-3 cursor-pointer"
-                      @click.stop="$router.push(`/back-office/appointment/${appointment._id}`)"
-                    />
-                    <img
-                      src="/images/trash.svg"
+                      src="/images/icons/delete.svg"
                       alt="trash"
-                      class="flex items-center cursor-pointer"
+                      class="hover:bg-white p-1 rounded-full hover:bg-opacity-20 transition duration-200 ml-2 cursor-pointer"
                       @click.stop="handleRemove(appointment)"
                     />
                   </div>
@@ -166,7 +160,9 @@ export default defineComponent({
   name: 'Appointement',
   setup() {
     const { result: appointmentsResult, error } = useQuery(getAppointments, null, {
-      clientId: 'mongo'
+      context: {
+        uri: `${process.env.VUE_APP_MONGO_BACKEND_URL || 'http://localhost:4000'}/graphql`
+      }
     });
     const { result: usersResult } = useQuery(getUsers);
 
