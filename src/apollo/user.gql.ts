@@ -20,6 +20,7 @@ export const getUsers = gql`
       description
       gender
       createdAt
+      profileImage
       languages {
         name
       }
@@ -43,12 +44,14 @@ export const getUser = gql`
       gender
       createdAt
       role
+      profileImage
       receivedRatings {
         id
         comments
         rating
         fromUser {
           username
+          profileImage
         }
         createdAt
       }

@@ -25,6 +25,7 @@ export const getRatings = gql`
       createdAt
       fromUser {
         username
+        profileImage
       }
       toUser {
         username

@@ -20,7 +20,7 @@
     />
     <div class="flex items-start">
       <img
-        src="/images/avatar1.png"
+        :src="comment.fromUser.profileImage || '/images/avatar1.png'"
         class="rounded-full border border-yellow-800 z-20"
         width="38"
         height="38"
