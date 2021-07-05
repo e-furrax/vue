@@ -23,6 +23,7 @@
         <action-warning-popup
           v-if="isPopupOpen && popupPayload.size"
           @on-close="isPopupOpen = false"
+          @on-done="refetch()"
           :payload="popupPayload"
           name="Appointment"
         />
@@ -108,7 +109,7 @@
                 <td class="table-report__action">
                   <div class="flex justify-center items-center">
                     <img
-                      src="/images/icons/delete.svg"
+                      src="/images/icons/cancelled.svg"
                       alt="trash"
                       class="hover:bg-white p-1 rounded-full hover:bg-opacity-20 transition duration-200 ml-2 cursor-pointer"
                       @click.stop="handleRemove(appointment)"
@@ -159,7 +160,7 @@ export default defineComponent({
   components: { Loader, ActionWarningPopup, StatsCard, Pagination },
   name: 'Appointement',
   setup() {
-    const { result: appointmentsResult, error } = useQuery(getAppointments, null, {
+    const { result: appointmentsResult, error, refetch } = useQuery(getAppointments, null, {
       context: {
         uri: `${process.env.VUE_APP_MONGO_BACKEND_URL || 'http://localhost:4000'}/graphql`
       }
@@ -179,9 +180,7 @@ export default defineComponent({
       return new Date(date).toLocaleDateString('fr-FR');
     };
     const getRecap = (appointment: any) => {
-      return `From:${getUsername(appointment.from)}, To:${getUsername(
-        appointment.to
-      )} at ${formatDate(appointment.date)}`;
+      return `From:${getUsername(appointment.from)}, To:${getUsername(appointment.to)}`;
     };
 
     watch(selectAll, value => {
@@ -245,6 +244,8 @@ export default defineComponent({
       elementByPage,
       currentPage,
       handleChangePage,
+
+      refetch,
 
       popupPayload: new Map(),
       isPopupOpen: ref(false)

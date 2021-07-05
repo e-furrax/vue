@@ -23,6 +23,7 @@
         <action-warning-popup
           v-if="isPopupOpen && popupPayload !== {}"
           @on-close="isPopupOpen = false"
+          @on-done="refetch()"
           :payload="popupPayload"
           name="Users"
         />
@@ -47,7 +48,14 @@
             </thead>
             <Loader v-if="loading" />
             <tbody class="text-sm" v-else-if="users">
-              <tr v-for="user in users" :key="user.id" class="shadow bg-darkpurple-400 text-white">
+              <tr
+                v-for="user in users"
+                :key="user.id"
+                class="shadow text-white"
+                :class="[
+                  modifiedUsers.has(user.id) ? 'bg-green-600 bg-opacity-40' : 'bg-darkpurple-400'
+                ]"
+              >
                 <td class="rounded-l px-2 py-1 flex items-center">
                   <img
                     :src="
@@ -87,7 +95,7 @@
                     />
                     <img
                       v-show="modifiedUsers.has(user.id)"
-                      src="/images/icons/delete.svg"
+                      src="/images/icons/done.svg"
                       alt="trash"
                       class="hover:bg-white p-1 rounded-full hover:bg-opacity-20 transition duration-200 ml-4 cursor-pointer"
                       @click="update(user)"
@@ -118,7 +126,7 @@ export default defineComponent({
   name: 'Profiles',
   setup() {
     const { user: currUser } = useAuth();
-    const { result: usersQuery } = useQuery(getUsersOverview);
+    const { result: usersQuery, refetch } = useQuery(getUsersOverview);
 
     const usersQueryResult = useResult(usersQuery, []);
     const loading = useQueryLoading();
@@ -188,6 +196,7 @@ export default defineComponent({
 
       roles,
       currUser,
+      refetch,
 
       popupPayload: {},
       isPopupOpen: ref(false)

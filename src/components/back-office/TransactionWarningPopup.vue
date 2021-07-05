@@ -61,7 +61,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { payload } = toRefs(props);
     const isOpen = ref(true);
     const isDone = ref(false);
@@ -77,7 +77,10 @@ export default defineComponent({
       clientId: 'mongo'
     });
 
-    onDone(() => (isDone.value = true));
+    onDone(() => {
+      emit('on-done');
+      return (isDone.value = true);
+    });
     onError(err => (errorMessage.value = err.message));
     const useRemoveAppointment = () => mutate();
     return {
