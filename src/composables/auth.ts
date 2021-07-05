@@ -42,9 +42,8 @@ const setUserData = () => {
       useResult(result, null, data => data.me)
     );
 
-    const copy = { ...userResult.value };
-
     watch([loading], () => {
+      const copy = { ...userResult.value };
       if (error.value) {
         window.localStorage.removeItem(AUTH_KEY);
       } else if (copy) {
