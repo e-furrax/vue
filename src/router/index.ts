@@ -10,6 +10,7 @@ import Privacy from '@/views/Privacy.vue';
 import Terms from '@/views/Terms.vue';
 import RequestResetPassword from '@/views/ResetPassword.vue';
 import ResetPassword from '@/views/ResetPassword.vue';
+import BecomeFurrax from '@/views/BecomeFurrax.vue';
 
 import { backOfficeRoutes } from './backOffice';
 import { useAuth } from '@/composables/auth';
@@ -79,6 +80,15 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Terms',
     components: {
       default: Terms,
+      header: Header,
+      footer: Footer
+    }
+  },
+  {
+    path: '/become-furrax',
+    name: 'BecomeFurrax',
+    components: {
+      default: BecomeFurrax,
       header: Header,
       footer: Footer
     }

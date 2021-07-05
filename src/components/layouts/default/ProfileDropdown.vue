@@ -53,9 +53,11 @@
               @click="openInputFile"
             />
           </div>
-          <span class="text-white text-lg text-center font-medium w-44 truncate">{{
-            user.username
-          }}</span>
+          <router-link :to="'/user/' + user.id">
+            <span class="text-white text-lg text-center font-medium w-44 truncate">{{
+              user.username
+            }}</span>
+          </router-link>
         </div>
         <div class="py-1" role="none">
           <nav>
