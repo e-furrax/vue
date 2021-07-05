@@ -21,10 +21,10 @@
       </section>
       <div class="grid grid-cols-12 gap-2 mt-6">
         <action-warning-popup
-          v-if="isPopupOpen && popupPayload.size"
+          v-if="isPopupOpen && popupPayload !== {}"
           @on-close="isPopupOpen = false"
           :payload="popupPayload"
-          name="Appointment"
+          name="Users"
         />
 
         <div class="overflow-x-scroll col-span-12 overflow-auto lg:overflow-visible">
