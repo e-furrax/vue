@@ -11,6 +11,7 @@ import Terms from '@/views/Terms.vue';
 import RequestResetPassword from '@/views/ResetPassword.vue';
 import ResetPassword from '@/views/ResetPassword.vue';
 import BecomeFurrax from '@/views/BecomeFurrax.vue';
+import NotFound from '@/views/NotFound.vue';
 
 import { backOfficeRoutes } from './backOffice';
 import { useAuth } from '@/composables/auth';
@@ -97,7 +98,20 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [...routes, ...myProfileRoutes, ...backOfficeRoutes]
+  routes: [
+    ...routes,
+    ...myProfileRoutes,
+    ...backOfficeRoutes,
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      components: {
+        default: NotFound,
+        header: Header,
+        footer: Footer
+      }
+    }
+  ]
 });
 
 router.beforeEach((to, from, next) => {
