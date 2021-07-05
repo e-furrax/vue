@@ -386,7 +386,7 @@
                   :key="com.id"
                   :comment="com"
                   :userId="userId"
-                  class="mt-2"
+                  class="mt-2 bg-purple-1100"
                   @rating-removed="handleRatingRemoved"
                 ></Comment>
               </div>
@@ -446,10 +446,13 @@
               v-model="demandGame"
               class="bg-white py-0.5 px-1 bg-opacity-10"
             >
-              <option value="League of Legends" class="bg-purple-1000">League of Legends</option>
-              <option value="Rocket League" class="bg-purple-1000">Rocket League</option>
-              <option value="Valorant" class="bg-purple-1000">Valorant</option>
-              <option value="CS:GO" class="bg-purple-1000">CS:GO</option>
+              <option
+                :value="game.name"
+                class="bg-purple-1000"
+                v-for="game of games"
+                :key="game.id"
+                >{{ game.name }}</option
+              >
             </Field>
             <ErrorMessage name="game" class="text-red-500" />
             <div class="mt-2 flex items-center">

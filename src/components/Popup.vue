@@ -1,19 +1,19 @@
 <template>
   <div
     name="popup"
-    class="fixed w-full h-full top-0 left-0 lg:flex lg:items-center lg:justify-center"
+    class="text-white z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center"
   >
     <div
-      class="flex items-center justify-center hidden lg:block lg:absolute h-full w-full bg-black opacity-50 inset-0"
+      class="flex items-center justify-center absolute h-full w-full bg-gray-200 opacity-10"
       @click="onPopupClose()"
     />
     <div
-      class="bg-white z-50 h-screen fixed top-0 left-0 overflow-y-auto lg:shadow-lg lg:w-popup lg:h-auto lg:rounded lg:relative"
+      class="px-4 bg-darkpurple-400 z-50 h-screen fixed top-0 left-0 overflow-y-auto lg:shadow-lg lg:w-popup lg:h-auto lg:rounded lg:relative"
     >
-      <div :class="['flex justify-end items-center px-6 h-16 text-left', titleClass]">
+      <div :class="['flex justify-end items-center h-16 text-left bg-darkpurple-400', titleClass]">
         <button
           name="closePopup"
-          class="cursor-pointer z-50 text-primary focus:outline-none"
+          class="hover:bg-white hover:bg-opacity-10 rounded-full p-1 transition duration-200 cursor-pointer z-50 text-primary focus:outline-none"
           @click="onPopupClose()"
         >
           <svg

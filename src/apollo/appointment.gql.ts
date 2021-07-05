@@ -9,11 +9,6 @@ export const getAppointments = gql`
       from
       to
       status
-      transactions {
-        _id
-        price
-        status
-      }
     }
   }
 `;

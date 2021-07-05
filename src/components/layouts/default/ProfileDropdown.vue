@@ -72,6 +72,11 @@
                 :class="isActive && 'bg-purple-950'"
                 class="text-white px-4 py-2 text-sm hover:bg-purple-950 transition-colors duration-100 flex flex-row items-center space-x-2"
                 role="menuitem"
+                v-if="
+                  !route.meta.authorizedOnly ||
+                    (route.meta.authorizedOnly &&
+                      (user.role === 'MODERATOR' || user.role === 'ADMIN'))
+                "
                 tabindex="-1"
               >
                 <img
@@ -127,6 +132,11 @@ export default defineComponent({
     return {
       open: false,
       myProfileRoutes: [
+        {
+          path: '/back-office',
+          name: 'Back Office',
+          meta: { icon: 'icons/dashboard.svg', authorizedOnly: true }
+        },
         {
           path: '/messages',
           name: 'Messages',

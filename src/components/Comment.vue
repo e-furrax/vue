@@ -1,5 +1,5 @@
 <template>
-  <div class="relative comment py-2 px-3 w-full rounded-sm bg-purple-1100 text-white relative">
+  <div class="relative comment py-2 px-3 w-full rounded-sm text-white relative">
     <img
       v-if="authorized(['ADMIN', 'MODERATOR'])"
       class="
@@ -14,6 +14,7 @@
         rounded-full
       "
       @click="handleRemove"
+      :data-id="comment.id"
       src="/images/icons/delete.svg"
       width="24"
     />
@@ -64,7 +65,7 @@ export default defineComponent({
   props: {
     comment: Object
   },
-  inject: ['isOwner', 'authorized'],
+  inject: ['authorized'],
   setup() {
     const { user } = useAuth();
     const { mutate: removeRating } = useMutation<Partial<RatingModel>, RemoveRatingVariables>(

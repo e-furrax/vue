@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@apollo/client": "3.3.11",
+    "@revolist/revogrid-column-select": "^2.0.2",
+    "@revolist/vue3-datagrid": "^3.0.52",
     "@tailwindcss/postcss7-compat": "2.0.2",
     "@vue/apollo-composable": "4.0.0-alpha.12",
     "apollo-link-context": "1.0.20",

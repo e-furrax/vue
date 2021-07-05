@@ -6,13 +6,10 @@
         v-for="(page, i) in pages"
         :key="`page-${page}`"
         @click="changePage(i)"
-        :class="
-          `bg-${
-            i === currentPage ? 'red' : 'purple'
-          }-500 mr-10 cursor-pointer text-white rounded px-4 py-3`
-        "
+        class="mr-10 cursor-pointer text-white rounded-full w-8 h-8 flex items-center justify-center"
+        :class="[+page === currentPage + 1 ? 'bg-pink-500' : 'bg-purple-1100']"
       >
-        {{ page }}
+        <span>{{ page }}</span>
       </div>
     </div>
   </div>
@@ -36,8 +33,8 @@ export default defineComponent({
   computed: {
     pages(): Array<string> {
       const nPage = ~~(this.size / this.elementByPage);
-      return nPage > 7
-        ? [...[...Array(5)].map((_, i) => `${i + 1}`), '...', `${nPage}`]
+      return nPage > 10
+        ? [...[...Array(10)]].map((_, i) => `${i + 1}`)
         : [...Array(nPage)].map((_, i) => `${i + 1}`);
     }
   },

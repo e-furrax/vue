@@ -4,7 +4,7 @@ import BackOffice from '@/views/back-office/index.vue';
 import BackOfficeProfiles from '@/views/back-office/profile/index.vue';
 import BackOfficeProfileId from '@/views/back-office/profile/id.vue';
 import BackOfficeAppointement from '@/views/back-office/appointement/index.vue';
-import BackOfficeTransaction from '@/views/back-office/transaction/index.vue';
+import BackOfficeMessage from '@/views/back-office/message/index.vue';
 
 import Header from '@/components/layouts/default/Header.vue';
 import Footer from '@/components/layouts/default/Footer.vue';
@@ -29,9 +29,9 @@ export const backOfficeOverviewRoutes: RouteRecordRaw = {
       component: BackOfficeAppointement
     },
     {
-      path: 'transactions',
-      name: 'Transactions',
-      component: BackOfficeTransaction
+      path: 'comments',
+      name: 'Comments',
+      component: BackOfficeMessage
     }
   ]
 };
@@ -43,11 +43,6 @@ const backOfficeDetailsRoute: RouteRecordRaw[] = [
     props: true,
     component: BackOfficeProfileId
   }
-  // {
-  // path: 'transaction/:id',
-  // name: 'Transaction',
-  // component: BackOfficeTransactionView
-  // }
 ];
 export const backOfficeRoutes: RouteRecordRaw[] = [
   ...backOfficeDetailsRoute,
