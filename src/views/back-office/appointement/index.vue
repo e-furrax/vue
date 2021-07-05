@@ -33,7 +33,7 @@
       <table class="table-auto table-report mx-10 mb-10">
         <thead>
           <tr>
-            <th class="whitespace-nowrap w-1/5">TITLE</th>
+            <th class="whitespace-nowrap w-1/5">ID</th>
             <th class="text-center whitespace-nowrap w-1/6">FROM</th>
             <th class="text-center whitespace-nowrap w-1/6">TO</th>
             <th class="text-center whitespace-nowrap w-1/7">CREATED AT</th>
@@ -110,7 +110,7 @@ import { getAppointments } from '@/apollo/appointment.gql';
 import { getUsers } from '@/apollo/user.gql';
 import { useQuery, useResult, useQueryLoading } from '@vue/apollo-composable';
 import Loader from '@/components/Loader.vue';
-import ActionWarningPopup from '@/components/back-office/ActionWarningPopup.vue';
+import ActionWarningPopup from '@/components/back-office/TransactionWarningPopup.vue';
 
 interface User {
   id: string;
@@ -147,13 +147,25 @@ export default defineComponent({
     const selectAll = ref(false);
     const selectedAppointment = ref(new Map());
 
+    const getUsername = (userId: number) => {
+      return users.value.find((user: User) => user.id === userId.toString()).username;
+    };
+    const formatDate = (date: string) => {
+      return new Date(date).toLocaleDateString('fr-FR');
+    };
+    const getRecap = (appointment: any) => {
+      return `From:${getUsername(appointment.from)}, To:${getUsername(
+        appointment.to
+      )} at ${formatDate(appointment.date)}`;
+    };
+
     watch(selectAll, value => {
       if (!value) {
         selectedAppointment.value.clear();
         return;
       }
-      const entries = appointments.value.reduce((acc: any[], curr: Appointment) => {
-        acc.push([curr._id, curr.title]);
+      const entries = appointments.value.reduce((acc: any[], curr: any) => {
+        acc.push([curr._id]);
         return acc;
       }, []);
       selectedAppointment.value = new Map(entries);
@@ -161,37 +173,34 @@ export default defineComponent({
 
     return {
       appointments,
-      loading,
       users,
+      loading,
       error,
       selectAll,
       selectedAppointment,
+      getUsername,
+      formatDate,
+      getRecap,
       popupPayload: new Map(),
       isPopupOpen: ref(false)
     };
   },
   methods: {
-    formatDate(date: string) {
-      return new Date(date).toLocaleDateString('fr-FR');
-    },
-    getUsername(userId: number) {
-      return this.users.find((user: User) => user.id === userId.toString()).username;
-    },
-    handleRemove({ _id, title }: Partial<Appointment>) {
-      if (!this.selectedAppointment.has(_id)) {
-        this.selectedAppointment.set(_id, title);
+    handleRemove(appointment: any) {
+      if (!this.selectedAppointment.has(appointment._id)) {
+        this.selectedAppointment.set(appointment._id, this.getRecap(appointment));
       }
-      this.popupPayload = new Map([[_id, title]]);
+      this.popupPayload = new Map([[appointment._id, this.getRecap(appointment)]]);
       this.isPopupOpen = true;
     },
     handleRemoveAll() {
       this.popupPayload = this.selectedAppointment;
       this.isPopupOpen = true;
     },
-    select({ _id, title }: Partial<Appointment>) {
-      this.selectedAppointment.has(_id)
-        ? this.selectedAppointment.delete(_id)
-        : this.selectedAppointment.set(_id, title);
+    select(appointment: any) {
+      this.selectedAppointment.has(appointment._id)
+        ? this.selectedAppointment.delete(appointment._id)
+        : this.selectedAppointment.set(appointment._id, this.getRecap(appointment));
     }
   }
 });

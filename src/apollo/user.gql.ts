@@ -91,6 +91,19 @@ export const getProfileQuery = gql`
     }
   }
 `;
+export const getUsersOverview = gql`
+  query getProfile {
+    getUsers {
+      id
+      profileImage
+      email
+      username
+      gender
+      role
+    }
+  }
+`;
+
 export const getProfileSidebar = gql`
   query getProfileSidebar {
     getProfile {
