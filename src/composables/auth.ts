@@ -20,6 +20,10 @@ interface UserState {
   authenticating: boolean;
 }
 
+interface MeMutationResponse {
+  me: Partial<User>;
+}
+
 const state = reactive<UserState>({
   user: undefined,
   authenticating: false
@@ -30,17 +34,21 @@ const token = window.localStorage.getItem(AUTH_KEY);
 const setUserData = () => {
   if (token) {
     state.authenticating = true;
-    const { result, loading, error } = provideApolloClient(postgresClient)(() => useQuery(me));
+    const { result, loading, error } = provideApolloClient(postgresClient)(() =>
+      useQuery<MeMutationResponse>(me)
+    );
 
     const userResult = provideApolloClient(postgresClient)(() =>
       useResult(result, null, data => data.me)
     );
 
+    const copy = { ...userResult.value };
+
     watch([loading], () => {
       if (error.value) {
         window.localStorage.removeItem(AUTH_KEY);
-      } else if (userResult) {
-        state.user = userResult as any;
+      } else if (copy) {
+        state.user = copy as any;
       }
 
       state.authenticating = false;
@@ -56,9 +64,12 @@ export const useAuth = () => {
   };
 
   const logout = (): Promise<void> => {
+    console.log('logout auth.ts');
     window.localStorage.removeItem(AUTH_KEY);
     return Promise.resolve((state.user = undefined));
   };
+
+  console.log('state', state);
 
   return {
     setUser,
