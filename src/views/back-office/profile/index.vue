@@ -213,9 +213,6 @@ export default defineComponent({
     }
   },
   methods: {
-    test(e: any) {
-      console.log(e);
-    },
     wasModified(target: any, user: any) {
       const wasModified = target.value !== user.role;
       wasModified

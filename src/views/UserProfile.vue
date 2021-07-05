@@ -964,7 +964,6 @@ export default defineComponent({
             const errorMessage =
               err.message || 'Oops, something went wrong, we could not send your comment.';
             this.toast.error(errorMessage);
-            console.error(err);
           });
       }
     },
@@ -986,7 +985,6 @@ export default defineComponent({
             const errorMessage =
               err.message || 'Oops, something went wrong, we could not send your comment.';
             this.toast.error(errorMessage);
-            console.error(err);
           });
       }
     },

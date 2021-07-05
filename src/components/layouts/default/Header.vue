@@ -43,7 +43,7 @@
           <router-link
             :to="user ? '/become-furrax' : '/sign-in'"
             class="font-semibold hidden lg:block px-3 py-1 mx-2 bg-purple-600 rounded hover:bg-purple-700 transition duration-300"
-            v-if="user.role === 'USER'"
+            v-if="user?.role === 'USER'"
           >
             Become a Furrax
           </router-link>

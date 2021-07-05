@@ -63,12 +63,9 @@ export const useAuth = () => {
   };
 
   const logout = (): Promise<void> => {
-    console.log('logout auth.ts');
     window.localStorage.removeItem(AUTH_KEY);
     return Promise.resolve((state.user = undefined));
   };
-
-  console.log('state', state);
 
   return {
     setUser,

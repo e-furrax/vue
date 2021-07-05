@@ -181,7 +181,6 @@ export default defineComponent({
 
     const handleLogout = () => {
       logout().then(() => {
-        console.log('dropdown', user?.value);
         router.push({ name: 'Home' });
       });
     };
