@@ -1,4 +1,4 @@
-,<template>
+<template>
   <div class="flex flex-col">
     <section class="flex flex-col sm:flex-row justify-center items-center">
       <StatsCard
@@ -14,118 +14,120 @@
         icon="/images/icons/profiles.svg"
       />
     </section>
-    <div class="grid grid-cols-12 gap-6 mt-6">
-      <action-warning-popup
-        v-if="isPopupOpen && popupPayload.size"
-        @on-close="isPopupOpen = false"
-        :payload="popupPayload"
-        name="Appointment"
-      />
+    <pagination :size="size" :element-by-page="elementByPage" @change-page="handleChangePage">
+      <div class="grid grid-cols-12 gap-6 mt-6">
+        <action-warning-popup
+          v-if="isPopupOpen && popupPayload.size"
+          @on-close="isPopupOpen = false"
+          :payload="popupPayload"
+          name="Appointment"
+        />
 
-      <div class="col-span-12 overflow-auto lg:overflow-visible">
-        <div class="flex justify-end mb-4">
-          <div class="flex items-center mr-10">
-            <label for="select-all" class="mr-2 text-white">Select All</label>
-            <input
-              id="select-all"
-              type="checkbox"
-              v-model="selectAll"
-              :true-value="true"
-              :false-value="false"
-            />
-          </div>
-          <button
-            class="px-3 py-1 rounded border border-pink-500 hover:border-pink-400 hover:text-pink-400 transition duration-200"
-            :class="[
-              selectedAppointment.size ? 'bg-pink-500 text-white' : 'bg-transparent text-pink-500'
-            ]"
-            :disabled="!selectedAppointment.size"
-            @click="handleRemoveAll"
-          >
-            Block all
-          </button>
-        </div>
-        <table class="table-auto w-full table-report">
-          <thead>
-            <tr class="text-white text-xs">
-              <th class="whitespace-nowrap w-1/5">ID</th>
-              <th class="text-center">FROM</th>
-              <th class="text-center">TO</th>
-              <th class="text-center">CREATED AT</th>
-              <th class="text-center">LAST UPDATED</th>
-              <th class="text-center">STATUS</th>
-              <th class="text-center">ACTIONS</th>
-            </tr>
-          </thead>
-          <Loader v-if="loading" />
-          <div v-else-if="error">Error occured: {{ error }}</div>
-          <tbody v-else-if="appointments && users" class="text-sm">
-            <tr
-              v-for="appointment in appointments"
-              :key="appointment._id"
-              class="shadow text-white"
+        <div class="col-span-12 overflow-auto lg:overflow-visible">
+          <div class="flex justify-end mb-4">
+            <div class="flex items-center mr-10">
+              <label for="select-all" class="mr-2 text-white">Select All</label>
+              <input
+                id="select-all"
+                type="checkbox"
+                v-model="selectAll"
+                :true-value="true"
+                :false-value="false"
+              />
+            </div>
+            <button
+              class="px-3 py-1 rounded border border-pink-500 hover:border-pink-400 hover:text-pink-400 transition duration-200"
               :class="[
-                selectedAppointment.has(appointment._id)
-                  ? 'bg-green-600 bg-opacity-40'
-                  : 'bg-darkpurple-400'
+                selectedAppointment.size ? 'bg-pink-500 text-white' : 'bg-transparent text-pink-500'
               ]"
-              @click.prevent="select(appointment)"
+              :disabled="!selectedAppointment.size"
+              @click="handleRemoveAll"
             >
-              <td class="px-2 py-2 flex items-center">
-                <span>{{ appointment.title }}</span>
-                <div class="">
-                  {{ appointment._id }}
-                </div>
-              </td>
-              <td class="text-center p-2">
-                {{ `${getUsername(appointment.from)}` }}
-              </td>
-              <td class="text-center p-2">
-                {{ `${getUsername(appointment.to)}` }}
-              </td>
-              <td class="text-center p-2">{{ formatDate(appointment._createdAt) }}</td>
-              <td class="text-center p-2">{{ formatDate(appointment._updatedAt) }}</td>
-              <td class="p-2">
-                <div
-                  class="flex items-center justify-center"
-                  :class="{
-                    'text-theme-9': Math.random(0, 4) === 0
-                  }"
-                >
-                  <img
-                    :src="`/images/icons/${appointment.status.toLowerCase()}.svg`"
-                    :alt="`${appointment.status}`"
-                    class="h-5 w-5"
-                  />
-                  {{ appointment.status }}
-                </div>
-              </td>
-              <td class="table-report__action">
-                <div class="flex justify-center items-center">
-                  <img
-                    src="/images/eyes.svg"
-                    alt="details"
-                    class="flex items-center mr-3 cursor-pointer"
-                    @click.stop="$router.push(`/back-office/appointment/${appointment._id}`)"
-                  />
-                  <img
-                    src="/images/trash.svg"
-                    alt="trash"
-                    class="flex items-center cursor-pointer"
-                    @click.stop="handleRemove(appointment)"
-                  />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              Block all
+            </button>
+          </div>
+          <table class="table-auto w-full table-report">
+            <thead>
+              <tr class="text-white text-xs">
+                <th class="whitespace-nowrap w-1/5" @click="useFilterBy('_id')">ID</th>
+                <th class="text-center">FROM</th>
+                <th class="text-center">TO</th>
+                <th class="text-center" @click="useFilterBy('_createdAt')">CREATED AT</th>
+                <th class="text-center" @click="useFilterBy('_updatedAt')">LAST UPDATED</th>
+                <th class="text-center" @click="useFilterBy('status')">STATUS</th>
+                <th class="text-center">ACTIONS</th>
+              </tr>
+            </thead>
+            <Loader v-if="loading" />
+            <div v-else-if="error">Error occured: {{ error }}</div>
+            <tbody v-else-if="appointments && users" class="text-sm">
+              <tr
+                v-for="appointment in appointments"
+                :key="appointment._id"
+                class="shadow text-white"
+                :class="[
+                  selectedAppointment.has(appointment._id)
+                    ? 'bg-green-600 bg-opacity-40'
+                    : 'bg-darkpurple-400'
+                ]"
+                @click.prevent="select(appointment)"
+              >
+                <td class="px-2 py-2 flex items-center">
+                  <span>{{ appointment.title }}</span>
+                  <div class="">
+                    {{ appointment._id }}
+                  </div>
+                </td>
+                <td class="text-center p-2">
+                  {{ `${getUsername(appointment.from)}` }}
+                </td>
+                <td class="text-center p-2">
+                  {{ `${getUsername(appointment.to)}` }}
+                </td>
+                <td class="text-center p-2">{{ formatDate(appointment._createdAt) }}</td>
+                <td class="text-center p-2">{{ formatDate(appointment._updatedAt) }}</td>
+                <td class="p-2">
+                  <div
+                    class="flex items-center justify-center"
+                    :class="{
+                      'text-theme-9': Math.random(0, 4) === 0
+                    }"
+                  >
+                    <img
+                      :src="`/images/icons/${appointment.status.toLowerCase()}.svg`"
+                      :alt="`${appointment.status}`"
+                      class="h-5 w-5"
+                    />
+                    {{ appointment.status }}
+                  </div>
+                </td>
+                <td class="table-report__action">
+                  <div class="flex justify-center items-center">
+                    <img
+                      src="/images/eyes.svg"
+                      alt="details"
+                      class="flex items-center mr-3 cursor-pointer"
+                      @click.stop="$router.push(`/back-office/appointment/${appointment._id}`)"
+                    />
+                    <img
+                      src="/images/trash.svg"
+                      alt="trash"
+                      class="flex items-center cursor-pointer"
+                      @click.stop="handleRemove(appointment)"
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </pagination>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, ref, watch, computed } from 'vue';
 import { getAppointments } from '@/apollo/appointment.gql';
 import { getUsers } from '@/apollo/user.gql';
 import { useQuery, useResult, useQueryLoading } from '@vue/apollo-composable';
@@ -133,6 +135,7 @@ import Loader from '@/components/Loader.vue';
 import ActionWarningPopup from '@/components/back-office/TransactionWarningPopup.vue';
 import AppointmentModel from '@/models/appointment.model';
 import StatsCard from '@/components/back-office/StatsCard.vue';
+import Pagination from '@/components/Pagination.vue';
 
 interface User {
   id: string;
@@ -155,7 +158,7 @@ interface Appointment {
 }
 
 export default defineComponent({
-  components: { Loader, ActionWarningPopup, StatsCard },
+  components: { Loader, ActionWarningPopup, StatsCard, Pagination },
   name: 'Appointement',
   setup() {
     const { result: appointmentsResult, error } = useQuery(getAppointments, null, {
@@ -163,7 +166,7 @@ export default defineComponent({
     });
     const { result: usersResult } = useQuery(getUsers);
 
-    const appointments = useResult(appointmentsResult, null, data => data.getAppointments);
+    const appointmentsQueryResult = useResult(appointmentsResult, [], data => data.getAppointments);
     const users = useResult(usersResult, null, data => data.getUsers);
     const loading = useQueryLoading();
     const selectAll = ref(false);
@@ -186,11 +189,40 @@ export default defineComponent({
         selectedAppointment.value.clear();
         return;
       }
-      const entries = appointments.value.reduce((acc: any[], curr: any) => {
+      const entries = appointmentsQueryResult.value.reduce((acc: any[], curr: any) => {
         acc.push([curr._id]);
         return acc;
       }, []);
       selectedAppointment.value = new Map(entries);
+    });
+
+    const elementByPage = ref(12);
+    const currentPage = ref(0);
+    const handleChangePage = (n: number) => {
+      currentPage.value = n;
+    };
+    const filterKey = ref({ key: '_id', order: 1 });
+    const useFilterBy = (key: string) => {
+      if (filterKey.value.key === key) {
+        filterKey.value.order = filterKey.value.order * -1;
+        return;
+      }
+      filterKey.value = { key, order: 1 };
+    };
+    const appointments = computed(() => {
+      const start = currentPage.value * elementByPage.value;
+      const end = start + elementByPage.value;
+      const appointmentsCopy = appointmentsQueryResult.value.slice(start, end);
+      // .map(({ from, to, ...other }: { from: any; to: any; other: any }) => ({
+      //   from: getUsername(from),
+      //   to: getUsername(to),
+      //   ...other
+      // }));
+
+      return appointmentsCopy?.sort(
+        (a: any, b: any) =>
+          (a[filterKey.value.key] - b[filterKey.value.key]) * filterKey.value.order
+      );
     });
 
     return {
@@ -198,11 +230,22 @@ export default defineComponent({
       users,
       loading,
       error,
+
       selectAll,
       selectedAppointment,
+
       getUsername,
       formatDate,
       getRecap,
+
+      useFilterBy,
+      filterKey,
+
+      size: appointmentsQueryResult.value.length,
+      elementByPage,
+      currentPage,
+      handleChangePage,
+
       popupPayload: new Map(),
       isPopupOpen: ref(false)
     };

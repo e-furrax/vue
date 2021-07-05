@@ -166,16 +166,20 @@ export default defineComponent({
       loading,
       users,
       modifiedUsers,
+
       filterModified,
       filterModifiedText,
-      size: usersQueryResult.value.length,
       useFilterBy,
       filterKey,
-      roles,
-      currUser,
+
+      size: usersQueryResult.value.length,
       elementByPage,
       currentPage,
       handleChangePage,
+
+      roles,
+      currUser,
+
       popupPayload: {},
       isPopupOpen: ref(false)
     };
