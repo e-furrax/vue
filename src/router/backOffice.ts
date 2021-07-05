@@ -5,7 +5,6 @@ import BackOfficeProfiles from '@/views/back-office/profile/index.vue';
 import BackOfficeProfileId from '@/views/back-office/profile/id.vue';
 import BackOfficeAppointement from '@/views/back-office/appointement/index.vue';
 import BackOfficeMessage from '@/views/back-office/message/index.vue';
-import BackOfficeTransaction from '@/views/back-office/transaction/index.vue';
 
 import Header from '@/components/layouts/default/Header.vue';
 import Footer from '@/components/layouts/default/Footer.vue';
