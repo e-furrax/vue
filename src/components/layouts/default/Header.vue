@@ -41,7 +41,7 @@
         <div class="flex items-center">
           <SearchBar class="lg:mr-4" />
           <router-link
-            to="/become-furrax"
+            :to="user ? '/become-furrax' : '/sign-in'"
             class="font-semibold hidden lg:block px-3 py-1 mx-2 bg-purple-600 rounded hover:bg-purple-700 transition duration-300"
           >
             Become a Furrax
@@ -71,6 +71,8 @@
 
 <script lang="ts">
 import { useAuth } from '@/composables/auth';
+import { useAuthorization } from '@/composables/authorization';
+import { ROLES } from '@/models/user.model';
 import { defineComponent } from 'vue';
 import SearchBar from '../../SearchBar.vue';
 import HeaderBurger from './HeaderBurger.vue';
@@ -81,6 +83,7 @@ export default defineComponent({
   name: 'Header',
   setup() {
     const { user } = useAuth();
+    const { isAuthorized } = useAuthorization([ROLES.USER]);
 
     return {
       user

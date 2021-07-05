@@ -34,8 +34,9 @@
         >
           Play together
         </button>
-        <button
-          class="
+        <router-link to="/become-furrax">
+          <button
+            class="
             font-bold
             uppercase
             rounded
@@ -49,10 +50,11 @@
             duration-200
             lg:mr-4
           "
-          v-if="isOwner() && authorized(['USER'])"
-        >
-          Become a furrax
-        </button>
+            v-if="isOwner() && authorized(['USER'])"
+          >
+            Become a furrax
+          </button>
+        </router-link>
       </div>
       <div class="container mx-auto mt-4 flex flex-col items-center lg:flex-row lg:items-start">
         <div class="lg:mb-10 mb-4 w-full lg:mr-4">

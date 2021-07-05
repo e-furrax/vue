@@ -32,7 +32,12 @@
           </router-link>
         </li>
       </ul>
-      <ul v-if="!user" class="py-3 px-4 flex flex-col items-start">
+      <ul v-if="!user" class="py-3 px-4 flex flex-col items-start space-y-3">
+        <li
+          class="font-semibold px-3 py-1 bg-purple-600 rounded hover:bg-purple-700 transition duration-300 cursor-pointer"
+        >
+          <router-link :to="user ? '/become-furrax' : '/sign-in'">Become a Furrax</router-link>
+        </li>
         <li
           class="
             px-3
@@ -53,7 +58,6 @@
           class="
             px-3
             py-1
-            mt-3
             cursor-pointer
             rounded
             bg-transparent
@@ -74,8 +78,6 @@
           my-3
           mx-4
           px-3
-          py-1
-          mx-2
           rounded
           bg-transparent
           border border-purple-400
