@@ -1,90 +1,43 @@
 <template>
-  <h1 class="text-2xl font-bold text-white">Basic Information (2/2)</h1>
+  <h1 class="text-2xl font-bold text-white">General Information (2/2)</h1>
   <section>
-    <Availability @availability-change="handleAvailabilityChange" />
+    <Form>
+      <div class="space-y-8">
+        <div class="space-y-3">
+          <label class="text-purple-100 text-lg font-semibold">Availability</label>
+          <Availability @availability-change="handleAvailabilityChange" />
+        </div>
+        <hr />
+        <div class="space-y-3">
+          <label for="bio" class="text-purple-100 text-lg font-semibold">Description</label>
+          <Field
+            name="bio"
+            id="bio"
+            as="textarea"
+            maxLength="1000"
+            class="h-32 text-white bg-trueGray-700 p-2 w-full resize-none rounded-sm"
+            placeholder="Write a short bio to introduce yourself"
+          />
+        </div>
+      </div>
+    </Form>
   </section>
 </template>
 <script lang="ts">
-import { getGames } from '@/apollo/game.gql';
-import GameModel, { GameQuery } from '@/models/game.model';
-import { useMutation, useQuery, useResult } from '@vue/apollo-composable';
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, ref } from 'vue';
 import Availability from '@/components/become-furrax/Availability.vue';
-import { updateAvailabilityMutation } from '@/apollo/availability.gql';
-
-interface UpdateAvailabilityVariables {
-  value: string;
-}
-
-interface AvailabilityMutation {
-  updateAvailability: UpdateAvailabilityVariables;
-}
+import { Form, Field } from 'vee-validate';
 
 export default defineComponent({
-  components: { Availability },
+  components: { Availability, Form, Field },
   setup() {
-    const { result: gamesResult, loading: gamesLoading } = useQuery<GameQuery>(getGames);
-    const games = useResult(gamesResult, null, data => data.getGames);
-    const clonedGames = ref<GameModel[]>([]);
-    const clonedGames2 = ref<GameModel[]>([]);
     const availibility = ref([]);
-    const bgImages = new Map([
-      ['League of Legends', '/images/backgrounds/lol.jpg'],
-      ['CS:GO', '/images/backgrounds/csgo.jpg'],
-      ['Rocket League', '/images/backgrounds/rl.jpg'],
-      ['Valorant', '/images/backgrounds/valorant.jpg']
-    ]);
-
-    const { mutate: updateAvailability } = useMutation<
-      AvailabilityMutation,
-      UpdateAvailabilityVariables
-    >(updateAvailabilityMutation);
-
-    const getBgImage = (gameName: string): string | undefined => bgImages.get(gameName);
-
-    const gamesWithSelectedState = (): GameModel[] | [] => {
-      if (games.value) {
-        return games.value.map(game => ({
-          ...game,
-          selected: false
-        }));
-      } else {
-        return [];
-      }
-    };
-
-    if (games.value) {
-      clonedGames.value = gamesWithSelectedState();
-      clonedGames2.value = gamesWithSelectedState();
-    }
-
-    watch(games, () => {
-      clonedGames.value = gamesWithSelectedState();
-      clonedGames2.value = gamesWithSelectedState();
-    });
-
-    const handleFilter = (event: Event) => {
-      const query = (event.target as HTMLInputElement).value;
-      clonedGames.value =
-        query && query.length > 2
-          ? clonedGames.value.filter(game => {
-              return query
-                .toLowerCase()
-                .split(' ')
-                .every(v => game.name.toLowerCase().includes(v));
-            })
-          : clonedGames2.value;
-    };
 
     const handleAvailabilityChange = (event: any) => {
       availibility.value = event;
     };
 
     return {
-      clonedGames,
-      gamesLoading,
-      handleFilter,
-      getBgImage,
       handleAvailabilityChange
     };
   }

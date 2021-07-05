@@ -49,11 +49,6 @@ import { settingsRoutes } from '@/router/myProfile';
 export default defineComponent({
   name: 'Settings',
   setup() {
-    // const settingsRouteChildren = myProfileRoutes
-    //   ?.filter(childRoute => childRoute.name === 'Settings')
-    //   .map(settingsRoute => settingsRoute.children)[0];
-    // console.log(myProfileRoutes);
-
     return {
       settingsRoutes
     };

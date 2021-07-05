@@ -29,14 +29,29 @@
 </template>
 
 <script lang="ts">
+import { updateAvailabilityMutation } from '@/apollo/availability.gql';
 import FirstStepFurrax from '@/components/become-furrax/FirstStepFurrax.vue';
 import SecondStepFurrax from '@/components/become-furrax/SecondStepFurrax.vue';
+import { useMutation } from '@vue/apollo-composable';
 import { defineComponent, ref } from 'vue';
+
+interface UpdateAvailabilityVariables {
+  value: string;
+}
+
+interface AvailabilityMutation {
+  updateAvailability: UpdateAvailabilityVariables;
+}
 
 export default defineComponent({
   components: { FirstStepFurrax, SecondStepFurrax },
   setup() {
     const step = ref(1);
+
+    const { mutate: updateAvailability } = useMutation<
+      AvailabilityMutation,
+      UpdateAvailabilityVariables
+    >(updateAvailabilityMutation);
 
     return {
       step

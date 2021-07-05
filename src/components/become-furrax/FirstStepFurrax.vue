@@ -17,7 +17,7 @@
         <div class="h-40 space-y-3">
           <img
             class="text-center object-cover h-28 cursor-pointer rounded-md w-full"
-            :src="getBgImage(game.name)"
+            :src="getBgImageByGameName(game.name)"
             :class="game.selected && 'border-green-400 border-2'"
             @click="game.selected = !game.selected"
           />
@@ -62,7 +62,7 @@ export default defineComponent({
       ['Valorant', '/images/backgrounds/valorant.jpg']
     ]);
 
-    const getBgImage = (gameName: string): string | undefined => bgImages.get(gameName);
+    const getBgImageByGameName = (gameName: string): string | undefined => bgImages.get(gameName);
 
     const gamesWithSelectedState = (): GameModel[] | [] => {
       if (games.value) {
@@ -102,7 +102,7 @@ export default defineComponent({
       clonedGames,
       gamesLoading,
       handleFilter,
-      getBgImage
+      getBgImageByGameName
     };
   }
 });
