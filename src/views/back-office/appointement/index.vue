@@ -14,7 +14,11 @@
         icon="/images/icons/profiles.svg"
       />
     </section>
-    <pagination :size="size" :element-by-page="elementByPage" @change-page="handleChangePage">
+    <pagination
+      :size="appointmentsQueryResult.length"
+      :element-by-page="elementByPage"
+      @change-page="handleChangePage"
+    >
       <div class="grid grid-cols-12 gap-6 mt-6">
         <action-warning-popup
           v-if="isPopupOpen && popupPayload.size"
@@ -241,7 +245,7 @@ export default defineComponent({
       useFilterBy,
       filterKey,
 
-      size: appointmentsQueryResult.value.length,
+      appointmentsQueryResult,
       elementByPage,
       currentPage,
       handleChangePage,

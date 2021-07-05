@@ -35,7 +35,6 @@ export default defineComponent({
   data: () => ({ currentPage: 0 }),
   computed: {
     pages(): Array<string> {
-      console.log(this.size);
       const nPage = ~~(this.size / this.elementByPage);
       return nPage > 7
         ? [...[...Array(5)].map((_, i) => `${i + 1}`), '...', `${nPage}`]

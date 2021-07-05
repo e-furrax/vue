@@ -17,7 +17,10 @@ export default defineComponent({
   name: 'StatsCard',
   props: {
     label: String,
-    items: [],
+    items: {
+      type: Array,
+      required: true
+    },
     icon: String
   }
 });

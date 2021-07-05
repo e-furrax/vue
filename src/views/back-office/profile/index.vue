@@ -1,10 +1,14 @@
 <template>
-  <pagination :size="size" :element-by-page="elementByPage" @change-page="handleChangePage">
+  <pagination
+    :size="usersQueryResult.length"
+    :element-by-page="elementByPage"
+    @change-page="handleChangePage"
+  >
     <div class="flex flex-col">
       <section class="flex flex-col sm:flex-row justify-center items-center">
         <StatsCard
           class="w-full lg:w-96"
-          :items="users"
+          :items="usersQueryResult"
           label="TOTAL USERS"
           icon="/images/icons/profiles.svg"
         />
@@ -138,7 +142,7 @@ export default defineComponent({
     const users = computed(() => {
       const start = currentPage.value * elementByPage.value;
       const end = start + elementByPage.value;
-      let usersCopy = usersQueryResult.value.slice(start, end);
+      let usersCopy = usersQueryResult.value.slice();
       if (filterModified.value) {
         usersCopy = usersCopy.filter((user: any) =>
           filterModified.value === 1
@@ -147,9 +151,13 @@ export default defineComponent({
         );
       }
 
-      return usersCopy?.sort((a: any, b: any) => {
-        return a[filterKey.value.key].localeCompare(b[filterKey.value.key]) * filterKey.value.order;
-      });
+      return usersCopy
+        ?.sort((a: any, b: any) => {
+          return (
+            a[filterKey.value.key].localeCompare(b[filterKey.value.key]) * filterKey.value.order
+          );
+        })
+        .slice(start, end);
     });
     const filterModifiedText = computed(() => {
       if (filterModified.value === 0) return 'ALL';
@@ -172,7 +180,7 @@ export default defineComponent({
       useFilterBy,
       filterKey,
 
-      size: usersQueryResult.value.length,
+      usersQueryResult,
       elementByPage,
       currentPage,
       handleChangePage,
@@ -186,10 +194,10 @@ export default defineComponent({
   },
   computed: {
     usersLast24h(): UserModel[] {
-      if (this.users) {
+      if (this.usersQueryResult) {
         const limitDate = new Date();
         limitDate.setHours(limitDate.getHours() - 24);
-        return this.users.filter((user: UserModel) => {
+        return this.usersQueryResult.filter((user: UserModel) => {
           return new Date(user.createdAt) >= limitDate;
         });
       }

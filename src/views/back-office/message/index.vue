@@ -1,44 +1,53 @@
-,<template>
-  <div class="flex flex-col">
-    <section class="flex flex-col sm:flex-row justify-center items-center">
-      <StatsCard
-        class="w-full lg:w-96"
-        :items="computedReceivedComments"
-        label="TOTAL COMMENTS"
-        icon="/images/icons/comments.svg"
-      />
-      <StatsCard
-        class="w-full lg:w-96 mt-2 sm:ml-6 sm:mt-0"
-        :items="commentsLast24h"
-        label="COMMENTS LAST 24H"
-        icon="/images/icons/comments.svg"
-      />
-    </section>
-    <section class="mt-6 flex flex-col items-start">
-      <h1 class="text-lg text-white">All comments</h1>
-      <Comment
-        v-for="comment in computedReceivedComments"
-        :key="comment.id"
-        :comment="comment"
-        class="mt-2 text-left bg-darkpurple-400"
-        @rating-removed="handleRatingRemoved"
-      ></Comment>
-    </section>
-  </div>
+<template>
+  <pagination
+    :size="comments.length"
+    :element-by-page="elementByPage"
+    @change-page="handleChangePage"
+  >
+    <div class="flex flex-col">
+      <section class="flex flex-col sm:flex-row justify-center items-center">
+        <StatsCard
+          class="w-full lg:w-96"
+          :items="comments"
+          label="TOTAL COMMENTS"
+          icon="/images/icons/comments.svg"
+        />
+        <StatsCard
+          class="w-full lg:w-96 mt-2 sm:ml-6 sm:mt-0"
+          :items="commentsLast24h"
+          label="COMMENTS LAST 24H"
+          icon="/images/icons/comments.svg"
+        />
+      </section>
+      <Loader v-if="loading" />
+      <section v-else-if="comments" class="mt-6 flex flex-col items-start">
+        <h1 class="text-lg text-white">All comments</h1>
+        <Comment
+          v-for="comment in computedComments"
+          :key="comment.id"
+          :comment="comment"
+          class="mt-2 text-left bg-darkpurple-400"
+          @rating-removed="handleRatingRemoved"
+        ></Comment>
+      </section>
+    </div>
+  </pagination>
 </template>
 
 <script lang="ts">
+import { defineComponent, computed, ref } from 'vue';
 import { useAuth } from '@/composables/auth';
-import { useQuery, useResult } from '@vue/apollo-composable';
-import { defineComponent } from 'vue';
+import { useQuery, useResult, useQueryLoading } from '@vue/apollo-composable';
 import { getRatings } from '@/apollo/rating.gql';
 import Comment from '@/components/Comment.vue';
 import RatingModel from '@/models/rating.model';
 import StatsCard from '@/components/back-office/StatsCard.vue';
+import Loader from '@/components/Loader.vue';
+import Pagination from '@/components/Pagination.vue';
 
 export default defineComponent({
   name: 'Message',
-  components: { Comment, StatsCard },
+  components: { Comment, StatsCard, Pagination, Loader },
   provide() {
     return {
       authorized: this.authorized
@@ -47,25 +56,38 @@ export default defineComponent({
   setup() {
     const { user } = useAuth();
     const { result, refetch: refetchComments } = useQuery(getRatings);
-    const comments = useResult(result, null, data => data.getRatings);
+    const comments = useResult(result, [], data => data.getRatings);
+    const loading = useQueryLoading();
+
+    const currentPage = ref(0);
+    const elementByPage = ref(12);
+    const handleChangePage = (n: number) => {
+      currentPage.value = n;
+    };
+
+    const computedComments = computed(() => {
+      const start = currentPage.value * elementByPage.value;
+      const end = start + elementByPage.value;
+      const orderedComments = comments.value.slice();
+      orderedComments.sort((r1: RatingModel, r2: RatingModel) => {
+        return new Date(r2.createdAt).getTime() - new Date(r1.createdAt).getTime();
+      });
+      return orderedComments.slice(start, end);
+    });
 
     return {
       user,
       comments,
-      refetchComments
+      computedComments,
+      refetchComments,
+      loading,
+
+      currentPage,
+      elementByPage,
+      handleChangePage
     };
   },
   computed: {
-    computedReceivedComments(): RatingModel[] {
-      if (this.comments) {
-        const orderedComments = JSON.parse(JSON.stringify(this.comments));
-        orderedComments.sort((r1: RatingModel, r2: RatingModel) => {
-          return new Date(r2.createdAt).getTime() - new Date(r1.createdAt).getTime();
-        });
-        return orderedComments;
-      }
-      return [];
-    },
     commentsLast24h(): RatingModel[] {
       if (this.comments) {
         const limitDate = new Date();
