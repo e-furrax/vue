@@ -30,8 +30,28 @@
             duration-200
           "
           @click="handleModal"
+          v-if="user.role === 'FURRAX'"
         >
           Play together
+        </button>
+        <button
+          class="
+            font-bold
+            uppercase
+            rounded
+            bg-purple-600
+            text-sm
+            py-2
+            px-6
+            hover:bg-purple-700
+            transition-all
+            ease-in
+            duration-200
+            lg:mr-4
+          "
+          v-if="isOwner() && authorized(['USER'])"
+        >
+          Become a furrax
         </button>
       </div>
       <div class="container mx-auto mt-4 flex flex-col items-center lg:flex-row lg:items-start">
@@ -95,7 +115,11 @@
                     />
                   </h2>
                 </div>
-                <div class="flex flex-col mt-2 text-sm">
+                <div class="flex flex-col items-start mt-2 text-sm">
+                  <span
+                    class="text-center text-xs mb-1 px-3 text-purple-300 py-0.5 bg-purple-900 rounded-full"
+                    >{{ user.role }}</span
+                  >
                   <div class="flex items-center flex-wrap mb-1">
                     <div v-for="language of user.languages" :key="language.id" class="z-20 mr-1">
                       <img
@@ -120,6 +144,7 @@
               <h4 class="font-bold uppercase">Games</h4>
               <Selector
                 :datas="games"
+                :userId="userId"
                 :userDatas="user.games"
                 name="Games"
                 @handle-add="handleAddGame"
@@ -128,9 +153,9 @@
             </section>
             <section class="pt-4 px-4">
               <h4 class="font-bold uppercase">Languages</h4>
-
               <Selector
                 :datas="languages"
+                :userId="userId"
                 :userDatas="user.languages"
                 name="Languages"
                 @handle-add="handleAddLanguage"
@@ -141,6 +166,7 @@
               <h4 class="font-bold uppercase">
                 Ranks ({{ user.statistics.length }}/{{ maxRanks }})
               </h4>
+              <span v-if="!user.statistics.length">This user has no ranks.</span>
               <div class="grid gap-2 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
                 <GameRank
                   v-for="statistic of user.statistics"
@@ -163,8 +189,8 @@
                   :addGameCard="true"
                 />
                 <div
-                  @click="addingGame = addingGame ? false : true"
-                  v-show="!addingGame"
+                  @click="addingGame = !addingGame"
+                  v-show="!addingGame && isOwner()"
                   class="
                     w-full
                     flex
@@ -183,7 +209,7 @@
                   <span class="ml-2">Add a rank</span>
                 </div>
               </div>
-              <div class="mt-4">
+              <div class="mt-4" v-if="isOwner()">
                 <label for="lol-username" class="text-sm"
                   >Enter your League of Legends summoner's name to get your ranks
                   automatically</label
@@ -232,7 +258,7 @@
                 "
                 width="24"
                 @click="handleEditingDescription"
-                v-if="!editingDescription && userAuth"
+                v-if="!editingDescription && (isOwner() || authorized(['ADMIN', 'MODERATOR']))"
               />
               <h4 class="font-bold uppercase">About me</h4>
               <p ref="descriptionRef" v-show="!editingDescription">
@@ -307,7 +333,7 @@
               <Form
                 :validation-schema="schema"
                 class="flex flex-col items-start"
-                v-if="userAuth"
+                v-if="!isOwner() && authorized(['USER', 'FURRAX', 'MODERATOR', 'ADMIN'])"
                 @submit="handleRating"
               >
                 <label for="rating">Rating<span class="text-red-500">*</span></label>
@@ -357,6 +383,7 @@
                   v-for="com in computedReceivedRatings"
                   :key="com.id"
                   :comment="com"
+                  :userId="userId"
                   class="mt-2"
                   @rating-removed="handleRatingRemoved"
                 ></Comment>
@@ -366,6 +393,7 @@
           </div>
         </div>
         <div
+          v-if="user.role === 'FURRAX'"
           class="
             bg-opacity-70
             sm:rounded-sm
@@ -410,12 +438,18 @@
           "
         >
           <div class="flex flex-col">
-            <Field as="select" name="game" v-model="demandGame" class="bg-purple-1200">
-              <option value="lol">League of Legends</option>
-              <option value="rl">Rocket League</option>
-              <option value="valorant">Valorant</option>
-              <option value="csgo">CS:GO</option>
+            <Field
+              as="select"
+              name="game"
+              v-model="demandGame"
+              class="bg-white py-0.5 px-1 bg-opacity-10"
+            >
+              <option value="League of Legends" class="bg-purple-1000">League of Legends</option>
+              <option value="Rocket League" class="bg-purple-1000">Rocket League</option>
+              <option value="Valorant" class="bg-purple-1000">Valorant</option>
+              <option value="CS:GO" class="bg-purple-1000">CS:GO</option>
             </Field>
+            <ErrorMessage name="game" class="text-red-500" />
             <div class="mt-2 flex items-center">
               <img src="/images/avatar1.png" class="mr-2 w-5 h-5 rounded-full" />
               <span class="text-sm">{{ user.username }}</span>
@@ -439,10 +473,12 @@
               class="w-20 bg-purple-1200 p-1 text-white"
             />
           </div>
+          <ErrorMessage name="matches" class="text-red-500" />
           <div class="mt-4 flex justify-between items-center">
             <label for="date">Start time</label>
-            <Field type="datetime-local" name="date" class="bg-purple-1200 p-1 text-white" />
+            <Field type="datetime-local" name="date" class="bg-purple-1200 ml-6 p-1 text-white" />
           </div>
+          <ErrorMessage name="date" class="text-red-500" />
         </div>
         <div class="p-4 border-t border-purple-925 flex justify-between items-center">
           <span>Total</span>
@@ -632,7 +668,7 @@ export default defineComponent({
   data() {
     return {
       editingDescription: false,
-      demandGame: 'lol',
+      demandGame: 'League of Legends',
       addingGame: false,
       maxRanks: 6,
       matches: 1
@@ -730,7 +766,10 @@ export default defineComponent({
     const appointmentSchema = yup.object({
       game: yup.string().required(),
       matches: yup.number().required(),
-      date: yup.date().required(),
+      date: yup
+        .date()
+        .min(new Date())
+        .required(),
       description: yup
         .string()
         .required()
@@ -780,6 +819,12 @@ export default defineComponent({
     }
   },
   name: 'UserProfile',
+  provide() {
+    return {
+      authorized: this.authorized,
+      isOwner: this.isOwner
+    };
+  },
   components: {
     Field,
     ErrorMessage,
@@ -792,6 +837,12 @@ export default defineComponent({
     Selector
   },
   methods: {
+    authorized(roles: string[]) {
+      return this.userAuth && roles.includes((this.userAuth as any).role);
+    },
+    isOwner() {
+      return this.userAuth && (this.userAuth as any).id === this.userId;
+    },
     findLolGame(): GameModel {
       return this.games.find((game: GameModel) => game.name === 'League of Legends');
     },

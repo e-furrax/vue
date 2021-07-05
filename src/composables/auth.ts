@@ -12,6 +12,7 @@ export interface User {
   username: string;
   email: string;
   profileImage: string;
+  role: string;
 }
 
 interface UserState {

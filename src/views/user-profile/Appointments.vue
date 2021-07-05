@@ -27,7 +27,11 @@
               </span>
               <br />
               {{ attr.customData.appointment.game }} with
-              {{ attr.customData.appointment.from.username }}
+              {{
+                attr.customData.appointment.from.username === user.username
+                  ? attr.customData.appointment.to.username
+                  : attr.customData.appointment.from.username
+              }}
             </p>
           </div>
         </div>
@@ -88,6 +92,14 @@ interface AppointmentVariables {
 
 interface AppointmentsResult {
   getAppointmentsByUser: Appointment[];
+}
+
+enum ROLES {
+  ADMIN = 'ADMIN',
+  MODERATOR = 'MODERATOR',
+  FURRAX = 'FURRAX',
+  USER = 'USER',
+  BANNED = 'BANNED'
 }
 
 export default defineComponent({
@@ -158,6 +170,9 @@ export default defineComponent({
     }
   },
   methods: {
+    authorized(roles: string[]) {
+      return this.user && roles.includes((this.user as any).role);
+    },
     setAttributes(appointments: Appointment[]) {
       this.clonedAppointments = JSON.parse(JSON.stringify(appointments));
       this.attributes = appointments.map((appointment, index) => {
@@ -247,7 +262,9 @@ export default defineComponent({
                 new Date(attr.customData.appointment.date)
               ).format('h:mm A')}</span></span>
               <span>With: <span class="text-gold">${
-                attr.customData.appointment.from.username
+                attr.customData.appointment.from.username === (this.user as any).username
+                  ? attr.customData.appointment.to.username
+                  : attr.customData.appointment.from.username
               }</span></span>
               <span>Game: <span class="text-gold">${attr.customData.appointment.game}</span></span>
               <span>Matches: <span class="text-gold">${
@@ -278,6 +295,9 @@ export default defineComponent({
                 <img
                   data-id="${attr.customData.appointment._id}"
                   class="
+                    ${
+                      !this.authorized([ROLES.FURRAX, ROLES.MODERATOR, ROLES.ADMIN]) ? 'hidden' : ''
+                    }
                     confirm
                     cursor-pointer
                     bg-white
