@@ -7,7 +7,7 @@
       style="top: -2rem"
       width="24"
       @click="handleEditing"
-      v-if="!editing && user"
+      v-if="!editing && isAllowed(['ADMIN', 'MODERATOR'])"
     />
     <div v-show="!editing">
       <div
@@ -160,6 +160,7 @@ export default defineComponent({
       required: true
     }
   },
+  inject: ['isAllowed'],
   setup(props) {
     const { result, loading, error, refetch } = useQuery(getAvailability, {
       user: { id: parseInt(props.userId) }

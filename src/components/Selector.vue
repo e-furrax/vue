@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <div class="flex items-center">
+    <div v-if="isAllowed(['ADMIN', 'MODERATOR'])" class="flex items-center">
       <select
         class="px-1 text-sm py-0.5 border border-purple-custom bg-purple-1100 rounded"
         name="my-data-add"
@@ -53,6 +53,7 @@
         <img
           :data-game-id="data.id"
           @click="handleRemove"
+          v-if="isAllowed(['ADMIN', 'MODERATOR'])"
           class="
             ml-1
             cursor-pointer
@@ -72,6 +73,7 @@
 </template>
 
 <script lang="ts">
+import { useAuth } from '@/composables/auth';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
@@ -92,11 +94,14 @@ export default defineComponent({
   },
   setup() {
     const myDataAdd = ref();
+    const { user } = useAuth();
 
     return {
+      user,
       myDataAdd
     };
   },
+  inject: ['isAllowed'],
   methods: {
     handleAdd() {
       const id = this.myDataAdd.value;

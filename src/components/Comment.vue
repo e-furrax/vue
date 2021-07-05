@@ -1,6 +1,7 @@
 <template>
   <div class="relative comment py-2 px-3 w-full rounded-sm bg-purple-1100 text-white relative">
     <img
+      v-if="isAllowed(['ADMIN', 'MODERATOR'])"
       class="
         absolute
         cursor-pointer
@@ -63,6 +64,7 @@ export default defineComponent({
   props: {
     comment: Object
   },
+  inject: ['isAllowed'],
   setup() {
     const { user } = useAuth();
     const { mutate: removeRating } = useMutation<Partial<RatingModel>, RemoveRatingVariables>(

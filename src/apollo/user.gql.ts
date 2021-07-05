@@ -7,6 +7,7 @@ export const me = gql`
       email
       username
       profileImage
+      role
     }
   }
 `;

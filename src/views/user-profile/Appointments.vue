@@ -90,6 +90,14 @@ interface AppointmentsResult {
   getAppointmentsByUser: Appointment[];
 }
 
+enum ROLES {
+  ADMIN = 'ADMIN',
+  MODERATOR = 'MODERATOR',
+  FURRAX = 'FURRAX',
+  USER = 'USER',
+  BANNED = 'BANNED'
+}
+
 export default defineComponent({
   name: 'Appointments',
   components: {
@@ -158,6 +166,9 @@ export default defineComponent({
     }
   },
   methods: {
+    isAllowed(roles: ROLES[]) {
+      return roles.includes((this.user as any).role);
+    },
     setAttributes(appointments: Appointment[]) {
       this.clonedAppointments = JSON.parse(JSON.stringify(appointments));
       this.attributes = appointments.map((appointment, index) => {
@@ -278,6 +289,7 @@ export default defineComponent({
                 <img
                   data-id="${attr.customData.appointment._id}"
                   class="
+                    ${!this.isAllowed([ROLES.FURRAX, ROLES.MODERATOR, ROLES.ADMIN]) ? 'hidden' : ''}
                     confirm
                     cursor-pointer
                     bg-white

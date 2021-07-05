@@ -120,6 +120,7 @@
               <h4 class="font-bold uppercase">Games</h4>
               <Selector
                 :datas="games"
+                :userId="userId"
                 :userDatas="user.games"
                 name="Games"
                 @handle-add="handleAddGame"
@@ -128,9 +129,9 @@
             </section>
             <section class="pt-4 px-4">
               <h4 class="font-bold uppercase">Languages</h4>
-
               <Selector
                 :datas="languages"
+                :userId="userId"
                 :userDatas="user.languages"
                 name="Languages"
                 @handle-add="handleAddLanguage"
@@ -141,6 +142,7 @@
               <h4 class="font-bold uppercase">
                 Ranks ({{ user.statistics.length }}/{{ maxRanks }})
               </h4>
+              <span v-if="!user.statistics.length">This user has no ranks.</span>
               <div class="grid gap-2 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1">
                 <GameRank
                   v-for="statistic of user.statistics"
@@ -163,8 +165,8 @@
                   :addGameCard="true"
                 />
                 <div
-                  @click="addingGame = addingGame ? false : true"
-                  v-show="!addingGame"
+                  @click="addingGame = !addingGame"
+                  v-show="!addingGame && isAllowed(['ADMIN', 'MODERATOR'])"
                   class="
                     w-full
                     flex
@@ -183,7 +185,7 @@
                   <span class="ml-2">Add a rank</span>
                 </div>
               </div>
-              <div class="mt-4">
+              <div class="mt-4" v-if="isAllowed(['ADMIN', 'MODERATOR'])">
                 <label for="lol-username" class="text-sm"
                   >Enter your League of Legends summoner's name to get your ranks
                   automatically</label
@@ -232,7 +234,7 @@
                 "
                 width="24"
                 @click="handleEditingDescription"
-                v-if="!editingDescription && userAuth"
+                v-if="!editingDescription && isAllowed()"
               />
               <h4 class="font-bold uppercase">About me</h4>
               <p ref="descriptionRef" v-show="!editingDescription">
@@ -307,7 +309,7 @@
               <Form
                 :validation-schema="schema"
                 class="flex flex-col items-start"
-                v-if="userAuth"
+                v-if="isAllowed(['ADMIN', 'MODERATOR'])"
                 @submit="handleRating"
               >
                 <label for="rating">Rating<span class="text-red-500">*</span></label>
@@ -357,6 +359,7 @@
                   v-for="com in computedReceivedRatings"
                   :key="com.id"
                   :comment="com"
+                  :userId="userId"
                   class="mt-2"
                   @rating-removed="handleRatingRemoved"
                 ></Comment>
@@ -780,6 +783,11 @@ export default defineComponent({
     }
   },
   name: 'UserProfile',
+  provide() {
+    return {
+      isAllowed: this.isAllowed
+    };
+  },
   components: {
     Field,
     ErrorMessage,
@@ -792,6 +800,11 @@ export default defineComponent({
     Selector
   },
   methods: {
+    isAllowed(roles: string[]) {
+      return (
+        (this.userAuth as any).id === this.userId || roles.includes((this.userAuth as any).role)
+      );
+    },
     findLolGame(): GameModel {
       return this.games.find((game: GameModel) => game.name === 'League of Legends');
     },
