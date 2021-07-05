@@ -71,8 +71,6 @@
 
 <script lang="ts">
 import { useAuth } from '@/composables/auth';
-import { useAuthorization } from '@/composables/authorization';
-import { ROLES } from '@/models/user.model';
 import { defineComponent } from 'vue';
 import SearchBar from '../../SearchBar.vue';
 import HeaderBurger from './HeaderBurger.vue';
@@ -83,7 +81,6 @@ export default defineComponent({
   name: 'Header',
   setup() {
     const { user } = useAuth();
-    const { isAuthorized } = useAuthorization([ROLES.USER]);
 
     return {
       user
