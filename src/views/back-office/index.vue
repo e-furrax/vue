@@ -1,9 +1,13 @@
 <template>
-  <div class="flex flex-row">
-    <BackOfficeSidebar class="sidebar bg-purple-1100 w-1/5" />
-    <div class="flex flex-col w-4/5">
-      <h1 class="name text-2xl text-center uppercase text-white font-bold">{{ $route.name }}</h1>
-      <router-view class="bg-purple-300 my-10 mr-10 text-center rounded-3xl" />
+  <div class="flex flex-row container mx-auto mt-10">
+    <BackOfficeSidebar class="sidebar bg-purple-1100" />
+    <div class="flex flex-col w-full pb-32 min-h-full">
+      <h1 class="name text-2xl text-center uppercase text-white font-bold mb-5">
+        {{ $route.name }}
+      </h1>
+      <router-view
+        class="border border-purple-custom bg-darkpurple-200 shadow text-center h-full rounded-xl p-6"
+      />
     </div>
   </div>
 </template>
@@ -27,3 +31,9 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.border-purple-custom {
+  border-color: #382f66;
+}
+</style>

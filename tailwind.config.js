@@ -40,6 +40,13 @@ module.exports = {
         950: '#251b4d',
         925: '#251255'
       },
+      darkpurple: {
+        100: '#2D2652',
+        200: '#302C50',
+        300: '#282442',
+        400: '#24213D',
+        500: '#211E36'
+      },
       blueGray: {
         ...colors.blueGray,
         custom: '#a2a3c5'

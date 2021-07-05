@@ -6,6 +6,7 @@ export default interface UserModel {
   description: string;
   image: string;
   ratings: RatingModel[];
+  createdAt: string;
 }
 
 export interface LoginPayload {

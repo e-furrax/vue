@@ -19,6 +19,7 @@ export const getUsers = gql`
       username
       description
       gender
+      createdAt
       languages {
         name
       }

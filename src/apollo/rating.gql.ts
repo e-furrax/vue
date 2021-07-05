@@ -16,6 +16,23 @@ export const addRatingMutation = gql`
   }
 `;
 
+export const getRatings = gql`
+  query getRatings {
+    getRatings {
+      id
+      rating
+      comments
+      createdAt
+      fromUser {
+        username
+      }
+      toUser {
+        username
+      }
+    }
+  }
+`;
+
 export const removeRatingMutation = gql`
   mutation removeRating($ratings: RatingIdsInput!) {
     removeRating(ratings: $ratings)
