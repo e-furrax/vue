@@ -43,6 +43,9 @@ import { Form } from 'vee-validate';
 import { object, string } from 'yup';
 import { becomeFurrax } from '@/apollo/user.gql';
 import { useAuth } from '@/composables/auth';
+import { ROLES } from '@/models/user.model';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 
 interface BecomeFurraxVariables {
   data: {
@@ -73,8 +76,9 @@ export default defineComponent({
     const { mutate } = useMutation<BecomeFurraxMutationResponse, BecomeFurraxVariables>(
       becomeFurrax
     );
-
+    const router = useRouter();
     const { user } = useAuth();
+    const toast = useToast();
 
     const schema = object({
       description: string()
@@ -92,6 +96,12 @@ export default defineComponent({
           description: values.description,
           availability: JSON.stringify(availability.value),
           languages: { ids: mapIds(values.languages) }
+        }
+      }).then(() => {
+        if (user?.value) {
+          user.value = { ...user?.value, role: ROLES.FURRAX };
+          toast.success('You are now a Furrax !');
+          router.push(`/user/${user.value.id}`);
         }
       });
     };

@@ -58,6 +58,7 @@ import { provideApolloClient, useMutation, useQuery, useResult } from '@vue/apol
 import dayjs from 'dayjs';
 import { useToast } from 'vue-toastification';
 import { mongoClient } from '@/apollo/client';
+import { ROLES } from '@/models/user.model';
 
 interface AttributeType {
   key: number;
@@ -92,14 +93,6 @@ interface AppointmentVariables {
 
 interface AppointmentsResult {
   getAppointmentsByUser: Appointment[];
-}
-
-enum ROLES {
-  ADMIN = 'ADMIN',
-  MODERATOR = 'MODERATOR',
-  FURRAX = 'FURRAX',
-  USER = 'USER',
-  BANNED = 'BANNED'
 }
 
 export default defineComponent({

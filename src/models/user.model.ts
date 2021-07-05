@@ -20,3 +20,11 @@ export interface LoginMutationResponse {
 export interface ConfirmUserMutationResponse {
   confirmUser: User;
 }
+
+export enum ROLES {
+  ADMIN = 'ADMIN',
+  MODERATOR = 'MODERATOR',
+  FURRAX = 'FURRAX',
+  USER = 'USER',
+  BANNED = 'BANNED'
+}
