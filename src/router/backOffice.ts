@@ -5,6 +5,7 @@ import BackOfficeProfiles from '@/views/back-office/profile/index.vue';
 import BackOfficeProfileId from '@/views/back-office/profile/id.vue';
 import BackOfficeAppointement from '@/views/back-office/appointement/index.vue';
 import BackOfficeMessage from '@/views/back-office/message/index.vue';
+import { ROLES } from '@/models/user.model';
 
 import Header from '@/components/layouts/default/Header.vue';
 import Footer from '@/components/layouts/default/Footer.vue';
@@ -12,6 +13,8 @@ import Footer from '@/components/layouts/default/Footer.vue';
 export const backOfficeOverviewRoutes: RouteRecordRaw = {
   path: '/back-office',
   name: 'BackOffice',
+  meta: { authorized: { roles: [ROLES.ADMIN, ROLES.MODERATOR], redirect: 'NotFound' } },
+  redirect: '/back-office/profiles',
   components: {
     header: Header,
     default: BackOffice,
