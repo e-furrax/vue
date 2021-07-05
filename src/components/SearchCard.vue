@@ -7,15 +7,13 @@
       border
       bg-purple-925
       profile-card
-      rounded-sm
       transition
       duration-300
       cursor-pointer
-      bg-white
       grid grid-cols-1
     "
   >
-    <div class="relative profile-top h-28 flex relative flex-col items-center overflow-hidden">
+    <div class="profile-top h-28 flex relative flex-col items-center overflow-hidden">
       <div class="flex items-start justify-start flex-wrap p-2 w-full">
         <div
           v-for="game of user.games"
@@ -65,7 +63,7 @@
     <div class="z-30 text-left p-2 w-full transform -translate-y-10 h-36">
       <div class="ml-4 flex items-end">
         <img
-          src="/images/avatar1.png"
+          :src="user.profileImage || '/images/avatar1.png'"
           class="profile-picture rounded-full border-4 border-purple-925 z-20 mr-3"
           alt="profile picture"
           style="width: 70px"

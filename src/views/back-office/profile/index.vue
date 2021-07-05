@@ -58,9 +58,7 @@
               >
                 <td class="rounded-l px-2 py-1 flex items-center">
                   <img
-                    :src="
-                      `${user.profileImage ? user.profileImage : '/images/photo-placeholder.jpg'}`
-                    "
+                    :src="user.profileImage || '/images/avatar1.png'"
                     class="inline-flex items-center justify-center rounded-full h-8 w-8 lg:mr-4"
                   />
                   <span>{{ user.username }}</span>

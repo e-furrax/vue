@@ -83,7 +83,7 @@
               "
             >
               <img
-                src="/images/avatar1.png"
+                :src="user.profileImage || '/images/avatar1.png'"
                 class="rounded-full border-2 border-purple-custom z-20 w-32 lg:w-40"
               />
               <div
