@@ -14,7 +14,15 @@
         :key="game.id"
         class="my-2 px-2 w-full overflow-hidden sm:my-2 sm:px-2 sm:w-1/2 md:my-2 md:px-2 md:w-1/2 lg:my-2 lg:px-2 lg:w-1/3 xl:my-2 xl:px-2 xl:w-1/4"
       >
-        <div class="h-40 space-y-3">
+        <div
+          class="h-40 space-y-3"
+          @click="
+            $emit(
+              'selected-games',
+              clonedGames.filter(game => game.selected)
+            )
+          "
+        >
           <img
             class="text-center object-cover h-28 cursor-pointer rounded-md w-full"
             :src="getBgImageByGameName(game.name)"
@@ -50,6 +58,7 @@ import { useQuery, useResult } from '@vue/apollo-composable';
 import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
+  emits: ['selected-games'],
   setup() {
     const { result: gamesResult, loading: gamesLoading } = useQuery<GameQuery>(getGames);
     const games = useResult(gamesResult, null, data => data.getGames);

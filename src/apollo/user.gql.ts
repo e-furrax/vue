@@ -225,3 +225,9 @@ export const addGamesCSMutation = gql`
     addGamesCS(userName: $userName)
   }
 `;
+
+export const becomeFurrax = gql`
+  mutation becomeFurrax($data: BecomeFurraxInput!) {
+    becomeFurrax(data: $data)
+  }
+`;
