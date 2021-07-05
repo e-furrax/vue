@@ -8,7 +8,6 @@ export const getAppointments = gql`
       _updatedAt
       from
       to
-      title
       status
       transactions {
         _id
@@ -19,19 +18,18 @@ export const getAppointments = gql`
   }
 `;
 
-export const getAppointmentbyUser = gql`
-  query getAppointmentByUser($id: number!) {
-    getAppointmentsByUser(id: $id) {
+export const getAppointmentsByUser = gql`
+  query getAppointmentsByUser($data: AppointmentStatusInput!) {
+    getAppointmentsByUser(data: $data) {
       _id
       _createdAt
       _updatedAt
       from
       to
-      title
-      transactions {
-        price
-        status
-      }
+      game
+      date
+      matches
+      status
     }
   }
 `;
@@ -47,5 +45,11 @@ export const createAppointment = gql`
 export const deleteAppointment = gql`
   mutation deleteAppointment($payload: AppointmentIdsInput!) {
     deleteAppointment(payload: $payload)
+  }
+`;
+
+export const confirmAppointment = gql`
+  mutation confirmAppointment($payload: AppointmentIdsInput!) {
+    confirmAppointment(payload: $payload)
   }
 `;

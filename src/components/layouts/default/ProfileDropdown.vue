@@ -133,9 +133,9 @@ export default defineComponent({
           meta: { icon: 'icons/email.svg' }
         },
         {
-          path: '/history',
-          name: 'History Transactions',
-          meta: { icon: 'receipt_long.svg' }
+          path: '/appointments',
+          name: 'Appointments',
+          meta: { icon: 'icons/event.svg' }
         },
         {
           path: '/settings',

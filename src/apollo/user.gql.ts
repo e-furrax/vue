@@ -39,6 +39,7 @@ export const getUser = gql`
       username
       description
       gender
+      createdAt
       receivedRatings {
         id
         comments
@@ -180,6 +181,17 @@ export const addGamesMutation = gql`
   }
 `;
 
+export const addLanguagesMutation = gql`
+  mutation addLanguages($languages: LanguagesInput!) {
+    addLanguages(languages: $languages) {
+      username
+      languages {
+        name
+      }
+    }
+  }
+`;
+
 export const removeUserGameMutation = gql`
   mutation removeUserGame($id: Float!) {
     removeUserGame(id: $id) {
@@ -188,5 +200,28 @@ export const removeUserGameMutation = gql`
         name
       }
     }
+  }
+`;
+
+export const removeUserLanguageMutation = gql`
+  mutation removeUserLanguage($id: Float!) {
+    removeUserLanguage(id: $id) {
+      username
+      languages {
+        name
+      }
+    }
+  }
+`;
+
+export const addGamesLolMutation = gql`
+  mutation addGamesLol($userName: String!) {
+    addGamesLol(userName: $userName)
+  }
+`;
+
+export const addGamesCSMutation = gql`
+  mutation addGamesCS($userName: String!) {
+    addGamesCS(userName: $userName)
   }
 `;
