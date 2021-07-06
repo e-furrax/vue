@@ -30,7 +30,7 @@
             duration-200
           "
           @click="handleModal"
-          v-if="user.role === 'FURRAX'"
+          v-if="authorized(['USER']) && user.role === 'FURRAX'"
         >
           Play together
         </button>

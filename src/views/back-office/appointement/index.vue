@@ -174,7 +174,7 @@ export default defineComponent({
     const selectedAppointment = ref(new Map());
 
     const getUsername = (userId: number) => {
-      return users.value.find((user: User) => user.id === userId.toString()).username;
+      return users.value.find((user: User) => user.id == userId.toString())?.username;
     };
     const formatDate = (date: string) => {
       return new Date(date).toLocaleDateString('fr-FR');

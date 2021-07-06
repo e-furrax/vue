@@ -85,12 +85,13 @@
                 </td>
                 <td class="table-report__action w-56 px-2 py-1">
                   <div class="flex justify-center items-center">
-                    <img
-                      src="/images/icons/open_in_new.svg"
-                      alt="details"
-                      class="hover:bg-white p-1 rounded-full hover:bg-opacity-20 transition duration-200 cursor-pointer"
-                      @click.stop="$router.push(`/user/${user.id}`)"
-                    />
+                    <router-link :to="`/user/${user.id}`" target="_blank">
+                      <img
+                        src="/images/icons/open_in_new.svg"
+                        alt="details"
+                        class="hover:bg-white p-1 rounded-full hover:bg-opacity-20 transition duration-200 cursor-pointer"
+                      />
+                    </router-link>
                     <img
                       v-show="modifiedUsers.has(user.id)"
                       src="/images/icons/done.svg"
