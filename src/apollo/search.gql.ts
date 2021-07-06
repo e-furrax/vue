@@ -6,6 +6,7 @@ export const searchByUsernameOrGamename = gql`
       users {
         id
         username
+        profileImage
       }
       games {
         id

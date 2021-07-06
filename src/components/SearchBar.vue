@@ -96,7 +96,10 @@ export default defineComponent({
       if (!enabled.value) {
         enabled.value = true;
       }
-      inputRef.value = { input: (event.target as HTMLInputElement).value };
+      const eventValue = (event.target as HTMLInputElement).value;
+      if (eventValue) {
+        inputRef.value = { input: (event.target as HTMLInputElement).value };
+      }
     }, 1000);
 
     const totalLength = computed(() => {

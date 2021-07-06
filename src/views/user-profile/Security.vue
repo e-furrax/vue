@@ -69,7 +69,9 @@ export default defineComponent({
     const toast = useToast();
 
     const changePassword = handleSubmit(values => {
-      updatePassword(values).then(() => toast.success('Password updated'));
+      updatePassword(values)
+        .then(() => toast.success('Password updated'))
+        .catch(err => toast.error(err));
     });
 
     return {

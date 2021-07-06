@@ -9,6 +9,7 @@ export const newMessageSubscription = gql`
       fromUser {
         id
         username
+        profileImage
       }
       toUser {
         id

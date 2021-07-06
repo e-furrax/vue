@@ -8,7 +8,7 @@ import Search from '@/views/Search.vue';
 import UserProfile from '@/views/UserProfile.vue';
 import Privacy from '@/views/Privacy.vue';
 import Terms from '@/views/Terms.vue';
-import RequestResetPassword from '@/views/ResetPassword.vue';
+import RequestResetPassword from '@/views/RequestResetPassword.vue';
 import ResetPassword from '@/views/ResetPassword.vue';
 import BecomeFurrax from '@/views/BecomeFurrax.vue';
 import NotFound from '@/views/NotFound.vue';
