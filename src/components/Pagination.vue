@@ -32,7 +32,7 @@ export default defineComponent({
   data: () => ({ currentPage: 0 }),
   computed: {
     pages(): Array<string> {
-      const nPage = ~~(this.size / this.elementByPage);
+      const nPage = Math.ceil(this.size / this.elementByPage);
       return nPage > 10
         ? [...[...Array(10)]].map((_, i) => `${i + 1}`)
         : [...Array(nPage)].map((_, i) => `${i + 1}`);

@@ -972,9 +972,10 @@ export default defineComponent({
     },
     handleRating(values: RatingForm, { resetForm }: any) {
       if (values.rating) {
+        const rating = +values.rating > 5 ? '5' : +values.rating < 0 ? '0' : values.rating;
         this.addRating({
           data: {
-            rating: values.rating,
+            rating,
             comments: values.comments,
             toUser: { id: +this.userId }
           }

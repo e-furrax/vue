@@ -31,7 +31,11 @@
             "
           >
             <img
-              :src="user.profileImage || '/images/avatar1.png'"
+              :src="
+                (conversation.fromUser.id === user.id
+                  ? conversation.toUser.profileImage
+                  : conversation.fromUser.profileImage) || '/images/avatar1.png'
+              "
               class="
                 pointer-events-none
                 rounded-full
@@ -105,7 +109,11 @@
           :key="message.id"
         >
           <img
-            :src="user.profileImage || '/images/avatar1.png'"
+            :src="
+              (message.fromUser.id === user.id
+                ? message.toUser.profileImage
+                : message.fromUser.profileImage) || '/images/avatar1.png'
+            "
             class="pointer-events-none rounded-full mr-4"
             style="width: 40px"
           />
