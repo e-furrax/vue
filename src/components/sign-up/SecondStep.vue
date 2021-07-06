@@ -88,7 +88,7 @@ export default defineComponent({
   },
   methods: {
     sendNewCode() {
-      console.log('TODO send new code');
+      console.log('');
     }
   }
 });

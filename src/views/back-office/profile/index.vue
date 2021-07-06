@@ -164,7 +164,7 @@ export default defineComponent({
             a[filterKey.value.key].localeCompare(b[filterKey.value.key]) * filterKey.value.order
           );
         })
-        .slice(start, end);
+        .slice(start, end + 1);
     });
     const filterModifiedText = computed(() => {
       if (filterModified.value === 0) return 'ALL';

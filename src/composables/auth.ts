@@ -46,7 +46,9 @@ const setUserData = () => {
       const copy = { ...userResult.value };
       if (error.value) {
         window.localStorage.removeItem(AUTH_KEY);
+        window.localStorage.removeItem('role');
       } else if (copy) {
+        window.localStorage.setItem('role', (copy as any)?.role || '');
         state.user = copy as any;
       }
 
@@ -64,6 +66,7 @@ export const useAuth = () => {
 
   const logout = (): Promise<void> => {
     window.localStorage.removeItem(AUTH_KEY);
+    window.localStorage.removeItem('role');
     return Promise.resolve((state.user = undefined));
   };
 
