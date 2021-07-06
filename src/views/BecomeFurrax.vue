@@ -1,7 +1,7 @@
 <template>
   <section class="w-full h-full flex justify-center">
-    <div class="w-10/12 flex flex-col my-12 space-y-8">
-      <Form @submit="handleSubmit" :validation-schema="schema">
+    <div class="w-10/12 flex flex-col my-12">
+      <Form @submit="handleSubmit" :validation-schema="schema" class="space-y-8">
         <FirstStepFurrax v-if="step === 1" @selected-games="handleGameSelected" />
         <SecondStepFurrax v-if="step === 2" @availabilities-change="handleAvailabilityChange" />
         <div class="mt-4 space-x-4">

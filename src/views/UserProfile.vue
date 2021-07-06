@@ -456,7 +456,10 @@
             </Field>
             <ErrorMessage name="game" class="text-red-500" />
             <div class="mt-2 flex items-center">
-              <img src="/images/avatar1.png" class="mr-2 w-5 h-5 rounded-full" />
+              <img
+                :src="user.profileImage || '/images/avatar1.png'"
+                class="mr-2 w-5 h-5 rounded-full"
+              />
               <span class="text-sm">{{ user.username }}</span>
             </div>
           </div>

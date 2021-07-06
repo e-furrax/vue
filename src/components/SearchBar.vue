@@ -29,19 +29,6 @@
           : 'hidden'
       ]"
     >
-      <!-- <ul class="mt-3" v-if="results && results.games">
-        <li v-for="game of results.games" :key="game.id">
-          <div class="mt-1 mx-3 text-sm text-violet-300">Games</div>
-          <div
-            class="cursor-pointer mx-2 hover:bg-trueGray-800 rounded transition-colors duration-200"
-          >
-            <div class="h-20 px-2 flex items-center">
-              <img class="w-12 h-12 rounded-lg mr-2" src="/images/rl.jpg" alt="game image" />
-              <span>{{ game.name }}</span>
-            </div>
-          </div>
-        </li>
-      </ul> -->
       <h3 class="px-4 mb-2 font-bold text-gray-400">Profiles</h3>
       <Loader v-if="loading" class="ml-2" />
       <ul v-if="results && results.users">
@@ -50,7 +37,7 @@
             <div class="flex items-center">
               <img
                 class="w-8 h-8 border-2 border-yellow-600 rounded-full mr-2"
-                src="/images/lol.jpg"
+                :src="user.profileImage || '/images/avatar1.png'"
                 alt="player image"
               />
               <span>{{ user.username }}</span>

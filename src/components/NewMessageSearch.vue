@@ -43,7 +43,11 @@
             @click="$emit('user-selected', user.id)"
           >
             <div class="flex items-center">
-              <img class="w-10 h-10 rounded-full mr-2" src="/images/lol.jpg" alt="player image" />
+              <img
+                class="w-10 h-10 rounded-full mr-2"
+                :src="user.profileImage || '/images/avatar1.png'"
+                alt="player image"
+              />
               <span>{{ user.username }}</span>
             </div>
           </li>

@@ -178,6 +178,11 @@ export const confirmUserMutation = gql`
   mutation confirmUser($code: String!) {
     confirmUser(code: $code) {
       accessToken
+      id
+      email
+      username
+      role
+      profileImage
     }
   }
 `;

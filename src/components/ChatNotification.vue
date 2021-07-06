@@ -1,7 +1,12 @@
 <template>
   <div class="flex items-center justify-between">
     <div class="flex items-center mr-4">
-      <img src="/images/avatar1.png" class="rounded-full" width="50" height="50" />
+      <img
+        :src="message.fromUser.profileImage || '/images/avatar1.png'"
+        class="rounded-full"
+        width="50"
+        height="50"
+      />
       <div class="ml-4 flex flex-col items-start">
         <h1 class="font-bold">{{ message.fromUser.username }}</h1>
         <span class="trim break-all">{{ message.content }}</span>

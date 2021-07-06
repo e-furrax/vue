@@ -31,13 +31,13 @@
             "
           >
             <img
-              src="/images/avatar1.png"
+              :src="user.profileImage || '/images/avatar1.png'"
               class="
                 pointer-events-none
                 rounded-full
                 border border-purple-100 border-opacity-20
                 mr-1 md:mr-2
-                w-9 md:w-11
+                md:w-11
                 w-9 md:h-11
               "
             />
@@ -105,7 +105,7 @@
           :key="message.id"
         >
           <img
-            src="/images/avatar1.png"
+            :src="user.profileImage || '/images/avatar1.png'"
             class="pointer-events-none rounded-full mr-4"
             style="width: 40px"
           />
