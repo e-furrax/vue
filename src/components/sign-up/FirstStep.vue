@@ -143,6 +143,14 @@
         </svg>
       </ErrorMessage>
     </div>
+    <div class="text-white">
+      <div v-if="legalError" class="text-red">
+        ⚠ You must Accecept the Legal mention and Term of Services
+      </div>
+      <input type="checkbox" name="acceptecgu" v-model="legal" required /> I accept the
+      <a href="#">Legal Mention</a> and
+      <a href="#">Term of services</a>
+    </div>
     <button
       :disabled="loading"
       class="border-none outline-none font-bold text-white uppercase rounded bg-purple-700 bg-opacity-50 text-sm leading-8 py-1 hover:bg-purple-700 transition-all ease-in duration-200 disabled:opacity-70"
@@ -195,6 +203,8 @@ export default defineComponent({
     };
   },
   data() {
+    const legal = false;
+    const legalError = false;
     const schema = object({
       email: string()
         .required()
@@ -208,18 +218,24 @@ export default defineComponent({
       gender: string().required()
     });
     return {
-      schema
+      schema,
+      legal,
+      legalError
     };
   },
   methods: {
     onSubmit(values: FirstStepForm) {
-      this.register({ data: values }).then(({ data }) => {
-        if (data) {
-          const { email } = data.register;
-          this.setRegisteredInfo({ email });
-          this.setStep(2);
-        }
-      });
+      if (this.legal) {
+        this.register({ data: values }).then(({ data }) => {
+          if (data) {
+            const { email } = data.register;
+            this.setRegisteredInfo({ email });
+            this.setStep(2);
+          }
+        });
+      } else {
+        this.legalError = true;
+      }
     }
   }
 });

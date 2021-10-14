@@ -411,6 +411,81 @@
             <h4 class="font-bold uppercase mb-2">Availability</h4>
             <Availability :userId="userId" />
           </section>
+          <section class="pt-4 p-4">
+            <h4 class="font-bold uppercase mb-2">Donnation Link</h4>
+            <div v-if="isOwner()">
+              <div v-if="user.donationLink === '' || user.donationLink === null">
+                <label for="donation-link" class="text-sm">
+                  Enter your Donation link so user can give you money
+                </label>
+                <div class="flex items-center">
+                  <input
+                    type="text"
+                    ref="donationLink"
+                    class="mr-2 bg-purple-1200 px-2 py-0.5 rounded-sm"
+                    name="donation-link"
+                  />
+                  <button
+                    @click="addDonationLink"
+                    class="
+                      px-3
+                      py-1
+                      rounded
+                      bg-transparent
+                      border border-purple-400
+                      text-purple-400
+                      hover:border-purple-300
+                      hover:text-purple-300
+                      transition
+                      duration-300
+                      text-sm
+                    "
+                  >
+                    ADD LINK
+                  </button>
+                </div>
+              </div>
+              <div v-else>
+                Your donnation link is actually:
+                <u
+                  ><a href="{{user.donationLink}}"> {{ user.donationLink }}</a></u
+                ><br />
+                Want to change? insert your new link.
+                <input
+                  type="text"
+                  ref="donationLink"
+                  class="mr-2 bg-purple-1200 px-2 py-0.5 rounded-sm"
+                  name="donation-link"
+                />
+                <button
+                  @click="updateDonationLink"
+                  class="
+                      px-3
+                      py-1
+                      rounded
+                      bg-transparent
+                      border border-purple-400
+                      text-purple-400
+                      hover:border-purple-300
+                      hover:text-purple-300
+                      transition
+                      duration-300
+                      text-sm
+                    "
+                >
+                  UPDATE LINK
+                </button>
+              </div>
+            </div>
+            <div v-else>
+              <div v-if="user.donationLink !== '' && user.donationLink !== null">
+                <a href="{{user.donationLink}}">{{ user.donationLink }}</a>
+              </div>
+              <div v-else>
+                <p>This user did not uploaded any donation link yet</p>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
@@ -446,13 +521,9 @@
               v-model="demandGame"
               class="bg-white py-0.5 px-1 bg-opacity-10"
             >
-              <option
-                :value="game.name"
-                class="bg-purple-1000"
-                v-for="game of games"
-                :key="game.id"
-                >{{ game.name }}</option
-              >
+              <option :value="game.name" class="bg-purple-1000" v-for="game of games" :key="game.id"
+                >{{ game.name }}
+              </option>
             </Field>
             <ErrorMessage name="game" class="text-red-500" />
             <div class="mt-2 flex items-center">
@@ -551,7 +622,9 @@ import {
   addGamesMutation,
   addLanguagesMutation,
   removeUserLanguageMutation,
-  removeUserGameMutation
+  removeUserGameMutation,
+  addDonationLinkMutation,
+  updateDonationLinkMutation
 } from '@/apollo/user.gql';
 import { getGames } from '@/apollo/game.gql';
 import { getLanguages } from '@/apollo/language.gql';
@@ -563,6 +636,7 @@ import GameModel from '@/models/game.model';
 import LanguageModel from '@/models/language.model';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
 dayjs.extend(relativeTime);
 
 import Comment from '@/components/Comment.vue';
@@ -611,6 +685,9 @@ interface UpdateDescriptionVariables {
 
 interface GetLolStatsVariables {
   username: string;
+}
+interface AddDonationLinkVariables {
+  donationLink: string;
 }
 
 interface AddRatingVariables {
@@ -693,6 +770,7 @@ export default defineComponent({
     const computedAverageRatingRef = ref();
     const descriptionRef = ref();
     const lolUsername = ref();
+    const donationLink = ref();
     const { result, loading, error, refetch: refetchUser } = useQuery(getUser, {
       data: { id: parseInt(props.userId) }
     });
@@ -731,6 +809,12 @@ export default defineComponent({
 
     const { mutate: getLolStats } = useMutation<LolResponseType, GetLolStatsVariables>(
       getLolStatsMutation
+    );
+    const { mutate: donationLinkAdd } = useMutation<AddDonationLinkVariables>(
+      addDonationLinkMutation
+    );
+    const { mutate: donationLinkUpdate } = useMutation<AddDonationLinkVariables>(
+      updateDonationLinkMutation
     );
 
     const { mutate: newAppointment } = useMutation<NewAppointmentResponse, NewAppointmentVariables>(
@@ -791,7 +875,10 @@ export default defineComponent({
       dayjs,
       upsertStatistic,
       lolUsername,
+      donationLink,
       getLolStats,
+      donationLinkAdd,
+      donationLinkUpdate,
       toast,
       computedAverageRatingRef,
       descriptionRef,
@@ -856,6 +943,20 @@ export default defineComponent({
     },
     handleRatingRemoved() {
       this.refetchUser();
+    },
+    addDonationLink() {
+      this.donationLinkAdd({
+        data: this.donationLink.value
+      }).then(() => {
+        this.refetchUser();
+      });
+    },
+    updateDonationLink() {
+      this.donationLinkUpdate({
+        data: this.donationLink.value
+      }).then(() => {
+        this.refetchUser();
+      });
     },
     getLolRanks() {
       this.getLolStats({

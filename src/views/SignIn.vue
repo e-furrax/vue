@@ -14,8 +14,12 @@
     <div class="h-full w-full flex justify-center items-center">
       <div class="w-80 md:w-96 flex flex-col items-center space-y-6">
         <h1 class="text-3xl font-semibold text-white">Sign In</h1>
-        <p v-if="errorLogin" class="text-pink-600 text-sm">
+        <p v-if="errorLogin && errorLogin.message !== 'BANNED'" class="text-pink-600 text-sm">
           We didn't recognized you. Make sure that your email and password are correct below.
+        </p>
+        <p v-if="errorLogin && errorLogin.message === 'BANNED'" class="text-pink-600 text-sm">
+          This account has been banned.<br />
+          You can contact an administrator if you think this is an error.
         </p>
         <Form
           class="form-grid"

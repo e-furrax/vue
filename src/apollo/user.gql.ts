@@ -45,6 +45,7 @@ export const getUser = gql`
       createdAt
       role
       profileImage
+      donationLink
       receivedRatings {
         id
         comments
@@ -258,5 +259,17 @@ export const addGamesCSMutation = gql`
 export const becomeFurrax = gql`
   mutation becomeFurrax($data: BecomeFurraxInput!) {
     becomeFurrax(data: $data)
+  }
+`;
+
+export const addDonationLinkMutation = gql`
+  mutation addDonationLink($data: String!) {
+    addDonationLink(data: $data)
+  }
+`;
+
+export const updateDonationLinkMutation = gql`
+  mutation updateDonationLink($data: String!) {
+    updateDonationLink(data: $data)
   }
 `;
