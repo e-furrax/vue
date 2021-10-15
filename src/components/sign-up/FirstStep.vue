@@ -148,8 +148,8 @@
         ⚠ You must Accecept the Legal mention and Term of Services
       </div>
       <input type="checkbox" name="acceptecgu" v-model="legal" required /> I accept the
-      <a href="#">Legal Mention</a> and
-      <a href="#">Term of services</a>
+      <a href="/privacy">Legal Mention</a> and
+      <a href="/terms">Term of services</a>
     </div>
     <button
       :disabled="loading"

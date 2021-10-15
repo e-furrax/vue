@@ -11,7 +11,6 @@ import Terms from '@/views/Terms.vue';
 import RequestResetPassword from '@/views/RequestResetPassword.vue';
 import ResetPassword from '@/views/ResetPassword.vue';
 import BecomeFurrax from '@/views/BecomeFurrax.vue';
-import TermOfUse from '@/views/TermOfUse';
 import NotFound from '@/views/NotFound.vue';
 import { ROLES } from '@/models/user.model';
 
@@ -35,16 +34,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/sign-in',
     name: 'SignIn',
     component: SignIn
-  },
-  {
-    path: '/Legal-mention',
-    name: 'LegalMention',
-    component: LegalMention
-  },
-  {
-    path: '/Term-of-use',
-    name: 'TermOfUse',
-    component: TermOfUse
   },
   {
     path: '/request-reset-password',
